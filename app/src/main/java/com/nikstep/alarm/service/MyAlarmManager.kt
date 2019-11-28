@@ -11,7 +11,7 @@ import java.util.GregorianCalendar
 class MyAlarmManager(
     private val activity: Activity,
     private val alarmManager: AlarmManager,
-    musicPlayer: MusicPlayer
+    private val alarmMusicPlayer: AlarmMusicPlayer
 ) {
     private val pendingIntent: PendingIntent by lazy {
         val intent = Intent(activity, AlarmReceiver::class.java)
@@ -40,6 +40,14 @@ class MyAlarmManager(
             1000 * 60 * 60 * 24,
             pendingIntent
         )
+    }
+
+    fun playNextSong() {
+        alarmMusicPlayer.playNextSong()
+    }
+
+    fun stopPlayingSong() {
+        alarmMusicPlayer.stopPlayingSong()
     }
 
     fun cancelAlarm() {

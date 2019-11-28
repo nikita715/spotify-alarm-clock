@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.nikstep.alarm.pAlarmSongIndex
 import com.nikstep.alarm.pInitialVolume
 
-class MusicProperties(
+class AlarmMusicProperties(
     private val properties: SharedPreferences
 ) {
     fun setSongIndex(index: Int) = properties.edit().putInt(pAlarmSongIndex, index).apply()

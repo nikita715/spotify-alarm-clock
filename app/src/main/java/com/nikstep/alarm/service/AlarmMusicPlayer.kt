@@ -12,10 +12,10 @@ import com.nikstep.alarm.cMaxMusicLevel
 import com.nikstep.alarm.musicFilesPath
 import java.io.File
 
-class MusicPlayer(
+class AlarmMusicPlayer(
     private val context: Context,
-    private val audioManager: MyAudioManager,
-    private val musicProperties: MusicProperties
+    private val audioManager: AlarmAudioManager,
+    private val alarmMusicProperties: AlarmMusicProperties
 ) {
 
     private var mediaPlayer: MediaPlayer? = null
@@ -25,8 +25,8 @@ class MusicPlayer(
 
         val musicFiles = getMusicFiles(context)
 
-        val index = musicProperties.getSongIndex()
-        musicProperties.setSongIndex(getNextSongIndex(index, musicFiles.size))
+        val index = alarmMusicProperties.getSongIndex()
+        alarmMusicProperties.setSongIndex(getNextSongIndex(index, musicFiles.size))
 
         graduallyIncreaseVolume()
         playFile(musicFiles[index])
@@ -64,7 +64,7 @@ class MusicPlayer(
 
     private fun graduallyIncreaseVolume() {
         val initialVolume = audioManager.getVolume()
-        musicProperties.setInitialVolume(initialVolume)
+        alarmMusicProperties.setInitialVolume(initialVolume)
 
         var volume = 0
         audioManager.setVolume(0)
@@ -83,7 +83,7 @@ class MusicPlayer(
     }
 
     private fun returnInitialVolume() {
-        val initialVolume = musicProperties.getInitialVolume().let {
+        val initialVolume = alarmMusicProperties.getInitialVolume().let {
             if (it == -1) audioManager.getVolume() else it
         }
         audioManager.setVolume(initialVolume)

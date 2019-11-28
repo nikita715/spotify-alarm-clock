@@ -6,39 +6,35 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import android.widget.TimePicker
-import com.nikstep.alarm.service.MusicPlayer
-import com.nikstep.alarm.service.MusicProperties
+import com.nikstep.alarm.service.AlarmAudioManager
+import com.nikstep.alarm.service.AlarmMusicPlayer
+import com.nikstep.alarm.service.AlarmMusicProperties
+import com.nikstep.alarm.service.AlarmStatusManager
 import com.nikstep.alarm.service.MyAlarmManager
-import com.nikstep.alarm.service.MyAudioManager
-import java.lang.String.format
-import java.util.Locale
 
 class AlarmActivity : Activity() {
-
-    internal val musicPlayer: MusicPlayer by lazy {
-        MusicPlayer(
-            applicationContext,
-            MyAudioManager(getSystemService(Context.AUDIO_SERVICE) as AudioManager),
-            musicProperties
+    private val alarmManager: MyAlarmManager by lazy {
+        MyAlarmManager(
+            this,
+            getSystemService(Context.ALARM_SERVICE) as AlarmManager,
+            AlarmMusicPlayer(
+                applicationContext,
+                AlarmAudioManager(getSystemService(Context.AUDIO_SERVICE) as AudioManager),
+                AlarmMusicProperties(applicationContext.getSharedPreferences(alarmPropertiesName, 0))
+            )
         )
     }
-    private val alarmManager: MyAlarmManager by lazy {
-        MyAlarmManager(this, getSystemService(Context.ALARM_SERVICE) as AlarmManager, musicPlayer)
-    }
-    private val musicProperties: MusicProperties by lazy {
-        MusicProperties(applicationContext.getSharedPreferences(alarmPropertiesName, 0))
+
+    private val alarmStatusManager: AlarmStatusManager by lazy {
+        AlarmStatusManager(findViewById(R.id.alarm_status), alarmManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (alarmManager.isAlarmActive()) {
-            setStatus("Alarm is active")
-        } else {
-            setStatus("Alarm is not active")
-        }
+        Dependencies.put(alarmManager)
+        alarmStatusManager.setAlarmActivityStatus()
     }
 
     fun setAlarm(view: View) {
@@ -51,21 +47,15 @@ class AlarmActivity : Activity() {
         }
 
         alarmManager.setAlarm(hour, minute)
-        setStatus("Alarm scheduled at ${format(Locale.ENGLISH, "%02d:%02d", hour, minute)}")
+        alarmStatusManager.scheduledAt(hour, minute)
     }
 
     fun stopAlarm(view: View) {
-        musicPlayer.stopPlayingSong()
+        alarmManager.stopPlayingSong()
     }
 
     fun removeAlarm(view: View) {
         alarmManager.cancelAlarm()
-        setStatus("No active alarms")
-    }
-
-    private fun setStatus(status: String) {
-        findViewById<TextView>(R.id.alarm_status).apply {
-            text = status
-        }
+        alarmStatusManager.noActiveAlarms()
     }
 }

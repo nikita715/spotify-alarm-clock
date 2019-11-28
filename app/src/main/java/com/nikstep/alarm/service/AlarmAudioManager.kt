@@ -3,7 +3,7 @@ package com.nikstep.alarm.service
 import android.media.AudioManager
 import com.nikstep.alarm.alarmStreamType
 
-class MyAudioManager(
+class AlarmAudioManager(
     private val audioManager: AudioManager
 ) {
 
