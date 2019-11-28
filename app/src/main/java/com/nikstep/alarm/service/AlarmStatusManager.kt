@@ -16,8 +16,11 @@ class AlarmStatusManager(
         }
     }
 
-    fun scheduledAt(hour: Int, minute: Int) {
-        setStatus("Alarm scheduled at ${java.lang.String.format(Locale.ENGLISH, "%02d:%02d", hour, minute)}")
+    fun nextSongAt(hour: Int, minute: Int, songName: String?) {
+        setStatus(
+            "Alarm scheduled at ${java.lang.String.format(Locale.ENGLISH, "%02d:%02d", hour, minute)}." +
+                    " Song: $songName"
+        )
     }
 
     fun noActiveAlarms() {

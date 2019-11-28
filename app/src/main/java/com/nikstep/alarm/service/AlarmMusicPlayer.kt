@@ -18,12 +18,12 @@ class AlarmMusicPlayer(
     private val alarmMusicProperties: AlarmMusicProperties
 ) {
 
-    private var mediaPlayer: MediaPlayer? = null
+    private var currentSong: Song? = null
 
     fun playNextSong() {
         Log.i("AlarmReceiver", "Received an alarm trigger")
 
-        val musicFiles = getMusicFiles(context)
+        val musicFiles = getMusicFiles()
 
         val index = alarmMusicProperties.getSongIndex()
         alarmMusicProperties.setSongIndex(getNextSongIndex(index, musicFiles.size))
@@ -32,8 +32,16 @@ class AlarmMusicPlayer(
         playFile(musicFiles[index])
     }
 
+    fun getNextSongName(): String? {
+        val musicFiles = getMusicFiles()
+        val songIndex = alarmMusicProperties.getSongIndex()
+        if (musicFiles.isEmpty()) return null
+        return (if (musicFiles.size > songIndex) songIndex else 0)
+            .let { musicFiles[it].nameWithoutExtension }
+    }
+
     private fun playFile(file: File) {
-        if (mediaPlayer != null) {
+        if (currentSong != null) {
             stopPlayingSong()
         }
         if (file.extension == "mp3") {
@@ -42,15 +50,18 @@ class AlarmMusicPlayer(
             val mediaPlayer = MediaPlayer.create(context, path)
             mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
             mediaPlayer?.start()
-            this.mediaPlayer = mediaPlayer
+            mediaPlayer.trackInfo
+            currentSong = Song(file.nameWithoutExtension, mediaPlayer)
             Log.i("AlarmReceiver", "Started music")
         }
     }
 
     fun stopPlayingSong() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        currentSong?.mediaPlayer?.apply {
+            stop()
+            release()
+        }
+        currentSong = null
         returnInitialVolume()
     }
 
@@ -59,7 +70,7 @@ class AlarmMusicPlayer(
         return if (newIndex >= maxIndex) 0 else newIndex
     }
 
-    private fun getMusicFiles(context: Context): Array<File> =
+    private fun getMusicFiles(): Array<File> =
         context.getExternalFilesDir(musicFilesPath)?.listFiles() ?: emptyArray()
 
     private fun graduallyIncreaseVolume() {
@@ -88,5 +99,9 @@ class AlarmMusicPlayer(
         }
         audioManager.setVolume(initialVolume)
     }
+
+    private class Song(
+        val name: String, val mediaPlayer: MediaPlayer
+    )
 
 }

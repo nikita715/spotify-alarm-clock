@@ -21,7 +21,7 @@ class MyAlarmManager(
         )
     }
 
-    fun setAlarm(hour: Int, minute: Int) {
+    fun setAlarm(hour: Int, minute: Int): String? {
         val year: Int
         val month: Int
         val dayOfMonth: Int
@@ -40,6 +40,7 @@ class MyAlarmManager(
             1000 * 60 * 60 * 24,
             pendingIntent
         )
+        return alarmMusicPlayer.getNextSongName()
     }
 
     fun playNextSong() {

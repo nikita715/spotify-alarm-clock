@@ -46,8 +46,8 @@ class AlarmActivity : Activity() {
             minute = timePicker.minute
         }
 
-        alarmManager.setAlarm(hour, minute)
-        alarmStatusManager.scheduledAt(hour, minute)
+        val songName = alarmManager.setAlarm(hour, minute)
+        alarmStatusManager.nextSongAt(hour, minute, songName)
     }
 
     fun stopAlarm(view: View) {
