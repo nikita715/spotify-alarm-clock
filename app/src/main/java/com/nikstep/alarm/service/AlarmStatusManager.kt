@@ -4,12 +4,11 @@ import android.widget.TextView
 import java.util.Locale
 
 class AlarmStatusManager(
-    private val statusView: TextView,
-    private val alarmManager: MyAlarmManager
+    private val statusView: TextView
 ) {
 
-    fun setAlarmActivityStatus() {
-        if (alarmManager.isAlarmActive()) {
+    fun setAlarmActivityStatus(active: Boolean) {
+        if (active) {
             setStatus("Alarm is active")
         } else {
             setStatus("Alarm is not active")

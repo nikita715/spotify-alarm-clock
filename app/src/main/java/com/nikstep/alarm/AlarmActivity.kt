@@ -6,6 +6,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.TimePicker
 import com.nikstep.alarm.service.AlarmAudioManager
 import com.nikstep.alarm.service.AlarmMusicPlayer
@@ -15,26 +16,27 @@ import com.nikstep.alarm.service.MyAlarmManager
 
 class AlarmActivity : Activity() {
     private val alarmManager: MyAlarmManager by lazy {
+        val androidAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val androidAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val statusView = findViewById<TextView>(R.id.alarm_status)
+        val preferences = applicationContext.getSharedPreferences(alarmPropertiesName, 0)
         MyAlarmManager(
             this,
-            getSystemService(Context.ALARM_SERVICE) as AlarmManager,
+            androidAlarmManager,
+            AlarmStatusManager(statusView),
             AlarmMusicPlayer(
                 applicationContext,
-                AlarmAudioManager(getSystemService(Context.AUDIO_SERVICE) as AudioManager),
-                AlarmMusicProperties(applicationContext.getSharedPreferences(alarmPropertiesName, 0))
+                AlarmAudioManager(androidAudioManager),
+                AlarmMusicProperties(preferences)
             )
         )
-    }
-
-    private val alarmStatusManager: AlarmStatusManager by lazy {
-        AlarmStatusManager(findViewById(R.id.alarm_status), alarmManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Dependencies.put(alarmManager)
-        alarmStatusManager.setAlarmActivityStatus()
+        alarmManager.onCreateAlarmActivity()
     }
 
     fun setAlarm(view: View) {
@@ -46,8 +48,7 @@ class AlarmActivity : Activity() {
             minute = timePicker.minute
         }
 
-        val songName = alarmManager.setAlarm(hour, minute)
-        alarmStatusManager.nextSongAt(hour, minute, songName)
+        alarmManager.setAlarm(hour, minute)
     }
 
     fun stopAlarm(view: View) {
@@ -56,6 +57,5 @@ class AlarmActivity : Activity() {
 
     fun removeAlarm(view: View) {
         alarmManager.cancelAlarm()
-        alarmStatusManager.noActiveAlarms()
     }
 }

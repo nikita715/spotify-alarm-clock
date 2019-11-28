@@ -7,7 +7,7 @@ import com.nikstep.alarm.service.MyAlarmManager
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        val musicPlayer = Dependencies.get(MyAlarmManager::class.java)
-        musicPlayer?.playNextSong()
+        val alarmManager = Dependencies.get(MyAlarmManager::class.java)
+        alarmManager?.playNextSong()
     }
 }

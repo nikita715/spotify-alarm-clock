@@ -11,17 +11,19 @@ import java.util.GregorianCalendar
 class MyAlarmManager(
     private val activity: Activity,
     private val alarmManager: AlarmManager,
+    private val alarmStatusManager: AlarmStatusManager,
     private val alarmMusicPlayer: AlarmMusicPlayer
 ) {
+
+    private val intent = Intent(activity, AlarmReceiver::class.java)
     private val pendingIntent: PendingIntent by lazy {
-        val intent = Intent(activity, AlarmReceiver::class.java)
         PendingIntent.getBroadcast(
             activity, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 
-    fun setAlarm(hour: Int, minute: Int): String? {
+    fun setAlarm(hour: Int, minute: Int) {
         val year: Int
         val month: Int
         val dayOfMonth: Int
@@ -40,7 +42,12 @@ class MyAlarmManager(
             1000 * 60 * 60 * 24,
             pendingIntent
         )
-        return alarmMusicPlayer.getNextSongName()
+
+        alarmStatusManager.nextSongAt(hour, minute, alarmMusicPlayer.getNextSongName())
+    }
+
+    fun onCreateAlarmActivity() {
+        alarmStatusManager.setAlarmActivityStatus(isAlarmActive())
     }
 
     fun playNextSong() {
@@ -53,9 +60,8 @@ class MyAlarmManager(
 
     fun cancelAlarm() {
         alarmManager.cancel(pendingIntent)
+        alarmStatusManager.noActiveAlarms()
     }
 
-    fun isAlarmActive() = PendingIntent.getBroadcast(
-        activity, 0, Intent(activity, AlarmReceiver::class.java), PendingIntent.FLAG_NO_CREATE
-    ) != null
+    private fun isAlarmActive() = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_NO_CREATE) != null
 }
