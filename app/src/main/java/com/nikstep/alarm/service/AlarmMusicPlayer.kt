@@ -10,6 +10,8 @@ import android.util.Log
 import com.nikstep.alarm.cIncreaseVolumeStepSeconds
 import com.nikstep.alarm.cMaxMusicLevel
 import com.nikstep.alarm.musicFilesPath
+import com.nikstep.alarm.song.Song
+import com.nikstep.alarm.song.currentSong
 import java.io.File
 
 class AlarmMusicPlayer(
@@ -17,8 +19,6 @@ class AlarmMusicPlayer(
     private val audioManager: AlarmAudioManager,
     private val alarmMusicProperties: AlarmMusicProperties
 ) {
-
-    private var currentSong: Song? = null
 
     fun playNextSong() {
         Log.i("AlarmReceiver", "Received an alarm trigger")
@@ -104,9 +104,5 @@ class AlarmMusicPlayer(
         val songIndex = alarmMusicProperties.getSongIndex()
         alarmMusicProperties.setSongIndex(getNextSongIndex(songIndex, getMusicFiles().size))
     }
-
-    private class Song(
-        val name: String, val mediaPlayer: MediaPlayer
-    )
 
 }
