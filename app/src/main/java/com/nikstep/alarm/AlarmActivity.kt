@@ -4,10 +4,12 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.TimePicker
+import androidx.annotation.RequiresApi
 import com.nikstep.alarm.service.AlarmAudioManager
 import com.nikstep.alarm.service.AlarmMusicPlayer
 import com.nikstep.alarm.service.AlarmMusicProperties
@@ -39,6 +41,7 @@ class AlarmActivity : Activity() {
         alarmManager.onCreateAlarmActivity()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setAlarm(view: View) {
         val hour: Int
         val minute: Int

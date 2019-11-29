@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".AlarmReceiver"/>
+        <service android:name=".service.StopMusicService" />
     </application>
 
 </manifest>
