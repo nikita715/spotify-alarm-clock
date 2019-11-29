@@ -100,6 +100,11 @@ class AlarmMusicPlayer(
         audioManager.setVolume(initialVolume)
     }
 
+    fun goToNextSong() {
+        val songIndex = alarmMusicProperties.getSongIndex()
+        alarmMusicProperties.setSongIndex(getNextSongIndex(songIndex, getMusicFiles().size))
+    }
+
     private class Song(
         val name: String, val mediaPlayer: MediaPlayer
     )

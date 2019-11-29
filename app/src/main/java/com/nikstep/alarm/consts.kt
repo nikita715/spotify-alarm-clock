@@ -10,5 +10,5 @@ const val alarmPropertiesName = "AlarmPref"
 const val pInitialVolume = "InitialVolume"
 const val pAlarmSongIndex = "AlarmSongIndex"
 
-const val cMaxMusicLevel = 0.5
+const val cMaxMusicLevel = 1
 const val cIncreaseVolumeStepSeconds = 5L

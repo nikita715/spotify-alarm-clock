@@ -55,6 +55,10 @@ class AlarmActivity : Activity() {
         alarmManager.stopPlayingSong()
     }
 
+    fun goToNextSong(view: View) {
+        alarmManager.goToNextSong()
+    }
+
     fun removeAlarm(view: View) {
         alarmManager.cancelAlarm()
     }

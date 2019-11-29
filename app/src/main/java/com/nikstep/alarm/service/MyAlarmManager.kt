@@ -58,6 +58,11 @@ class MyAlarmManager(
         alarmMusicPlayer.stopPlayingSong()
     }
 
+    fun goToNextSong() {
+        alarmMusicPlayer.goToNextSong()
+        alarmStatusManager.nextSongAt(-1, -1, alarmMusicPlayer.getNextSongName())
+    }
+
     fun cancelAlarm() {
         alarmManager.cancel(pendingIntent)
         alarmStatusManager.noActiveAlarms()
