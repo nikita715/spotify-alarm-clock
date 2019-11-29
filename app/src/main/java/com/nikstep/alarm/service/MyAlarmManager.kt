@@ -29,6 +29,9 @@ class MyAlarmManager(
         val dayOfMonth: Int
 
         Calendar.getInstance().also { calendar ->
+            if (calendar.get(Calendar.HOUR_OF_DAY) >= hour && calendar.get(Calendar.MINUTE) >= minute) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
             year = calendar.get(Calendar.YEAR)
             month = calendar.get(Calendar.MONTH)
             dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
@@ -68,5 +71,6 @@ class MyAlarmManager(
         alarmStatusManager.noActiveAlarms()
     }
 
-    private fun isAlarmActive() = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_NO_CREATE) != null
+    private fun isAlarmActive() =
+        PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_NO_CREATE) != null
 }
