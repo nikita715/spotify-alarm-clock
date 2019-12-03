@@ -9,7 +9,7 @@ class StopMusicService : IntentService(StopMusicService::class.java.simpleName) 
 
     override fun onHandleIntent(intent: Intent?) {
         if (intent?.action == "Close") {
-            currentSong?.mediaPlayer?.stop()
+            currentSong?.stop()
             Log.i("StopMusicService", "Stopped music")
         }
     }
