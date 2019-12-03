@@ -4,6 +4,7 @@ import java.time.DayOfWeek
 
 class Alarm(
     val index: Int,
-    val time: Long,
+    val hour: Int,
+    val minute: Int,
     val daysOfWeek: Set<DayOfWeek>
 )
