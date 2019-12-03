@@ -54,6 +54,7 @@ class SongDatabase(context: Context) {
     }
 
     fun activate(id: Int) {
+        deactivate()
         val contentValues = ContentValues()
         contentValues.put(SongTableDef.COLUMN_NAME_ACTIVE, 1)
         songDbHelper.writableDatabase.update(
@@ -73,6 +74,10 @@ class SongDatabase(context: Context) {
             "${BaseColumns._ID} = ?",
             arrayOf(id.toString())
         )
+    }
+
+    fun deactivate() = findActive()?.apply {
+        deactivate(id)
     }
 
     fun save(song: Song) {

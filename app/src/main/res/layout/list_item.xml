@@ -3,6 +3,6 @@
     android:id="@+id/song_record"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="20dp">
+    android:padding="20dp">
 
 </TextView>

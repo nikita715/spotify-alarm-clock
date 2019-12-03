@@ -60,8 +60,5 @@ class SongService(
 
     fun findAll(): List<Song> = songDatabase.findAll()
 
-    fun findAllSongNames(): List<String> = songDatabase.findAll().map {
-        it.run { "$singer - $title" }
-    }
 }
 
