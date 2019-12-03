@@ -45,7 +45,7 @@ class AlarmActivity : Activity() {
             minute = timePicker.minute
         }
 
-        alarmDatabase.save(Alarm(0, hour, minute, DayOfWeek.values().toSet()))
+        alarmDatabase.save(Alarm(-1, hour, minute, DayOfWeek.values().toSet()))
 
         val year: Int
         val month: Int
