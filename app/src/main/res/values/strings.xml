@@ -4,4 +4,5 @@
     <string name="stop_alarm">Stop</string>
     <string name="remove_alarm">Remove</string>
     <string name="next_song">Next song</string>
+    <string name="select_song">Select song</string>
 </resources>

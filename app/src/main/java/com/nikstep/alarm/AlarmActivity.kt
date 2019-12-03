@@ -3,6 +3,7 @@ package com.nikstep.alarm
 import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -64,5 +65,9 @@ class AlarmActivity : Activity() {
 
     fun removeAlarm(view: View) {
         alarmManager.cancelAlarm()
+    }
+
+    fun openSongSelector(view: View) {
+        startActivity(Intent(applicationContext, SongSelectorActivity::class.java))
     }
 }

@@ -57,7 +57,7 @@ class AlarmMusicPlayer(
     }
 
     fun stopPlayingSong() {
-        currentSong?.mediaPlayer?.apply {
+        currentSong?.apply {
             stop()
             release()
         }
@@ -70,7 +70,7 @@ class AlarmMusicPlayer(
         return if (newIndex >= maxIndex) 0 else newIndex
     }
 
-    private fun getMusicFiles(): Array<File> =
+    fun getMusicFiles(): Array<File> =
         context.getExternalFilesDir(musicFilesPath)?.listFiles() ?: emptyArray()
 
     private fun graduallyIncreaseVolume() {
