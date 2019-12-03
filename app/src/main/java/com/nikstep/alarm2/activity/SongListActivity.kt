@@ -1,4 +1,4 @@
-package com.nikstep.alarm2
+package com.nikstep.alarm2.activity
 
 import android.app.ListActivity
 import android.media.MediaMetadataRetriever

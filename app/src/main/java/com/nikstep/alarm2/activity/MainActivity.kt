@@ -1,10 +1,13 @@
-package com.nikstep.alarm2
+package com.nikstep.alarm2.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.nikstep.alarm.R
+import com.nikstep.alarm2.Dependencies
+import com.nikstep.alarm2.Dependency
 import com.nikstep.alarm2.audio.AlarmMediaPlayer
 import com.nikstep.alarm2.database.AlarmDatabase
 import com.nikstep.alarm2.database.SongDatabase
@@ -34,11 +37,19 @@ class MainActivity : Activity() {
         }
     }
 
+    fun goToAlarms(view: View) {
+        startActivity(Intent(this, AlarmActivity::class.java))
+    }
+
+    fun goToSongs(view: View) {
+        startActivity(Intent(this, SongListActivity::class.java))
+    }
+
     fun stopAlarm(view: View) {
-        val alarmMediaPlayer = Dependencies.get(AlarmMediaPlayer::class.java)
+        val alarmMediaPlayer: AlarmMediaPlayer? = Dependencies.get(Dependency.ALARM_MEDIA_PLAYER)
         if (alarmMediaPlayer != null) {
             alarmMediaPlayer.stop()
-            Dependencies.remove(AlarmMediaPlayer::class.java)
+            Dependencies.remove(Dependency.ALARM_MEDIA_PLAYER)
         }
     }
 }

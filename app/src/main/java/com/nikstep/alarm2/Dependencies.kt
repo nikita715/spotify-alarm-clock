@@ -1,11 +1,28 @@
 package com.nikstep.alarm2
 
+import android.content.Context
+import com.nikstep.alarm2.database.AlarmDatabase
+import com.nikstep.alarm2.database.SongDatabase
+
 object Dependencies {
-    private val dependencies = mutableMapOf<Class<out Any>, Any>()
+    private val dependencies = mutableMapOf<Dependency, Any>()
 
-    fun <T> get(clazz: Class<T>): T? = dependencies[clazz] as T
+    fun <T> get(dependency: Dependency): T? = dependencies[dependency] as T
 
-    fun put(obj: Any) = dependencies.put(obj.javaClass, obj)
+    fun put(dependency: Dependency, obj: Any) = dependencies.put(dependency, obj)
 
-    fun <T> remove(clazz: Class<T>) = dependencies.remove(clazz)
+    fun remove(dependency: Dependency) = dependencies.remove(dependency)
+}
+
+fun instantiateDependencies(context: Context) {
+    Dependencies.apply {
+        put(Dependency.SONG_DATABASE, SongDatabase(context))
+        put(Dependency.ALARM_DATABASE, AlarmDatabase(context))
+    }
+}
+
+enum class Dependency {
+    ALARM_DATABASE,
+    SONG_DATABASE,
+    ALARM_MEDIA_PLAYER
 }
