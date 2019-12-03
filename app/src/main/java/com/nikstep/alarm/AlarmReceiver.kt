@@ -15,6 +15,7 @@ import com.nikstep.alarm.service.AlarmAudioManager
 import com.nikstep.alarm.service.AlarmMusicPlayer
 import com.nikstep.alarm.service.AlarmMusicProperties
 import com.nikstep.alarm.service.StopMusicService
+import com.nikstep.alarm2.R
 
 @RequiresApi(Build.VERSION_CODES.O)
 class AlarmReceiver : BroadcastReceiver() {

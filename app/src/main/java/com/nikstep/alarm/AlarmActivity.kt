@@ -16,6 +16,7 @@ import com.nikstep.alarm.service.AlarmMusicPlayer
 import com.nikstep.alarm.service.AlarmMusicProperties
 import com.nikstep.alarm.service.AlarmStatusManager
 import com.nikstep.alarm.service.MyAlarmManager
+import com.nikstep.alarm2.R
 
 class AlarmActivity : Activity() {
     private val alarmManager: MyAlarmManager by lazy {

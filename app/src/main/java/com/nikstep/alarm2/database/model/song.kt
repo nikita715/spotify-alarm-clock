@@ -11,7 +11,7 @@ object SongTableDef : BaseColumns {
     const val COLUMN_NAME_TITLE = "title"
     const val COLUMN_NAME_SINGER = "singer"
     const val COLUMN_NAME_DURATION = "duration"
-    const val COLUMN_NAME_FILE_NAME = "file-name"
+    const val COLUMN_NAME_FILE_NAME = "file_name"
 }
 
 const val SQL_CREATE_SONG_TABLE =

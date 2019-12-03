@@ -10,7 +10,7 @@ object AlarmTableDef : BaseColumns {
     const val TABLE_NAME = "alarm"
     const val COLUMN_NAME_HOUR = "hour"
     const val COLUMN_NAME_MINUTE = "minute"
-    const val COLUMN_NAME_DAYS_OF_WEEK = "days-of-week"
+    const val COLUMN_NAME_DAYS_OF_WEEK = "days_of_week"
 }
 
 const val SQL_CREATE_ALARM_TABLE =

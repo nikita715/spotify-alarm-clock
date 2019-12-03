@@ -1,37 +1,38 @@
-package com.nikstep.alarm2.activity
+package com.nikstep.alarm2.android.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.nikstep.alarm.R
 import com.nikstep.alarm2.Dependencies
-import com.nikstep.alarm2.Dependency
+import com.nikstep.alarm2.R
 import com.nikstep.alarm2.audio.AlarmMediaPlayer
-import com.nikstep.alarm2.database.AlarmDatabase
-import com.nikstep.alarm2.database.SongDatabase
+import com.nikstep.alarm2.service.AlarmService
+import com.nikstep.alarm2.service.SongService
 
 class MainActivity : Activity() {
 
-    private val songDatabase by lazy {
-        SongDatabase(applicationContext)
+    private val songService by lazy {
+        Dependencies.get(SongService::class.java)
     }
 
-    private val alarmDatabase by lazy {
-        AlarmDatabase(applicationContext)
+    private val alarmService by lazy {
+        Dependencies.get(AlarmService::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_2)
 
-        val alarmStatus = alarmDatabase.findById(0)?.run { "$hour:$minute" } ?: "No active alarms"
+        val alarmStatus = alarmService.findById(0)?.run { "$hour:$minute" } ?: "No active alarms"
         findViewById<TextView>(R.id.alarm_status).apply {
             text = alarmStatus
         }
-        val activeSong = songDatabase.findActive() ?: songDatabase.findById(0)
-        val songStatus = activeSong?.title ?: "No available music"
+        val activeSong = songService.findOrCreateActiveSong()
+        val songStatus = activeSong?.run {
+            "$singer - $title"
+        } ?: "No available music"
         findViewById<TextView>(R.id.song_status).apply {
             text = songStatus
         }
@@ -46,10 +47,15 @@ class MainActivity : Activity() {
     }
 
     fun stopAlarm(view: View) {
-        val alarmMediaPlayer: AlarmMediaPlayer? = Dependencies.get(Dependency.ALARM_MEDIA_PLAYER)
+        val alarmMediaPlayer: AlarmMediaPlayer? =
+            Dependencies.getOrNull(AlarmMediaPlayer::class.java)
         if (alarmMediaPlayer != null) {
             alarmMediaPlayer.stop()
-            Dependencies.remove(Dependency.ALARM_MEDIA_PLAYER)
+            Dependencies.remove(AlarmMediaPlayer::class.java)
         }
+    }
+
+    private fun findOrUpdateActiveSong() {
+
     }
 }

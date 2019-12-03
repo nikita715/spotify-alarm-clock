@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.core.net.toUri
 import com.nikstep.alarm.service.MyAlarmManager
+import com.nikstep.alarm2.R
 import java.io.File
 
 class SongSelectorActivity : ListActivity() {

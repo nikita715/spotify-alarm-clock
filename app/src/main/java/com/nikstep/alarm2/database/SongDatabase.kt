@@ -4,21 +4,20 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
-import com.nikstep.alarm2.database.helper.SongDbHelper
-import com.nikstep.alarm2.database.model.AlarmTableDef
+import com.nikstep.alarm2.database.helper.DbHelper
 import com.nikstep.alarm2.database.model.SongTableDef
 import com.nikstep.alarm2.database.model.parseSongFrom
 import com.nikstep.alarm2.database.model.toContentValues
 import com.nikstep.alarm2.model.Song
 
 class SongDatabase(context: Context) {
-    private val songDbHelper = SongDbHelper(context)
+    private val songDbHelper = DbHelper(context)
 
     fun findById(id: Int): Song? {
         val cursor = songDbHelper.readableDatabase.query(
             SongTableDef.TABLE_NAME,
             null,
-            BaseColumns._ID,
+            "${BaseColumns._ID} = ?",
             arrayOf(id.toString()), null, null, null
         )
         return getOne(cursor)
@@ -36,7 +35,7 @@ class SongDatabase(context: Context) {
         val cursor = songDbHelper.readableDatabase.query(
             SongTableDef.TABLE_NAME,
             null,
-            SongTableDef.COLUMN_NAME_ACTIVE,
+            "${SongTableDef.COLUMN_NAME_ACTIVE} = ?",
             arrayOf("1"), null, null, null
         )
         return getOne(cursor)
@@ -46,7 +45,7 @@ class SongDatabase(context: Context) {
         val cursor = songDbHelper.readableDatabase.query(
             SongTableDef.TABLE_NAME,
             null,
-            BaseColumns._ID,
+            "${BaseColumns._ID} = ?",
             arrayOf(id.toString()), null, null, null
         )
         val hasNext = cursor.moveToNext()
@@ -60,7 +59,7 @@ class SongDatabase(context: Context) {
         songDbHelper.writableDatabase.update(
             SongTableDef.TABLE_NAME,
             contentValues,
-            BaseColumns._ID,
+            "${BaseColumns._ID} = ?",
             arrayOf(id.toString())
         )
     }
@@ -71,13 +70,13 @@ class SongDatabase(context: Context) {
         songDbHelper.writableDatabase.update(
             SongTableDef.TABLE_NAME,
             contentValues,
-            BaseColumns._ID,
+            "${BaseColumns._ID} = ?",
             arrayOf(id.toString())
         )
     }
 
     fun save(song: Song) {
-        songDbHelper.writableDatabase.insert(AlarmTableDef.TABLE_NAME, null, song.toContentValues())
+        songDbHelper.writableDatabase.insert(SongTableDef.TABLE_NAME, null, song.toContentValues())
     }
 
     private fun getOne(cursor: Cursor): Song? {

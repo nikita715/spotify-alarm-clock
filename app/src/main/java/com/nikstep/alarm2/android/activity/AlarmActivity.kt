@@ -1,4 +1,4 @@
-package com.nikstep.alarm2.activity
+package com.nikstep.alarm2.android.activity
 
 import android.app.Activity
 import android.app.AlarmManager
@@ -10,10 +10,11 @@ import android.util.Log
 import android.view.View
 import android.widget.TimePicker
 import com.nikstep.alarm.AlarmReceiver
-import com.nikstep.alarm.R
-import com.nikstep.alarm2.database.AlarmDatabase
-import com.nikstep.alarm2.database.SongDatabase
+import com.nikstep.alarm2.Dependencies
+import com.nikstep.alarm2.R
 import com.nikstep.alarm2.model.Alarm
+import com.nikstep.alarm2.service.AlarmService
+import com.nikstep.alarm2.service.SongService
 import java.time.DayOfWeek
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -24,15 +25,15 @@ class AlarmActivity : Activity() {
         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
-    private val alarmDatabase: AlarmDatabase by lazy {
-        AlarmDatabase(applicationContext)
+    private val alarmService: AlarmService by lazy {
+        Dependencies.get(AlarmService::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_2)
-        val songDatabase = SongDatabase(applicationContext)
-        val activeSong = songDatabase.findActive()
+        setContentView(R.layout.activity_alarm_creator)
+        val songService = Dependencies.get(SongService::class.java)
+        val activeSong = songService.findOrCreateActiveSong()
         Log.i("AlarmActivity", activeSong?.title ?: "nothing")
     }
 
@@ -45,7 +46,7 @@ class AlarmActivity : Activity() {
             minute = timePicker.minute
         }
 
-        alarmDatabase.save(Alarm(-1, hour, minute, DayOfWeek.values().toSet()))
+        alarmService.save(Alarm(-1, hour, minute, DayOfWeek.values().toSet()))
 
         val year: Int
         val month: Int
