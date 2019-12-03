@@ -3,10 +3,8 @@ package com.nikstep.alarm2
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.net.Uri
 import com.nikstep.alarm.musicFilesPath
+import com.nikstep.alarm2.audio.AlarmMediaPlayer
 import com.nikstep.alarm2.database.AlarmDatabase
 import com.nikstep.alarm2.database.SongDatabase
 import com.nikstep.alarm2.model.Alarm
@@ -27,11 +25,9 @@ class AlarmReceiver : BroadcastReceiver() {
             val activeSong = findActiveSong()
             if (alarmEntity != null && resourcesDir != null && activeSong != null) {
                 val songFile = File(resourcesDir.absolutePath + "/" + activeSong.fileName)
-                val path = Uri.fromFile(songFile)
-                val mediaPlayer = MediaPlayer.create(context, path)
-                mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-                mediaPlayer?.start()
-                setActiveMediaPlayer(mediaPlayer)
+                val alarmMediaPlayer = AlarmMediaPlayer(context, songFile)
+                Dependencies.put(alarmMediaPlayer)
+                alarmMediaPlayer.start()
                 changeActiveSong(activeSong)
             }
         }
