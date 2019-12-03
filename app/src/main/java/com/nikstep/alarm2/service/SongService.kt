@@ -59,5 +59,9 @@ class SongService(
     fun activate(id: Int) = songDatabase.activate(id)
 
     fun findAll(): List<Song> = songDatabase.findAll()
+
+    fun findAllSongNames(): List<String> = songDatabase.findAll().map {
+        it.run { "$singer - $title" }
+    }
 }
 
