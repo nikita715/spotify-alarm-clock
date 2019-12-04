@@ -1,6 +1,5 @@
 package com.nikstep.alarm2.android.activity
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -9,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TimePicker
+import androidx.appcompat.app.AppCompatActivity
 import com.nikstep.alarm.AlarmReceiver
 import com.nikstep.alarm2.Dependencies
 import com.nikstep.alarm2.R
@@ -19,7 +19,7 @@ import java.time.DayOfWeek
 import java.util.Calendar
 import java.util.GregorianCalendar
 
-class AlarmActivity : Activity() {
+class AlarmActivity : AppCompatActivity() {
 
     private val alarmManager: AlarmManager by lazy {
         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
