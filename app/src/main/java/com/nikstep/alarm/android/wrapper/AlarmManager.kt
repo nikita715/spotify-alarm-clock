@@ -111,8 +111,9 @@ class AlarmManager(
         var timesIncreased = 0
         mainHandler.post(object : Runnable {
             override fun run() {
-                audioManager.setVolume(audioManager.getVolume() + 1)
-                if (timesIncreased < maxTimesMusicVolumeIncreased) {
+                val newVolume = audioManager.getVolume() + 1
+                audioManager.setVolume(newVolume)
+                if (timesIncreased < maxTimesMusicVolumeIncreased && newVolume < maxVolume) {
                     timesIncreased++
                     mainHandler.postDelayed(this, 1000 * cIncreaseVolumeStepSeconds)
                 }
