@@ -16,6 +16,7 @@ import com.nikstep.alarm.android.receiver.AlarmReceiver
 import com.nikstep.alarm.android.service.StopMusicService
 import com.nikstep.alarm.cIncreaseVolumeStepSeconds
 import com.nikstep.alarm.cMaxMusicLevel
+import com.nikstep.alarm.maxTimesMusicVolumeIncreased
 import com.nikstep.alarm.model.Alarm
 import com.nikstep.alarm.musicFilesPath
 import com.nikstep.alarm.service.AlarmService
@@ -44,9 +45,13 @@ class AlarmManager(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    fun setAlarm(hour: Int, minute: Int) {
+    fun setAlarm(
+        hour: Int,
+        minute: Int,
+        daysOfWeek: Set<Int>
+    ) {
         removeAlarm()
-        alarmService.save(Alarm(1, hour, minute, setOf(1, 2, 3, 4, 5, 6, 7)))
+        alarmService.save(Alarm(1, hour, minute, daysOfWeek))
 
         val year: Int
         val month: Int
@@ -103,11 +108,12 @@ class AlarmManager(
         val maxVolume = audioManager.getMaxVolume() * cMaxMusicLevel
 
         val mainHandler = Handler(Looper.getMainLooper())
+        var timesIncreased = 0
         mainHandler.post(object : Runnable {
             override fun run() {
-                val newVolume = audioManager.getVolume() + 1
-                audioManager.setVolume(newVolume)
-                if (newVolume < maxVolume) {
+                audioManager.setVolume(audioManager.getVolume() + 1)
+                if (timesIncreased < maxTimesMusicVolumeIncreased) {
+                    timesIncreased++
                     mainHandler.postDelayed(this, 1000 * cIncreaseVolumeStepSeconds)
                 }
             }

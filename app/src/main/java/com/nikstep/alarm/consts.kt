@@ -14,3 +14,4 @@ const val cMaxMusicLevel = 1
 const val cIncreaseVolumeStepSeconds = 5L
 
 const val alarmOneIndex = 1
+const val maxTimesMusicVolumeIncreased = 10

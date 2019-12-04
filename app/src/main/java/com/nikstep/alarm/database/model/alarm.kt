@@ -25,7 +25,7 @@ fun parseAlarmFrom(cursor: Cursor) = Alarm(
     cursor.getInt(0),
     cursor.getInt(1),
     cursor.getInt(2),
-    cursor.getString(3).split(",").map { it.toInt() }.toSet()
+    cursor.getString(3).let { if (it == "") emptySet() else it.split(",").map { it.toInt() }.toSet() }
 )
 
 fun Alarm.toContentValues() = ContentValues().apply {
