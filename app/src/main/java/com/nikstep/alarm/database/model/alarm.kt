@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.provider.BaseColumns
 import com.nikstep.alarm.model.Alarm
-import java.time.DayOfWeek
 
 object AlarmTableDef : BaseColumns {
     const val TABLE_NAME = "alarm"
@@ -26,7 +25,7 @@ fun parseAlarmFrom(cursor: Cursor) = Alarm(
     cursor.getInt(0),
     cursor.getInt(1),
     cursor.getInt(2),
-    cursor.getString(3).split(",").map { DayOfWeek.valueOf(it) }.toSet()
+    cursor.getString(3).split(",").map { it.toInt() }.toSet()
 )
 
 fun Alarm.toContentValues() = ContentValues().apply {
@@ -35,5 +34,5 @@ fun Alarm.toContentValues() = ContentValues().apply {
     put(AlarmTableDef.COLUMN_NAME_MINUTE, minute)
     put(
         AlarmTableDef.COLUMN_NAME_DAYS_OF_WEEK,
-        daysOfWeek.joinToString(separator = ",") { it.name })
+        daysOfWeek.joinToString(separator = ",") { it.toString() })
 }

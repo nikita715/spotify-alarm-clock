@@ -9,11 +9,7 @@ import com.nikstep.alarm.Dependencies
 import com.nikstep.alarm.R
 import com.nikstep.alarm.android.wrapper.AlarmManager
 import com.nikstep.alarm.android.wrapper.AlarmMediaPlayer
-import com.nikstep.alarm.model.Alarm
 import com.nikstep.alarm.service.AlarmService
-import java.time.DayOfWeek
-import java.util.Calendar
-import java.util.GregorianCalendar
 
 class AlarmActivity : AppCompatActivity() {
 
@@ -39,24 +35,7 @@ class AlarmActivity : AppCompatActivity() {
             minute = timePicker.minute
         }
 
-        alarmService.save(Alarm(1, hour, minute, DayOfWeek.values().toSet()))
-
-        val year: Int
-        val month: Int
-        val dayOfMonth: Int
-
-        Calendar.getInstance().also { calendar ->
-            if (calendar.get(Calendar.HOUR_OF_DAY) >= hour && calendar.get(Calendar.MINUTE) >= minute) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1)
-            }
-            year = calendar.get(Calendar.YEAR)
-            month = calendar.get(Calendar.MONTH)
-            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        }
-
-        val calendar = GregorianCalendar(year, month, dayOfMonth, hour, minute)
-        alarmManager.setAlarm(calendar)
-
+        alarmManager.setAlarm(hour, minute)
         goToMainActivity()
     }
 

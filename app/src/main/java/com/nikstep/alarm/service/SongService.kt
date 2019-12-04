@@ -44,7 +44,7 @@ class SongService(
     fun changeActiveSong(activeSong: Song) {
         songDatabase.deactivate()
         if (songDatabase.exists(activeSong.id + 1)) {
-            activateSong(activeSong.id)
+            activateSong(activeSong.id + 1)
         } else if (songDatabase.exists(0)) {
             activateSong(0)
         }

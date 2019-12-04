@@ -1,6 +1,7 @@
 package com.nikstep.alarm
 
 import android.content.Context
+import com.nikstep.alarm.android.wrapper.AlarmAudioManager
 import com.nikstep.alarm.android.wrapper.AlarmManager
 import com.nikstep.alarm.android.wrapper.AlarmMusicProperties
 import com.nikstep.alarm.service.AlarmService
@@ -24,5 +25,6 @@ fun instantiateDependencies(context: Context) {
         put(AlarmService(context))
         put(AlarmMusicProperties(context))
         put(AlarmManager(context))
+        put(AlarmAudioManager(context))
     }
 }

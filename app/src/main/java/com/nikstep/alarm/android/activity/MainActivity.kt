@@ -27,6 +27,11 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        if (Dependencies.getOrNull(AlarmMediaPlayer::class.java) != null) {
+            startActivity(Intent(applicationContext, ActiveAlarmActivity::class.java))
+            return
+        }
+
         val alarmStatus =
             alarmService.findById(alarmOneIndex)?.run {
                 String.format(

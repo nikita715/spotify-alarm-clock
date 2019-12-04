@@ -1,8 +1,8 @@
 package com.nikstep.alarm.android.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,13 +34,11 @@ class SongListActivity : AppCompatActivity() {
                 )
         }
         listView.onItemClickListener =
-            AdapterView.OnItemClickListener { l: AdapterView<*>?, v: View?, position: Int, id: Long ->
+            AdapterView.OnItemClickListener { l: AdapterView<*>?, v: View?,
+                                              position: Int, id: Long ->
                 v?.apply {
-                    val hyperspaceJumpAnimation =
-                        AnimationUtils.loadAnimation(applicationContext, R.anim.animation)
-                    startAnimation(hyperspaceJumpAnimation)
                     songService.activateSong(id.toInt())
-                    initializeSongList()
+                    startActivity(Intent(applicationContext, MainActivity::class.java))
                 }
             }
     }
