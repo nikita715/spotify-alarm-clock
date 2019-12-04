@@ -12,3 +12,5 @@ const val pAlarmSongIndex = "AlarmSongIndex"
 
 const val cMaxMusicLevel = 1
 const val cIncreaseVolumeStepSeconds = 5L
+
+const val alarmOneIndex = 1

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.nikstep.alarm2">
+    package="com.nikstep.alarm">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".android.AlarmApplication"
+        android:name="com.nikstep.alarm.android.AlarmApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name="com.nikstep.alarm2.android.activity.MainActivity"
+            android:name="com.nikstep.alarm.android.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -26,24 +26,24 @@
         </activity>
 
         <activity
-            android:name="com.nikstep.alarm2.android.activity.SongListActivity"
-            android:parentActivityName="com.nikstep.alarm2.android.activity.MainActivity"
+            android:name="com.nikstep.alarm.android.activity.SongListActivity"
+            android:parentActivityName="com.nikstep.alarm.android.activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".android.activity.MainActivity" />
+                android:value="com.nikstep.alarm.android.activity.MainActivity" />
         </activity>
         <activity
-            android:name="com.nikstep.alarm2.android.activity.AlarmActivity"
-            android:parentActivityName="com.nikstep.alarm2.android.activity.MainActivity"
+            android:name="com.nikstep.alarm.android.activity.AlarmActivity"
+            android:parentActivityName="com.nikstep.alarm.android.activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".android.activity.MainActivity" />
+                android:value="com.nikstep.alarm.android.activity.MainActivity" />
         </activity>
 
-        <receiver android:name="com.nikstep.alarm2.android.receiver.AlarmReceiver" />
-        <service android:name="com.nikstep.alarm2.android.service.StopMusicService" />
+        <receiver android:name="com.nikstep.alarm.android.receiver.AlarmReceiver" />
+        <service android:name="com.nikstep.alarm.android.service.StopMusicService" />
     </application>
 
 </manifest>
