@@ -4,6 +4,9 @@ import android.content.Context
 import com.nikstep.alarm.android.wrapper.AlarmAudioManager
 import com.nikstep.alarm.android.wrapper.AlarmManager
 import com.nikstep.alarm.android.wrapper.AlarmMusicProperties
+import com.nikstep.alarm.database.AlarmDatabase
+import com.nikstep.alarm.database.SongDatabase
+import com.nikstep.alarm.database.helper.DbHelper
 import com.nikstep.alarm.service.AlarmService
 import com.nikstep.alarm.service.SongService
 
@@ -21,10 +24,22 @@ object Dependencies {
 
 fun instantiateDependencies(context: Context) {
     Dependencies.apply {
-        put(SongService(context))
-        put(AlarmService(context))
-        put(AlarmMusicProperties(context))
-        put(AlarmManager(context))
-        put(AlarmAudioManager(context))
+        val dbHelper = DbHelper(context)
+        val songDatabase = SongDatabase(dbHelper)
+        val alarmDatabase = AlarmDatabase(dbHelper)
+        val alarmMusicProperties = AlarmMusicProperties(context)
+        val audioManager = AlarmAudioManager(context)
+        val songService = SongService(context, songDatabase)
+        val alarmService = AlarmService(alarmDatabase)
+        val alarmManager = AlarmManager(context, alarmMusicProperties, audioManager, songService, alarmService)
+
+        put(dbHelper)
+        put(songDatabase)
+        put(alarmDatabase)
+        put(songService)
+        put(alarmService)
+        put(alarmMusicProperties)
+        put(alarmManager)
+        put(audioManager)
     }
 }

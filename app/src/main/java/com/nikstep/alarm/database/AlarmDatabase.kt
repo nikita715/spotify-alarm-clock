@@ -1,6 +1,5 @@
 package com.nikstep.alarm.database
 
-import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
@@ -10,9 +9,9 @@ import com.nikstep.alarm.database.model.parseAlarmFrom
 import com.nikstep.alarm.database.model.toContentValues
 import com.nikstep.alarm.model.Alarm
 
-
-class AlarmDatabase(context: Context) {
-    private val dbHelper = DbHelper(context)
+class AlarmDatabase(
+    private val dbHelper: DbHelper
+) {
 
     fun findById(id: Int): Alarm? {
         val cursor = dbHelper.readableDatabase.query(

@@ -10,9 +10,9 @@ import com.nikstep.alarm.musicFilesPath
 import java.io.File
 
 class SongService(
-    private val context: Context
+    private val context: Context,
+    private val songDatabase: SongDatabase
 ) {
-    private val songDatabase = SongDatabase(context)
 
     fun updateSongs() {
         getMusicFiles().forEachIndexed { index, it ->
@@ -49,8 +49,6 @@ class SongService(
             activateSong(0)
         }
     }
-
-    fun findById(id: Int): Song? = songDatabase.findById(id)
 
     fun activateSong(id: Int) {
         songDatabase.deactivate()

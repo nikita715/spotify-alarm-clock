@@ -26,18 +26,14 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 
 class AlarmManager(
-    context: Context
+    context: Context,
+    private val alarmMusicProperties: AlarmMusicProperties,
+    private val audioManager: AlarmAudioManager,
+    private val songService: SongService,
+    private val alarmService: AlarmService
 ) {
     private val androidAlarmManager =
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-    private val alarmMusicProperties by lazy { Dependencies.get(AlarmMusicProperties::class.java) }
-
-    private val audioManager by lazy { Dependencies.get(AlarmAudioManager::class.java) }
-
-    private val songService by lazy { Dependencies.get(SongService::class.java) }
-
-    private val alarmService by lazy { Dependencies.get(AlarmService::class.java) }
 
     private val intent = Intent(context, AlarmReceiver::class.java)
     private val pendingIntent = PendingIntent.getBroadcast(

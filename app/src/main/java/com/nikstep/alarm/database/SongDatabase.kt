@@ -1,7 +1,6 @@
 package com.nikstep.alarm.database
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import com.nikstep.alarm.alarmOneIndex
@@ -11,8 +10,9 @@ import com.nikstep.alarm.database.model.parseSongFrom
 import com.nikstep.alarm.database.model.toContentValues
 import com.nikstep.alarm.model.Song
 
-class SongDatabase(context: Context) {
-    private val songDbHelper = DbHelper(context)
+class SongDatabase(
+    private val songDbHelper: DbHelper
+) {
 
     fun findById(id: Int): Song? {
         val cursor = songDbHelper.readableDatabase.query(
