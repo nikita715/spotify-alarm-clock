@@ -14,7 +14,11 @@ class MainActivity : BaseActivity<ActivityMainViewModel, ActivityMainBinding>() 
     }
 
     fun setAlarm(view: View) {
-        viewModel.setAlarm(binding.timePicker.hour, binding.timePicker.minute)
+        viewModel.setAlarm(
+            hour = binding.timePicker.hour,
+            minute = binding.timePicker.minute,
+            playlist = binding.playlistNameInput.text.toString()
+        )
     }
 
     fun removeAlarm(view: View) {

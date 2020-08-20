@@ -11,7 +11,7 @@ interface AlarmDao {
     fun getAll(): List<Alarm>
 
     @Query("SELECT * FROM alarm WHERE id = :id")
-    fun findById(id: Long): Alarm
+    fun findById(id: Long): Alarm?
 
     @Insert
     fun insert(alarm: Alarm): Long

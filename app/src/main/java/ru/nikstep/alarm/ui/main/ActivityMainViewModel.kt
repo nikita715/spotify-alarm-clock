@@ -8,8 +8,8 @@ class ActivityMainViewModel @Inject constructor(
     private val alarmManager: AlarmManager
 ) : ViewModel() {
 
-    fun setAlarm(hour: Int, minute: Int) {
-        alarmManager.setAlarm(hour, minute)
+    fun setAlarm(playlist: String, hour: Int, minute: Int) {
+        alarmManager.setAlarm(playlist, hour, minute)
     }
 
     fun removeAlarm(alarmId: Long) {

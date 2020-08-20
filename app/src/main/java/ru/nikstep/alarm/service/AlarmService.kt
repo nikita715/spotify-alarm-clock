@@ -7,7 +7,7 @@ class AlarmService(
     private val alarmDao: AlarmDao
 ) {
 
-    fun findById(alarmId: Long): Alarm = alarmDao.findById(alarmId)
+    fun findById(alarmId: Long): Alarm? = alarmDao.findById(alarmId)
 
     fun findAll(): List<Alarm> = alarmDao.getAll()
 
