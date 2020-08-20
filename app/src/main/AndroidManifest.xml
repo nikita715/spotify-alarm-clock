@@ -1,50 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.nikstep.alarm">
+          package="ru.nikstep.alarm">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name="com.nikstep.alarm.android.AlarmApplication"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity
-            android:name="com.nikstep.alarm.android.activity.MainActivity"
+            android:name="ru.nikstep.alarm.AlarmApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true">
+        <activity android:name="ru.nikstep.alarm.ui.main.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.nikstep.alarm.android.activity.SongListActivity"
-            android:parentActivityName="com.nikstep.alarm.android.activity.MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nikstep.alarm.android.activity.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.nikstep.alarm.android.activity.AlarmActivity"
-            android:parentActivityName="com.nikstep.alarm.android.activity.MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nikstep.alarm.android.activity.MainActivity" />
-        </activity>
-
-        <receiver android:name="com.nikstep.alarm.android.receiver.AlarmReceiver" />
-        <service android:name="com.nikstep.alarm.android.service.StopMusicService" />
-        <activity android:name=".android.activity.ActiveAlarmActivity" />
+        <receiver
+                android:name="ru.nikstep.alarm.service.AlarmReceiver"
+                android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+                android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
 <menu
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context="com.nikstep.alarm.AlarmActivity">
+        tools:context="ru.nikstep.alarm.AlarmActivity">
 </menu>
