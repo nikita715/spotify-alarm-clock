@@ -26,7 +26,8 @@ class AlarmManager @Inject constructor(
         hour: Int,
         minute: Int
     ) {
-        val alarm = alarmService.save(Alarm(id = 1L, hour = hour, minute = minute))
+        val alarmId = alarmService.save(Alarm(hour = hour, minute = minute))
+        val alarm = alarmService.findById(alarmId)
 
         val year: Int
         val month: Int
@@ -51,8 +52,10 @@ class AlarmManager @Inject constructor(
     }
 
     fun removeAlarm(alarmId: Long) {
-        androidAlarmManager.cancel(buildIntent(alarmId))
-        alarmService.delete(alarmId)
+        alarmService.findAll().forEach {
+            androidAlarmManager.cancel(buildIntent(it.id))
+        }
+        alarmService.deleteAll()
     }
 
     fun startAlarm(alarmId: Long) {

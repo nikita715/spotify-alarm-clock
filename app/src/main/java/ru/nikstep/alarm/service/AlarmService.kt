@@ -1,18 +1,20 @@
 package ru.nikstep.alarm.service
 
-import ru.nikstep.alarm.database.AlarmRepository
+import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.model.Alarm
 
 class AlarmService(
-    private val alarmDatabase: AlarmRepository
+    private val alarmDao: AlarmDao
 ) {
 
-    fun findById(alarmId: Long) = alarmDatabase.findById(alarmId)
+    fun findById(alarmId: Long): Alarm = alarmDao.findById(alarmId)
 
-    fun findAll() = alarmDatabase.findAll()
+    fun findAll(): List<Alarm> = alarmDao.getAll()
 
-    fun save(alarm: Alarm) = alarmDatabase.save(alarm)
+    fun save(alarm: Alarm): Long = alarmDao.insert(alarm)
 
-    fun delete(alarmId: Long) = alarmDatabase.delete(alarmId)
+    fun delete(alarmId: Long) = alarmDao.deleteById(alarmId)
+
+    fun deleteAll() = alarmDao.deleteAll()
 
 }

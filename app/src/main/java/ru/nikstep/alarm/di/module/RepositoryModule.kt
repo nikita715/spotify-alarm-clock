@@ -1,11 +1,12 @@
 package ru.nikstep.alarm.di.module
 
-import android.content.Context
+import android.app.Application
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import ru.nikstep.alarm.database.AlarmRepository
-import ru.nikstep.alarm.database.helper.DbHelper
+import ru.nikstep.alarm.database.AlarmDao
+import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.service.AlarmManager
 import ru.nikstep.alarm.service.AlarmService
 
@@ -14,21 +15,22 @@ object RepositoryModule {
 
     @Provides
     @Reusable
-    fun dbHelper(context: Context) =
-        DbHelper(context)
+    fun roomDatabase(application: Application): AppDatabase =
+        Room.databaseBuilder(application, AppDatabase::class.java, "AlarmApplication.db")
+            .allowMainThreadQueries().build()
 
     @Provides
     @Reusable
-    fun alarmRepository(dbHelper: DbHelper) =
-        AlarmRepository(dbHelper)
+    fun alarmDao(appDatabase: AppDatabase) =
+        appDatabase.alarmDao()
 
     @Provides
     @Reusable
-    fun alarmService(alarmRepository: AlarmRepository) =
-        AlarmService(alarmRepository)
+    fun alarmService(alarmDao: AlarmDao) =
+        AlarmService(alarmDao)
 
     @Provides
     @Reusable
-    fun alarmManager(context: Context, alarmService: AlarmService) =
-        AlarmManager(context, alarmService)
+    fun alarmManager(application: Application, alarmService: AlarmService) =
+        AlarmManager(application, alarmService)
 }

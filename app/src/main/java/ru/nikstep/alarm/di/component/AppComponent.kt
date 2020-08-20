@@ -6,7 +6,6 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import ru.nikstep.alarm.AlarmApp
-import ru.nikstep.alarm.di.module.AndroidModule
 import ru.nikstep.alarm.di.module.AppModule
 import ru.nikstep.alarm.di.module.RepositoryModule
 import ru.nikstep.alarm.di.module.ViewModelFactoryModule
@@ -20,8 +19,7 @@ import javax.inject.Singleton
         RepositoryModule::class,
         ViewModelFactoryModule::class,
         ViewModelModule::class,
-        AppModule::class,
-        AndroidModule::class
+        AppModule::class
     ]
 )
 interface AppComponent : AndroidInjector<AlarmApp> {
