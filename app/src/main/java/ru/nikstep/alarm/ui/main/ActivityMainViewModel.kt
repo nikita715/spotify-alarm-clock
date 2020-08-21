@@ -16,4 +16,8 @@ class ActivityMainViewModel @Inject constructor(
         alarmManager.removeAlarm(alarmId)
     }
 
+    fun play(playlist: String) {
+        alarmManager.play(playlist)
+    }
+
 }

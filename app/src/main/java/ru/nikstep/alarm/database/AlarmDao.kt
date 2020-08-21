@@ -3,6 +3,7 @@ package ru.nikstep.alarm.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import ru.nikstep.alarm.model.Alarm
 
 @Dao
@@ -15,6 +16,9 @@ interface AlarmDao {
 
     @Insert
     fun insert(alarm: Alarm): Long
+
+    @Update
+    fun update(alarm: Alarm): Int
 
     @Query("DELETE FROM ALARM WHERE ID = :id")
     fun deleteById(id: Long)

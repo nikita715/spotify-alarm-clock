@@ -9,5 +9,6 @@ data class Alarm(
     @PrimaryKey(autoGenerate = true) override val id: Long = 0,
     @ColumnInfo val hour: Int,
     @ColumnInfo val minute: Int,
-    @ColumnInfo val playlist: String? = null
+    @ColumnInfo val playlist: String? = null,
+    @ColumnInfo(name = "PREVIOUS_TRACK") val previousTrack: String? = null
 ) : Identifiable

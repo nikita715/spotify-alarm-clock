@@ -14,11 +14,13 @@ class MainActivity : BaseActivity<ActivityMainViewModel, ActivityMainBinding>() 
     }
 
     fun setAlarm(view: View) {
-        viewModel.setAlarm(
-            hour = binding.timePicker.hour,
-            minute = binding.timePicker.minute,
-            playlist = binding.playlistNameInput.text.toString()
-        )
+        val playlist = binding.playlistNameInput.text.toString()
+        viewModel.play(playlist)
+//        viewModel.setAlarm(
+//            hour = binding.timePicker.hour,
+//            minute = binding.timePicker.minute,
+//            playlist = binding.playlistNameInput.text.toString()
+//        )
     }
 
     fun removeAlarm(view: View) {

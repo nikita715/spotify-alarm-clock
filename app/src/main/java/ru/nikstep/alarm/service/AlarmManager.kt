@@ -80,4 +80,17 @@ class AlarmManager @Inject constructor(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
+    fun play(playlist: String) {
+        val alarm = alarmService.findById(1L)
+        if (alarm == null) {
+            Log.e("AlarmManager", "Alarm 1 is null")
+            return
+        }
+        spotifyClient.play(playlist, SpotifyItemType.PLAYLIST, alarm.previousTrack) {
+            val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
+            alarmService.update(updatedAlarm)
+            Log.i("AlarmManager", "Saved alarm $updatedAlarm")
+        }
+    }
+
 }

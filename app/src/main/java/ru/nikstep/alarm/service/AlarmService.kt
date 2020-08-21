@@ -13,6 +13,8 @@ class AlarmService(
 
     fun save(alarm: Alarm): Long = alarmDao.insert(alarm)
 
+    fun update(alarm: Alarm): Int = alarmDao.update(alarm)
+
     fun delete(alarmId: Long) = alarmDao.deleteById(alarmId)
 
     fun deleteAll() = alarmDao.deleteAll()
