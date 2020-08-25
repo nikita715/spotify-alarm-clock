@@ -31,7 +31,7 @@ class AlarmManager @Inject constructor(
         androidAlarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            1000 * 60 * 60 * 24,
+            AlarmManager.INTERVAL_DAY,
             buildIntent(alarm.id)
         )
         Log.i("AlarmManager", "Created $alarm")
@@ -55,11 +55,9 @@ class AlarmManager @Inject constructor(
     }
 
     fun removeAlarm(alarmId: Long) {
-        alarmService.findAll().forEach {
-            androidAlarmManager.cancel(buildIntent(it.id))
-        }
-        alarmService.deleteAll()
-        Log.i("AlarmManager", "Removed all alarms")
+        androidAlarmManager.cancel(buildIntent(alarmId))
+        alarmService.delete(alarmId)
+        Log.i("AlarmManager", "Removed  alarm by id $alarmId")
     }
 
     fun startAlarm(alarmId: Long) {

@@ -8,7 +8,7 @@ import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.util.diffItemCallback
 
 class AlarmListAdapter(
-    private val data: List<Alarm>,
+    private val data: MutableList<Alarm>,
     private val onItemClickListener: (i: Alarm) -> Unit = {}
 ) : ListAdapter<Alarm, AlarmListViewHolder>(diffItemCallback()) {
 
@@ -21,6 +21,13 @@ class AlarmListAdapter(
         )
 
     override fun getItemCount(): Int = data.size
+
+    fun removeItem(position: Int) {
+        data.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    override fun getItemId(position: Int): Long = data[position].id
 
     override fun onBindViewHolder(holder: AlarmListViewHolder, position: Int) =
         holder.bind(data[position], onItemClickListener)

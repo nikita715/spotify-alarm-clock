@@ -14,4 +14,6 @@ class MainViewModel @Inject constructor(
         alarmManager.hackPlay(playlist)
     }
 
+    fun removeAlarm(alarmId: Long) = alarmManager.removeAlarm(alarmId)
+
 }

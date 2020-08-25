@@ -31,9 +31,9 @@
             app:srcCompat="@drawable/baseline_add_black_18dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/alarmsList"
+            android:id="@+id/alarmList"
             android:layout_marginTop="100dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
 

@@ -3,13 +3,17 @@ package ru.nikstep.alarm.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
+import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
+
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
@@ -23,10 +27,19 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             startActivity(intent)
         }
 
-        val repositoryListView = binding.alarmsList
-        repositoryListView.setHasFixedSize(true)
-        repositoryListView.layoutManager = LinearLayoutManager(this)
-        repositoryListView.adapter = AlarmListAdapter(viewModel.getAlarms(), onItemClick)
+        val alarmList = binding.alarmList
+        alarmList.setHasFixedSize(true)
+        alarmList.layoutManager = LinearLayoutManager(this)
+        alarmList.adapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onItemClick)
+
+        val itemTouchHelper =
+            ItemTouchHelper(AlarmItemTouchHelperCallback(object : AlarmItemTouchHelperCallback.OnSwipeListener {
+                override fun onSwipeEnd(viewHolder: RecyclerView.ViewHolder) {
+                    (alarmList.adapter as AlarmListAdapter).removeItem(viewHolder.adapterPosition)
+                    viewModel.removeAlarm(viewHolder.itemView.tag as Long)
+                }
+            }))
+        itemTouchHelper.attachToRecyclerView(alarmList)
     }
 
     private val onItemClick: (i: Alarm) -> Unit = {

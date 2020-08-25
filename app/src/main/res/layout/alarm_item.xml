@@ -10,7 +10,8 @@
 
     <TextView
             android:id="@+id/alarmText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
+            android:minHeight="50dp"
             android:layout_height="wrap_content"
             android:height="50dp"
             app:layout_constraintStart_toStartOf="parent"
