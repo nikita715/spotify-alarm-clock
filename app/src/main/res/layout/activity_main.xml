@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -9,54 +9,32 @@
 
     <EditText
             android:id="@+id/playlist_name_input"
-            android:layout_width="378dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="400dp"
             android:text="6sU9yIquDtGDUJ0ofpYAJV"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    <EditText
-            android:id="@+id/previous_name_input"
-            android:layout_width="378dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="440dp"
-            android:text="spotify:track:5kl4Y5XymsUCl98GM7dgab"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <Button
             android:id="@+id/button"
-            android:layout_width="78dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="460dp"
-            android:onClick="setAlarm"
-            android:text="@string/set_alarm"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-            android:id="@+id/button2"
+            android:onClick="nextSong"
+            android:text="Next song"
             android:layout_width="wrap_content"
-            android:layout_height="41dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="516dp"
-            android:onClick="removeAlarm"
-            android:text="@string/remove_alarm"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"/>
 
-    <TimePicker
-            android:id="@+id/time_picker"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button"
             android:layout_width="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/button"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/fab_content_desc"
+            app:srcCompat="@drawable/baseline_add_black_18dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alarmsList"
+            android:layout_marginTop="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,10 +11,10 @@ import com.spotify.protocol.client.CallResult
 import com.spotify.protocol.client.RemoteClient
 import com.spotify.protocol.types.Empty
 import com.spotify.protocol.types.ListItem
-import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.UriWithOptionExtras
 import ru.nikstep.alarm.BuildConfig
 import javax.inject.Inject
+import kotlin.random.Random
 
 class SpotifyClient @Inject constructor(
     private val context: Context
@@ -28,11 +28,7 @@ class SpotifyClient @Inject constructor(
     private val internalClientField = PlayerApiImpl::class.java.getDeclaredField("mClient")
         .apply { isAccessible = true }
 
-    fun play(
-        id: String, type: SpotifyItemType, previousTrack: String? = null,
-        callback: ((PlayerState) -> Unit)? = null
-    ) {
-        val uri = "spotify:${type.typeName}:$id"
+    fun play(data: SpotifyData) {
         SpotifyAppRemote.connect(context, connectionParams, object : Connector.ConnectionListener {
             override fun onConnected(appRemote: SpotifyAppRemote) {
                 appRemote.playerApi.subscribeToPlayerContext().setEventCallback {
@@ -40,12 +36,13 @@ class SpotifyClient @Inject constructor(
                 }
                 appRemote.playerApi.subscribeToPlayerState().setEventCallback {
                     Log.i("SpotifyClient", it.toString())
-                    callback?.invoke(it)
+                    data.callback?.invoke(it)
                 }
                 appRemote.connectApi.connectSwitchToLocalDevice()
-                when (type) {
-                    SpotifyItemType.TRACK -> playTrack(uri, appRemote)
-                    SpotifyItemType.PLAYLIST, SpotifyItemType.ALBUM -> playSetOfTracks(uri, previousTrack, appRemote)
+                when (data.type) {
+                    SpotifyItemType.TRACK -> playTrack(data, appRemote)
+                    SpotifyItemType.PLAYLIST, SpotifyItemType.ALBUM ->
+                        playSetOfTracks(data, appRemote)
                 }
             }
 
@@ -55,17 +52,21 @@ class SpotifyClient @Inject constructor(
         })
     }
 
-    private fun playTrack(uri: String, appRemote: SpotifyAppRemote) =
-        appRemote.playerApi.play(uri, PlayerApi.StreamType.ALARM)
+    private fun playTrack(data: SpotifyData, appRemote: SpotifyAppRemote) =
+        appRemote.playerApi.play(data.uri, PlayerApi.StreamType.ALARM)
 
-    private fun playSetOfTracks(uri: String, previousTrack: String?, appRemote: SpotifyAppRemote) =
+    private fun playSetOfTracks(data: SpotifyData, appRemote: SpotifyAppRemote) =
         appRemote.contentApi.getChildrenOfItem(
-            ListItem(uri, null, null, null, null, true, true), Int.MAX_VALUE, 0
+            ListItem(data.uri, null, null, null, null, true, true), Int.MAX_VALUE, 0
         ).setResultCallback { listItems ->
-            val nextIndex = listItems.items.indexOfFirst { it.uri == previousTrack }.plus(1).let {
-                if (it >= listItems.total || it == -1) 0 else it
+            val nextIndex: Int = when (data.playType) {
+                SpotifyPlayType.NEXT ->
+                    listItems.items.indexOfFirst { it.uri == data.previousTrack }.plus(1).let {
+                        if (it >= listItems.total || it == -1) 0 else it
+                    }
+                SpotifyPlayType.RANDOM -> Random(System.currentTimeMillis()).nextInt(listItems.total)
             }
-            appRemote.playerApi.playAlarmTrackInPlaylist(uri, nextIndex)
+            appRemote.playerApi.playAlarmTrackInPlaylist(data.uri, nextIndex)
         }
 
     private fun PlayerApi.playAlarmTrackInPlaylist(uri: String, i: Int): CallResult<Empty> {

@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import ru.nikstep.alarm.client.spotify.SpotifyClient
+import ru.nikstep.alarm.client.spotify.SpotifyData
 import ru.nikstep.alarm.client.spotify.SpotifyItemType
+import ru.nikstep.alarm.client.spotify.SpotifyPlayType
 import ru.nikstep.alarm.model.Alarm
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -69,7 +71,7 @@ class AlarmManager @Inject constructor(
             if (playlist == null) {
                 Log.e("AlarmManager", "Playlist of alarm is null $alarm")
             } else {
-                spotifyClient.play(playlist, SpotifyItemType.PLAYLIST)
+                spotifyClient.play(SpotifyData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM))
             }
         }
     }
@@ -80,17 +82,17 @@ class AlarmManager @Inject constructor(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    fun play(playlist: String) {
+    fun hackPlay(playlist: String) {
         val alarm = alarmService.findById(1L)
-        if (alarm == null) {
-            Log.e("AlarmManager", "Alarm 1 is null")
-            return
-        }
-        spotifyClient.play(playlist, SpotifyItemType.PLAYLIST, alarm.previousTrack) {
-            val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
-            alarmService.update(updatedAlarm)
-            Log.i("AlarmManager", "Saved alarm $updatedAlarm")
-        }
+            ?: Alarm(1, 0, 0, playlist, null).also { alarmService.save(it) }
+        spotifyClient.play(
+            SpotifyData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM, alarm.previousTrack) {
+                val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
+                alarmService.update(updatedAlarm)
+                Log.i("AlarmManager", "Saved alarm $updatedAlarm")
+            })
     }
+
+    fun getAllAlarms() = alarmService.findAll()
 
 }

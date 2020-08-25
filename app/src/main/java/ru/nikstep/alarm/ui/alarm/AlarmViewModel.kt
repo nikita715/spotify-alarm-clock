@@ -1,10 +1,10 @@
-package ru.nikstep.alarm.ui.main
+package ru.nikstep.alarm.ui.alarm
 
 import androidx.lifecycle.ViewModel
 import ru.nikstep.alarm.service.AlarmManager
 import javax.inject.Inject
 
-class ActivityMainViewModel @Inject constructor(
+class AlarmViewModel @Inject constructor(
     private val alarmManager: AlarmManager
 ) : ViewModel() {
 
@@ -15,9 +15,4 @@ class ActivityMainViewModel @Inject constructor(
     fun removeAlarm(alarmId: Long) {
         alarmManager.removeAlarm(alarmId)
     }
-
-    fun play(playlist: String) {
-        alarmManager.play(playlist)
-    }
-
 }

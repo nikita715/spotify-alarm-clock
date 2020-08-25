@@ -4,12 +4,18 @@ import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import ru.nikstep.alarm.ui.main.ActivityMainViewModel
+import ru.nikstep.alarm.ui.alarm.AlarmViewModel
+import ru.nikstep.alarm.ui.main.MainViewModel
 
 @Module
 abstract class ViewModelModule {
     @Binds
     @IntoMap
-    @ViewModelKey(ActivityMainViewModel::class)
-    abstract fun bindActivityMainViewModel(viewModel: ActivityMainViewModel): ViewModel
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindMainViewModel(viewModel: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AlarmViewModel::class)
+    abstract fun bindAlarmViewModel(viewModel: AlarmViewModel): ViewModel
 }
