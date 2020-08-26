@@ -1,3 +1,3 @@
-package ru.nikstep.alarm.service
+package ru.nikstep.alarm.exception
 
 class DataException(message: String) : RuntimeException(message)

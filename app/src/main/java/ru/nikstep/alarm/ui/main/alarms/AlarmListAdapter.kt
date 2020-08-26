@@ -27,6 +27,12 @@ class AlarmListAdapter(
         notifyItemRemoved(position)
     }
 
+    fun updateItems(data: List<Alarm>) {
+        this.data.clear()
+        this.data.addAll(data)
+        notifyDataSetChanged()
+    }
+
     override fun getItemId(position: Int): Long = data[position].id
 
     override fun onBindViewHolder(holder: AlarmListViewHolder, position: Int) =

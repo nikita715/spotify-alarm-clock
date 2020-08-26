@@ -1,72 +1,37 @@
 package ru.nikstep.alarm.service
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.client.spotify.SpotifyData
 import ru.nikstep.alarm.client.spotify.SpotifyItemType
 import ru.nikstep.alarm.client.spotify.SpotifyPlayType
 import ru.nikstep.alarm.model.Alarm
-import java.util.Calendar
-import java.util.GregorianCalendar
+import ru.nikstep.alarm.service.android.AlarmManager
 import javax.inject.Inject
 
-class AlarmManager @Inject constructor(
-    private val context: Context,
+class AlarmController @Inject constructor(
+    private val alarmManager: AlarmManager,
     private val alarmService: AlarmService,
     private val spotifyClient: SpotifyClient
 ) {
-    private val androidAlarmManager =
-        context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun setAlarm(alarmData: AlarmData) {
         val alarm = if (alarmData.id != null)
             alarmService.updateSettings(alarmData)
         else
             alarmService.save(Alarm(hour = alarmData.hour, minute = alarmData.minute, playlist = alarmData.playlist))
-
-        val calendar = buildAlarmCalendar(alarmData.hour, alarmData.minute)
-        androidAlarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            buildIntent(alarm.id)
-        )
-
+        alarmManager.setEveryDayAlarm(alarm)
         Log.i("AlarmManager", "Created $alarm")
     }
 
-    private fun buildAlarmCalendar(hour: Int, minute: Int): GregorianCalendar {
-        val year: Int
-        val month: Int
-        val dayOfMonth: Int
-
-        Calendar.getInstance().also { calendar ->
-            if (calendar.get(Calendar.HOUR_OF_DAY) >= hour && calendar.get(Calendar.MINUTE) >= minute) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1)
-            }
-            year = calendar.get(Calendar.YEAR)
-            month = calendar.get(Calendar.MONTH)
-            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        }
-
-        return GregorianCalendar(year, month, dayOfMonth, hour, minute)
-    }
-
     fun removeAlarm(alarmId: Long) {
-        androidAlarmManager.cancel(buildIntent(alarmId))
+        alarmManager.removeAlarm(alarmId)
         alarmService.delete(alarmId)
         Log.i("AlarmManager", "Removed  alarm by id $alarmId")
     }
 
     fun startAlarm(alarmId: Long) {
-        val alarm = alarmService.findById(alarmId)
-        if (alarm == null) {
-            Log.e("AlarmManager", "Alarm $alarmId not found")
-        } else {
+        val alarm = alarmService.findById(alarmId)?.also { alarm ->
             val playlist = alarm.playlist
             if (playlist == null) {
                 Log.e("AlarmManager", "Playlist of alarm is null $alarm")
@@ -74,13 +39,10 @@ class AlarmManager @Inject constructor(
                 spotifyClient.play(SpotifyData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM))
             }
         }
+        if (alarm == null) {
+            Log.e("AlarmManager", "Alarm $alarmId not found")
+        }
     }
-
-    private fun buildIntent(alarmId: Long) = PendingIntent.getBroadcast(
-        context, 0,
-        Intent(context, AlarmReceiver::class.java).putExtra("alarmId", alarmId),
-        PendingIntent.FLAG_UPDATE_CURRENT
-    )
 
     fun hackPlay(playlist: String) {
         val alarm = alarmService.findById(1L)

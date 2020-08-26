@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mainSwipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.main.MainActivity">
-
-    <EditText
-            android:id="@+id/playlist_name_input"
-            android:text="6sU9yIquDtGDUJ0ofpYAJV"
+        android:layout_height="match_parent">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            tools:context=".ui.main.MainActivity">
 
-    <Button
-            android:id="@+id/button"
-            android:onClick="nextSong"
-            android:text="Next song"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"/>
+        <EditText
+                android:id="@+id/playlist_name_input"
+                android:text="6sU9yIquDtGDUJ0ofpYAJV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/fab_content_desc"
-            app:srcCompat="@drawable/baseline_add_black_18dp"/>
+        <Button
+                android:id="@+id/button"
+                android:onClick="nextSong"
+                android:text="Next song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/alarmList"
-            android:layout_marginTop="100dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-    </androidx.recyclerview.widget.RecyclerView>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floating_action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:contentDescription="@string/fab_content_desc"
+                app:srcCompat="@drawable/baseline_add_black_18dp"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/alarmList"
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <!--    <ProgressBar-->
+        <!--            android:id="@+id/progressBar1"-->
+        <!--            style="?android:attr/progressBarStyleLarge"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_centerHorizontal="true"/>-->
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

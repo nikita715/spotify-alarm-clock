@@ -27,15 +27,23 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             startActivity(intent)
         }
 
+        val alarmListAdapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onItemClick)
+
         val alarmList = binding.alarmList
         alarmList.setHasFixedSize(true)
         alarmList.layoutManager = LinearLayoutManager(this)
-        alarmList.adapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onItemClick)
+        alarmList.adapter = alarmListAdapter
+
+        val mainSwipeContainer = binding.mainSwipeContainer
+        mainSwipeContainer.setOnRefreshListener {
+            alarmListAdapter.updateItems(viewModel.getAlarms())
+            mainSwipeContainer.isRefreshing = false
+        }
 
         val itemTouchHelper =
             ItemTouchHelper(AlarmItemTouchHelperCallback(object : AlarmItemTouchHelperCallback.OnSwipeListener {
                 override fun onSwipeEnd(viewHolder: RecyclerView.ViewHolder) {
-                    (alarmList.adapter as AlarmListAdapter).removeItem(viewHolder.adapterPosition)
+                    alarmListAdapter.removeItem(viewHolder.adapterPosition)
                     viewModel.removeAlarm(viewHolder.itemView.tag as Long)
                 }
             }))

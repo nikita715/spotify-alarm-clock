@@ -1,6 +1,7 @@
 package ru.nikstep.alarm.service
 
 import ru.nikstep.alarm.database.AlarmDao
+import ru.nikstep.alarm.exception.DataException
 import ru.nikstep.alarm.model.Alarm
 
 class AlarmService(
