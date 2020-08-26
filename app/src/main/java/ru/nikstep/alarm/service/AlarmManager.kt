@@ -22,18 +22,20 @@ class AlarmManager @Inject constructor(
     private val androidAlarmManager =
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun setAlarm(playlist: String, hour: Int, minute: Int) {
-        val alarmId = alarmService.save(Alarm(hour = hour, minute = minute, playlist = playlist))
-        val alarm = alarmService.findById(alarmId)!!
+    fun setAlarm(alarmData: AlarmData) {
+        val alarm = if (alarmData.id != null)
+            alarmService.updateSettings(alarmData)
+        else
+            alarmService.save(Alarm(hour = alarmData.hour, minute = alarmData.minute, playlist = alarmData.playlist))
 
-        val calendar = buildAlarmCalendar(hour, minute)
-
+        val calendar = buildAlarmCalendar(alarmData.hour, alarmData.minute)
         androidAlarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,
             buildIntent(alarm.id)
         )
+
         Log.i("AlarmManager", "Created $alarm")
     }
 
@@ -92,5 +94,7 @@ class AlarmManager @Inject constructor(
     }
 
     fun getAllAlarms() = alarmService.findAll()
+
+    fun getAlarm(alarmId: Long) = alarmService.findById(alarmId)
 
 }

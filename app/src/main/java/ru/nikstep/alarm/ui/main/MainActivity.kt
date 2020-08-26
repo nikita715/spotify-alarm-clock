@@ -45,7 +45,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     private val onItemClick: (i: Alarm) -> Unit = {
         val intent = Intent()
         intent.setClass(this, AlarmActivity::class.java)
-        intent.putExtra("id", it.id)
+        intent.putExtra("alarmId", it.id)
         startActivity(intent)
     }
 
