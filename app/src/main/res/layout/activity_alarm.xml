@@ -6,7 +6,7 @@
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MainActivity"
+        tools:context=".ui.alarm.AlarmActivity"
         android:scrollbars="vertical">
 
     <TimePicker
@@ -16,13 +16,13 @@
 
     <EditText
             android:id="@+id/playlist_name_input"
-            android:text="6sU9yIquDtGDUJ0ofpYAJV"
+            android:text="@string/default_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     <EditText
             android:id="@+id/previous_name_input"
-            android:text="spotify:track:5kl4Y5XymsUCl98GM7dgab"
+            android:text="@string/default_next_song"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

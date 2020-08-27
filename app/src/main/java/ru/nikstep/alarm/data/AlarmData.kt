@@ -1,4 +1,4 @@
-package ru.nikstep.alarm.service
+package ru.nikstep.alarm.data
 
 class AlarmData(
     val id: Long?,

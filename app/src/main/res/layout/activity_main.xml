@@ -5,22 +5,23 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/mainSwipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.main.MainActivity">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.main.MainActivity">
+            android:layout_height="match_parent">
 
         <EditText
                 android:id="@+id/playlist_name_input"
-                android:text="6sU9yIquDtGDUJ0ofpYAJV"
+                android:text="@string/default_playlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <Button
                 android:id="@+id/button"
                 android:onClick="nextSong"
-                android:text="Next song"
+                android:text="@string/next_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"/>

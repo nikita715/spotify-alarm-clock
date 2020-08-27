@@ -52,7 +52,7 @@ class AlarmItemTouchHelperCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    interface OnSwipeListener {
+    fun interface OnSwipeListener {
         fun onSwipeEnd(viewHolder: RecyclerView.ViewHolder)
     }
 }

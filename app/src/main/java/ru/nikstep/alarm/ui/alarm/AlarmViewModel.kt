@@ -1,12 +1,12 @@
 package ru.nikstep.alarm.ui.alarm
 
 import androidx.lifecycle.ViewModel
-import ru.nikstep.alarm.service.AlarmController
-import ru.nikstep.alarm.service.AlarmData
+import ru.nikstep.alarm.data.AlarmData
+import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
-    private val alarmController: AlarmController
+    private val alarmController: AndroidAlarmController
 ) : ViewModel() {
 
     fun setAlarm(alarmData: AlarmData) {

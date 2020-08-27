@@ -5,15 +5,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
+import ru.nikstep.alarm.util.buildIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
-
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
@@ -21,42 +20,49 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        buildNewAlarmButtonListener()
+
+        val listAdapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onAlarmLineClick)
+
+        buildAlarmList(listAdapter)
+        buildSwipeAlarmListener(listAdapter)
+    }
+
+    private fun buildNewAlarmButtonListener() {
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent()
             intent.setClass(this, AlarmActivity::class.java)
             startActivity(intent)
         }
+    }
 
-        val alarmListAdapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onItemClick)
-
+    private fun buildAlarmList(listAdapter: AlarmListAdapter) {
         val alarmList = binding.alarmList
         alarmList.setHasFixedSize(true)
         alarmList.layoutManager = LinearLayoutManager(this)
-        alarmList.adapter = alarmListAdapter
+        alarmList.adapter = listAdapter
 
+        ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
+            listAdapter.removeItem(viewHolder.adapterPosition)
+            viewModel.removeAlarm(viewHolder.itemView.tag as Long)
+        }).attachToRecyclerView(alarmList)
+    }
+
+    private fun buildSwipeAlarmListener(listAdapter: AlarmListAdapter) {
         val mainSwipeContainer = binding.mainSwipeContainer
         mainSwipeContainer.setOnRefreshListener {
-            alarmListAdapter.updateItems(viewModel.getAlarms())
+            listAdapter.updateItems(viewModel.getAlarms())
             mainSwipeContainer.isRefreshing = false
         }
-
-        val itemTouchHelper =
-            ItemTouchHelper(AlarmItemTouchHelperCallback(object : AlarmItemTouchHelperCallback.OnSwipeListener {
-                override fun onSwipeEnd(viewHolder: RecyclerView.ViewHolder) {
-                    alarmListAdapter.removeItem(viewHolder.adapterPosition)
-                    viewModel.removeAlarm(viewHolder.itemView.tag as Long)
-                }
-            }))
-        itemTouchHelper.attachToRecyclerView(alarmList)
     }
 
-    private val onItemClick: (i: Alarm) -> Unit = {
-        val intent = Intent()
-        intent.setClass(this, AlarmActivity::class.java)
-        intent.putExtra("alarmId", it.id)
-        startActivity(intent)
+    private val onAlarmLineClick: (i: Alarm) -> Unit = { alarm ->
+        buildIntent(applicationContext, AlarmActivity::class.java, "alarmId" to alarm.id)
     }
 
+    /**
+     * Temporary debug method
+     */
     fun nextSong(view: View) {
         val playlist = binding.playlistNameInput.text.toString()
         viewModel.play(playlist)

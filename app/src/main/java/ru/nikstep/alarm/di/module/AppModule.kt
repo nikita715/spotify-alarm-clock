@@ -2,7 +2,7 @@ package ru.nikstep.alarm.di.module
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import ru.nikstep.alarm.service.android.AlarmReceiver
+import ru.nikstep.alarm.service.alarm.AlarmReceiver
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 

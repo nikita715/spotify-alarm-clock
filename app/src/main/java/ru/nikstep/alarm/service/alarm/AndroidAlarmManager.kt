@@ -1,4 +1,4 @@
-package ru.nikstep.alarm.service.android
+package ru.nikstep.alarm.service.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -9,13 +9,13 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 import javax.inject.Inject
 
-class AlarmManager @Inject constructor(
+class AndroidAlarmManager @Inject constructor(
     private val context: Context
-) {
+) : ru.nikstep.alarm.service.alarm.AlarmManager {
     private val androidAlarmManager =
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun setEveryDayAlarm(alarm: Alarm) {
+    override fun setEveryDayAlarm(alarm: Alarm) {
         val calendar = buildCalendar(alarm.hour, alarm.minute)
         androidAlarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
@@ -25,7 +25,7 @@ class AlarmManager @Inject constructor(
         )
     }
 
-    fun removeAlarm(alarmId: Long) {
+    override fun removeAlarm(alarmId: Long) {
         androidAlarmManager.cancel(buildIntent(alarmId))
     }
 

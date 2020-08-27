@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Alarm</string>
     <string name="set_alarm">Set</string>
-    <string name="stop_alarm">Stop</string>
     <string name="remove_alarm">Remove</string>
     <string name="next_song">Next song</string>
-    <string name="select_song">Select song</string>
     <string name="fab_content_desc">Add new alarm</string>
+    <string name="message_alarm_activated">Alarm set at %1$s</string>
+    <string name="message_alarm_removed">Alarm is removed</string>
+    <string name="default_playlist">6sU9yIquDtGDUJ0ofpYAJV</string>
+    <string name="default_next_song">spotify:track:5kl4Y5XymsUCl98GM7dgab</string>
 </resources>

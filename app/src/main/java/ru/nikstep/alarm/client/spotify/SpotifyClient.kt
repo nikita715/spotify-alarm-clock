@@ -13,12 +13,13 @@ import com.spotify.protocol.types.Empty
 import com.spotify.protocol.types.ListItem
 import com.spotify.protocol.types.UriWithOptionExtras
 import ru.nikstep.alarm.BuildConfig
+import ru.nikstep.alarm.client.MusicClient
 import javax.inject.Inject
 import kotlin.random.Random
 
 class SpotifyClient @Inject constructor(
     private val context: Context
-) {
+) : MusicClient<SpotifyMusicData> {
 
     private val connectionParams = ConnectionParams.Builder(BuildConfig.SPOTIFY_CLIENT_ID)
         .setRedirectUri(BuildConfig.SPOTIFY_REDIRECT_URI)
@@ -28,7 +29,7 @@ class SpotifyClient @Inject constructor(
     private val internalClientField = PlayerApiImpl::class.java.getDeclaredField("mClient")
         .apply { isAccessible = true }
 
-    fun play(data: SpotifyData) {
+    override fun play(data: SpotifyMusicData) {
         SpotifyAppRemote.connect(context, connectionParams, object : Connector.ConnectionListener {
             override fun onConnected(appRemote: SpotifyAppRemote) {
                 appRemote.playerApi.subscribeToPlayerContext().setEventCallback {
@@ -52,10 +53,10 @@ class SpotifyClient @Inject constructor(
         })
     }
 
-    private fun playTrack(data: SpotifyData, appRemote: SpotifyAppRemote) =
+    private fun playTrack(data: SpotifyMusicData, appRemote: SpotifyAppRemote) =
         appRemote.playerApi.play(data.uri, PlayerApi.StreamType.ALARM)
 
-    private fun playSetOfTracks(data: SpotifyData, appRemote: SpotifyAppRemote) =
+    private fun playSetOfTracks(data: SpotifyMusicData, appRemote: SpotifyAppRemote) =
         appRemote.contentApi.getChildrenOfItem(
             ListItem(data.uri, null, null, null, null, true, true), Int.MAX_VALUE, 0
         ).setResultCallback { listItems ->

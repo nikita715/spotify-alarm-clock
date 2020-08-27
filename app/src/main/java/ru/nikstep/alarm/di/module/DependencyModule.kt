@@ -10,9 +10,11 @@ import dagger.Reusable
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AppDatabase
-import ru.nikstep.alarm.service.AlarmController
-import ru.nikstep.alarm.service.AlarmService
-import ru.nikstep.alarm.service.android.AlarmManager
+import ru.nikstep.alarm.service.alarm.AndroidAlarmController
+import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
+import ru.nikstep.alarm.service.alarm.DatabaseAlarmDataService
+import ru.nikstep.alarm.service.log.LogService
+import ru.nikstep.alarm.service.log.ToastLogService
 
 @Module
 object DependencyModule {
@@ -36,7 +38,7 @@ object DependencyModule {
     @Provides
     @Reusable
     fun alarmService(alarmDao: AlarmDao) =
-        AlarmService(alarmDao)
+        DatabaseAlarmDataService(alarmDao)
 
     @Provides
     @Reusable
@@ -46,10 +48,20 @@ object DependencyModule {
     @Provides
     @Reusable
     fun alarmManager(application: Application) =
-        AlarmManager(application)
+        AndroidAlarmManager(application)
 
     @Provides
     @Reusable
-    fun alarmController(alarmManager: AlarmManager, alarmService: AlarmService, spotifyClient: SpotifyClient) =
-        AlarmController(alarmManager, alarmService, spotifyClient)
+    fun logService(application: Application): LogService =
+        ToastLogService(application)
+
+    @Provides
+    @Reusable
+    fun alarmController(
+        alarmManager: AndroidAlarmManager,
+        alarmDataService: DatabaseAlarmDataService,
+        spotifyClient: SpotifyClient,
+        logService: LogService
+    ) =
+        AndroidAlarmController(alarmManager, alarmDataService, spotifyClient, logService)
 }

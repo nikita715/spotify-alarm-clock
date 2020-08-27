@@ -2,7 +2,7 @@ package ru.nikstep.alarm.client.spotify
 
 import com.spotify.protocol.types.PlayerState
 
-class SpotifyData(
+class SpotifyMusicData(
     id: String,
     val type: SpotifyItemType,
     val playType: SpotifyPlayType,
