@@ -1,43 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.alarm.AlarmActivity"
-        android:scrollbars="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical"
+    android:scrollbars="vertical"
+    tools:context=".ui.alarm.AlarmActivity">
 
     <TimePicker
-            android:id="@+id/time_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:timePickerMode="spinner" />
 
-    <EditText
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical">
+
+        <EditText
             android:id="@+id/playlist_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/default_playlist"
             android:text="@string/default_playlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:hint="@string/enter_playlist_id"
+            android:inputType="text" />
 
-    <EditText
+        <EditText
             android:id="@+id/previous_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/default_next_song"
             android:text="@string/default_next_song"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:hint="@string/enter_next_song_id"
+            android:inputType="text" />
+    </LinearLayout>
 
-    <Button
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <Button
             android:id="@+id/button"
             android:onClick="setAlarm"
             android:text="@string/set_alarm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/button2"
+            android:background="@color/colorPositive" />
 
-    <Button
+        <Button
             android:id="@+id/button2"
             android:onClick="removeAlarm"
             android:text="@string/remove_alarm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:background="@color/colorNegative"
+            android:textColor="@color/colorWhite" />
+    </RelativeLayout>
 
 </LinearLayout>

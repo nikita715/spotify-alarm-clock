@@ -15,13 +15,17 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        intent.extras?.getLong("alarmId")
+        val alarm = intent.extras?.getLong("alarmId")
             ?.let(viewModel::getAlarm)
             ?.also { alarm ->
                 binding.timePicker.hour = alarm.hour
                 binding.timePicker.minute = alarm.minute
                 binding.playlistNameInput.setText(alarm.playlist)
             }
+
+        if (alarm == null) binding.button2.visibility = View.GONE
+
+        binding.timePicker.setIs24HourView(true)
     }
 
     fun setAlarm(view: View) {
