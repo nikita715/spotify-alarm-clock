@@ -15,6 +15,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="ru.nikstep.alarm.ui.main.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +24,7 @@
         </activity>
         <activity
             android:name=".ui.alarm.AlarmActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <receiver
@@ -33,6 +35,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <service android:name=".service.alarm.StopAlarmService" />
     </application>
 
 </manifest>

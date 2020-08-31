@@ -8,7 +8,9 @@ import ru.nikstep.alarm.client.spotify.SpotifyMusicData
 import ru.nikstep.alarm.client.spotify.SpotifyPlayType
 import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
+import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
 import ru.nikstep.alarm.service.log.LogService
+import ru.nikstep.alarm.service.notification.NotificationService
 import ru.nikstep.alarm.util.date.formatDate
 import javax.inject.Inject
 
@@ -16,6 +18,7 @@ class AndroidAlarmController @Inject constructor(
     private val alarmManager: AndroidAlarmManager,
     private val alarmDataService: DatabaseAlarmDataService,
     private val spotifyClient: SpotifyClient,
+    private val notificationService: NotificationService,
     private val logService: LogService
 ) : AlarmController {
 
@@ -39,7 +42,12 @@ class AndroidAlarmController @Inject constructor(
             if (playlist == null) {
                 Log.e("AlarmManager", "Playlist of alarm is null $alarm")
             } else {
-                spotifyClient.play(SpotifyMusicData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM))
+                spotifyClient.play(SpotifyMusicData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM) {
+                    val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
+                    alarmDataService.update(updatedAlarm)
+                    Log.i("AlarmManager", "Saved alarm $updatedAlarm")
+                })
+                notificationService.notify("")
             }
         }
         if (alarm == null) {
@@ -47,15 +55,14 @@ class AndroidAlarmController @Inject constructor(
         }
     }
 
+    override fun stopAlarm() {
+        spotifyClient.stop()
+    }
+
     override fun hackPlay(playlist: String) {
         val alarm = alarmDataService.findById(1L)
             ?: Alarm(1, 0, 0, playlist, null).also { alarmDataService.create(it) }
-        spotifyClient.play(
-            SpotifyMusicData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM, alarm.previousTrack) {
-                val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
-                alarmDataService.update(updatedAlarm)
-                Log.i("AlarmManager", "Saved alarm $updatedAlarm")
-            })
+        startAlarm(alarm.id)
     }
 
     override fun getAllAlarms() = alarmDataService.findAll()

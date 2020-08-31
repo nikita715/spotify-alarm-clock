@@ -29,28 +29,51 @@ class SpotifyClient @Inject constructor(
     private val internalClientField = PlayerApiImpl::class.java.getDeclaredField("mClient")
         .apply { isAccessible = true }
 
-    override fun play(data: SpotifyMusicData) {
+    private var spotify: SpotifyAppRemote? = null
+
+    @Synchronized
+    private fun executeToSpotify(call: (appRemote: SpotifyAppRemote) -> Unit) {
+        if (spotify?.isConnected == true) {
+            spotify?.let(call)
+        } else {
+            callSpotify(call)
+            spotify = null
+        }
+    }
+
+    private fun callSpotify(call: (appRemote: SpotifyAppRemote) -> Unit) =
         SpotifyAppRemote.connect(context, connectionParams, object : Connector.ConnectionListener {
             override fun onConnected(appRemote: SpotifyAppRemote) {
-                appRemote.playerApi.subscribeToPlayerContext().setEventCallback {
-                    Log.i("SpotifyClient", it.toString())
-                }
-                appRemote.playerApi.subscribeToPlayerState().setEventCallback {
-                    Log.i("SpotifyClient", it.toString())
-                    data.callback?.invoke(it)
-                }
-                appRemote.connectApi.connectSwitchToLocalDevice()
-                when (data.type) {
-                    SpotifyItemType.TRACK -> playTrack(data, appRemote)
-                    SpotifyItemType.PLAYLIST, SpotifyItemType.ALBUM ->
-                        playSetOfTracks(data, appRemote)
-                }
+                call(appRemote)
             }
 
             override fun onFailure(throwable: Throwable) {
                 Log.e("SpotifyClient", throwable.message, throwable)
             }
         })
+
+    override fun play(data: SpotifyMusicData) {
+        executeToSpotify { appRemote ->
+            spotify = appRemote
+            appRemote.playerApi.subscribeToPlayerContext().setEventCallback {
+                Log.i("SpotifyClient", it.toString())
+            }
+            appRemote.playerApi.subscribeToPlayerState().setEventCallback {
+                Log.i("SpotifyClient", it.toString())
+                data.callback?.invoke(it)
+            }
+            appRemote.connectApi.connectSwitchToLocalDevice()
+            when (data.type) {
+                SpotifyItemType.TRACK -> playTrack(data, appRemote)
+                SpotifyItemType.PLAYLIST, SpotifyItemType.ALBUM ->
+                    playSetOfTracks(data, appRemote)
+            }
+        }
+    }
+
+    override fun stop() = executeToSpotify { appRemote ->
+        spotify = appRemote
+        appRemote.playerApi.pause()
     }
 
     private fun playTrack(data: SpotifyMusicData, appRemote: SpotifyAppRemote) =

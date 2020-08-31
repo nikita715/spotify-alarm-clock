@@ -23,6 +23,11 @@ interface AlarmController {
     fun startAlarm(alarmId: Long)
 
     /**
+     * Find and start the alarm
+     */
+    fun stopAlarm()
+
+    /**
      * Get all stored alarms
      */
     fun getAllAlarms(): List<Alarm>

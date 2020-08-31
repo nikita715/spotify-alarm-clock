@@ -3,6 +3,7 @@ package ru.nikstep.alarm.di.module
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import ru.nikstep.alarm.service.alarm.AlarmReceiver
+import ru.nikstep.alarm.service.alarm.StopAlarmService
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 
@@ -16,4 +17,7 @@ abstract class AppModule {
 
     @ContributesAndroidInjector
     abstract fun alarmReceiver(): AlarmReceiver
+
+    @ContributesAndroidInjector
+    abstract fun stopAlarmService(): StopAlarmService
 }

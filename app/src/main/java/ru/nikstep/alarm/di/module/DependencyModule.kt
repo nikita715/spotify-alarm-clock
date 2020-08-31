@@ -12,9 +12,11 @@ import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
-import ru.nikstep.alarm.service.alarm.DatabaseAlarmDataService
+import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
 import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.service.log.ToastLogService
+import ru.nikstep.alarm.service.notification.AndroidNotificationService
+import ru.nikstep.alarm.service.notification.NotificationService
 
 @Module
 object DependencyModule {
@@ -57,11 +59,17 @@ object DependencyModule {
 
     @Provides
     @Reusable
+    fun notificationService(application: Application): NotificationService =
+        AndroidNotificationService(application)
+
+    @Provides
+    @Reusable
     fun alarmController(
         alarmManager: AndroidAlarmManager,
         alarmDataService: DatabaseAlarmDataService,
         spotifyClient: SpotifyClient,
+        notificationService: NotificationService,
         logService: LogService
     ) =
-        AndroidAlarmController(alarmManager, alarmDataService, spotifyClient, logService)
+        AndroidAlarmController(alarmManager, alarmDataService, spotifyClient, notificationService, logService)
 }

@@ -8,4 +8,9 @@ interface MusicClient<T> {
      * Play the item from [data]
      */
     fun play(data: T)
+
+    /**
+     * Stop the music
+     */
+    fun stop()
 }
