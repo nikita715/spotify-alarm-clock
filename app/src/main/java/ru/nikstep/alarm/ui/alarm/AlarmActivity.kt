@@ -2,6 +2,7 @@ package ru.nikstep.alarm.ui.alarm
 
 import android.os.Bundle
 import android.view.View
+import ru.nikstep.alarm.R
 import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.databinding.ActivityAlarmBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
@@ -10,6 +11,11 @@ import ru.nikstep.alarm.util.buildIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
 class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +49,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
     fun removeAlarm(view: View) {
         intent.extras?.getLong("alarmId")?.let { viewModel.removeAlarm(it) }
         returnToMainActivity()
+        overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
     }
 
     private fun returnToMainActivity() = buildIntent(applicationContext, MainActivity::class.java)

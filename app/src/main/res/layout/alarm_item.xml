@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:height="50dp"
         android:minHeight="50dp"
+        android:paddingHorizontal="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem" />

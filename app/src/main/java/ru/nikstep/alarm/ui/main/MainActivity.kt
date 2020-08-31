@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
@@ -26,6 +27,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
         buildAlarmList(listAdapter)
         buildSwipeAlarmListener(listAdapter)
+
+//        binding.topAppBar.
     }
 
     private fun buildNewAlarmButtonListener() {
@@ -33,6 +36,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             val intent = Intent()
             intent.setClass(this, AlarmActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.open_alarm_activity, R.anim.close_main_activity)
         }
     }
 

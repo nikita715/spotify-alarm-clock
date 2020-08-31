@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Alarm</string>
+    <string name="main_page_title">Alarm</string>
     <string name="set_alarm">Set</string>
+    <string name="settings_top_button">Settings</string>
+    <string name="settings_top_button_description">Open settings</string>
+    <string name="notifications_top_button">Notifications</string>
+    <string name="notifications_top_button_description">Open notifications</string>
     <string name="remove_alarm">Remove</string>
     <string name="next_song">Next song</string>
     <string name="fab_content_desc">Add new alarm</string>
