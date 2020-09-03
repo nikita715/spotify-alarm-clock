@@ -1,7 +1,6 @@
 package ru.nikstep.alarm.ui.playlists
 
 import android.os.Bundle
-import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityPlaylistsBinding
@@ -17,12 +16,6 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
 
         val bottomNavigation: BottomNavigationView = binding.bottomNavigation
         bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
-        bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.alarmPage -> Log.i("MainActivity", "alarm reselected")
-                R.id.playlistsPage -> Log.i("MainActivity", "playlists reselected")
-            }
-        }
         bottomNavigation.menu.findItem(R.id.playlistsPage).isChecked = true
     }
 

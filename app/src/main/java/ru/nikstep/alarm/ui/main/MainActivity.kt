@@ -2,7 +2,6 @@ package ru.nikstep.alarm.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +14,7 @@ import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
+import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -31,15 +31,13 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         buildAlarmList(listAdapter)
         buildSwipeAlarmListener(listAdapter)
 
+        binding.topAppBar.menu.findItem(R.id.notificationsPage).setOnMenuItemClickListener {
+            startActivityWithIntent(this, NotificationsActivity::class.java)
+            true
+        }
+
         val bottomNavigation: BottomNavigationView = binding.bottomNavigation
         bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
-
-        bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.alarmPage -> Log.i("MainActivity", "alarm reselected")
-                R.id.playlistsPage -> Log.i("MainActivity", "playlists reselected")
-            }
-        }
         bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
     }
 

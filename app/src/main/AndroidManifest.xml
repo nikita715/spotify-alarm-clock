@@ -30,6 +30,10 @@
             android:name=".ui.playlists.PlaylistsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".ui.notifications.NotificationsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <receiver
             android:name="ru.nikstep.alarm.service.alarm.AlarmReceiver"
