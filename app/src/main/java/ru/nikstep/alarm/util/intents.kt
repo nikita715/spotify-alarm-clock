@@ -5,7 +5,11 @@ import android.content.Context
 import android.content.Intent
 import java.io.Serializable
 
-fun buildIntent(context: Context, activity: Class<out Activity>, vararg extras: Pair<String, Serializable>) {
+fun startActivityWithIntent(
+    context: Context,
+    activity: Class<out Activity>,
+    vararg extras: Pair<String, Serializable>
+) {
     val intent = Intent()
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.setClass(context, activity)

@@ -6,14 +6,16 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
+import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
-import ru.nikstep.alarm.util.buildIntent
+import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
@@ -29,28 +31,16 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         buildAlarmList(listAdapter)
         buildSwipeAlarmListener(listAdapter)
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.alarmPage -> {
-                    Log.i("MainActivity", "alarm selected")
-                    true
-                }
-                R.id.playlistsPage -> {
-                    Log.i("MainActivity", "playlists selected")
-                    true
-                }
-                else -> false
-            }
-        }
+        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
 
-        binding.bottomNavigation.setOnNavigationItemReselectedListener { item ->
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.alarmPage -> Log.i("MainActivity", "alarm reselected")
                 R.id.playlistsPage -> Log.i("MainActivity", "playlists reselected")
             }
         }
-
-//        binding.floatingActionButton.behavior.onAttachedToLayoutParams()
+        bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
     }
 
     private fun buildNewAlarmButtonListener() {
@@ -83,7 +73,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     private val onAlarmLineClick: (i: Alarm) -> Unit = { alarm ->
-        buildIntent(applicationContext, AlarmActivity::class.java, "alarmId" to alarm.id)
+        startActivityWithIntent(applicationContext, AlarmActivity::class.java, "alarmId" to alarm.id)
     }
 
     /**

@@ -7,7 +7,7 @@ import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.databinding.ActivityAlarmBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.main.MainActivity
-import ru.nikstep.alarm.util.buildIntent
+import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
 class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
@@ -52,7 +52,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
     }
 
-    private fun returnToMainActivity() = buildIntent(applicationContext, MainActivity::class.java)
+    private fun returnToMainActivity() = startActivityWithIntent(applicationContext, MainActivity::class.java)
 
     override fun initViewBinding(): ActivityAlarmBinding = ActivityAlarmBinding.inflate(layoutInflater)
 
