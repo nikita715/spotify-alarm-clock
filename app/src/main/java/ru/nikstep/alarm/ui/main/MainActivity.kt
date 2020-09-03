@@ -1,7 +1,9 @@
 package ru.nikstep.alarm.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,7 +33,16 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         buildAlarmList(listAdapter)
         buildSwipeAlarmListener(listAdapter)
 
-        binding.topAppBar.menu.findItem(R.id.notificationsPage).setOnMenuItemClickListener {
+        val notificationsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.notificationsPage)
+        val hasNotifications = getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        ).getBoolean(getString(R.string.saved_notifications_key), false)
+        when (hasNotifications) {
+            true -> Unit
+            false -> notificationsMenuItem.setIcon(R.drawable.baseline_notifications_none_white_24dp)
+        }
+        notificationsMenuItem.setOnMenuItemClickListener {
             startActivityWithIntent(this, NotificationsActivity::class.java)
             true
         }
@@ -39,6 +50,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         val bottomNavigation: BottomNavigationView = binding.bottomNavigation
         bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
         bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
+
+        invalidateOptionsMenu()
     }
 
     private fun buildNewAlarmButtonListener() {

@@ -16,4 +16,6 @@
     <string name="enter_next_song_id">Enter next song id</string>
     <string name="default_playlist">6sU9yIquDtGDUJ0ofpYAJV</string>
     <string name="default_next_song">spotify:track:5kl4Y5XymsUCl98GM7dgab</string>
+    <string name="preference_file_key">android_alarm_clock_preferences</string>
+    <string name="saved_notifications_key">saved_notifications_key</string>
 </resources>
