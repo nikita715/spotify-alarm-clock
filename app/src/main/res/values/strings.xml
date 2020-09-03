@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Alarm</string>
+    <string name="playlists">Playlists</string>
     <string name="main_page_title">Alarm</string>
     <string name="set_alarm">Set</string>
     <string name="settings_top_button">Settings</string>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/alarmPage"
+        android:enabled="true"
+        android:icon="@drawable/baseline_access_alarm_white_24dp"
+        android:title="@string/app_name" />
+    <item
+        android:id="@+id/playlistsPage"
+        android:enabled="true"
+        android:icon="@drawable/baseline_playlist_play_white_24dp"
+        android:title="@string/playlists" />
+</menu>

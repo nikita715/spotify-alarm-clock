@@ -33,6 +33,7 @@
                         android:id="@+id/playlist_name_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="text"
                         android:text="@string/default_playlist" />
 
                     <Button
@@ -79,10 +80,10 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:layout_insetEdge="bottom"
         app:menu="@menu/bottom_navigation_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -96,6 +97,5 @@
         android:contentDescription="@string/fab_content_desc"
         app:backgroundTint="@color/colorPrimaryDark"
         app:srcCompat="@drawable/baseline_add_white_24dp"
-        app:layout_behavior=".ui.button.NewAlarmFloatingActionButton"
         app:tint="@color/colorWhite" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package ru.nikstep.alarm.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,28 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         buildAlarmList(listAdapter)
         buildSwipeAlarmListener(listAdapter)
 
-//        binding.topAppBar.
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.alarmPage -> {
+                    Log.i("MainActivity", "alarm selected")
+                    true
+                }
+                R.id.playlistsPage -> {
+                    Log.i("MainActivity", "playlists selected")
+                    true
+                }
+                else -> false
+            }
+        }
+
+        binding.bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.alarmPage -> Log.i("MainActivity", "alarm reselected")
+                R.id.playlistsPage -> Log.i("MainActivity", "playlists reselected")
+            }
+        }
+
+//        binding.floatingActionButton.behavior.onAttachedToLayoutParams()
     }
 
     private fun buildNewAlarmButtonListener() {
