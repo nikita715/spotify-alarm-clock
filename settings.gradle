@@ -1,4 +1,4 @@
-include ':spotify-auth-release'
+include ':spotify-auth'
 include ':spotify-app-remote'
 include ':spotify-app-remote'
 include ':app'

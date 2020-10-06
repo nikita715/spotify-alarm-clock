@@ -35,6 +35,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
+        <activity
+            android:name="com.spotify.sdk.android.auth.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <receiver
             android:name="ru.nikstep.alarm.service.alarm.AlarmReceiver"
             android:enabled="true"

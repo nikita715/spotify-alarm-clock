@@ -3,12 +3,17 @@ package ru.nikstep.alarm.ui.playlists
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityPlaylistsBinding
+import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
+import ru.nikstep.alarm.util.data.Status
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -35,6 +40,26 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
             startActivityWithIntent(this, NotificationsActivity::class.java)
             true
         }
+
+        viewModel.getPlaylists()
+            .observe(this, Observer {
+                it?.let { resource ->
+                    when (resource.status) {
+                        Status.LOADING -> {
+                        }
+                        Status.SUCCESS -> {
+                            val playlistListView = binding.playlistList
+                            playlistListView.setHasFixedSize(true)
+                            playlistListView.layoutManager = LinearLayoutManager(this)
+                            playlistListView.adapter =
+                                resource.data?.let { list -> PlaylistListAdapter(list as MutableList<Playlist>) {} }
+                        }
+                        Status.ERROR -> {
+                            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            })
     }
 
     override fun initViewBinding(): ActivityPlaylistsBinding = ActivityPlaylistsBinding.inflate(layoutInflater)
