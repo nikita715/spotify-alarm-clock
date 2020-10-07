@@ -3,13 +3,12 @@ package ru.nikstep.alarm.ui.playlists
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityPlaylistsBinding
-import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
@@ -40,19 +39,26 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
             startActivityWithIntent(this, NotificationsActivity::class.java)
             true
         }
+        showPlaylists()
+    }
 
-        viewModel.getPlaylists()
-            .observe(this, Observer {
+    private fun showPlaylists() {
+        val playlistListView = binding.playlistList
+        playlistListView.setHasFixedSize(true)
+        playlistListView.layoutManager = LinearLayoutManager(this)
+        playlistListView.adapter = PlaylistListAdapter(viewModel.getPlaylists()) {}
+    }
+
+    fun downloadPlaylists(view: View) {
+        viewModel.downloadPlaylists()
+            .observe(this, {
                 it?.let { resource ->
                     when (resource.status) {
                         Status.LOADING -> {
                         }
                         Status.SUCCESS -> {
-                            val playlistListView = binding.playlistList
-                            playlistListView.setHasFixedSize(true)
-                            playlistListView.layoutManager = LinearLayoutManager(this)
-                            playlistListView.adapter =
-                                resource.data?.let { list -> PlaylistListAdapter(list as MutableList<Playlist>) {} }
+                            val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
+                            resource.data?.let { presentData -> playlistListAdapter.updateItems(presentData) }
                         }
                         Status.ERROR -> {
                             Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()

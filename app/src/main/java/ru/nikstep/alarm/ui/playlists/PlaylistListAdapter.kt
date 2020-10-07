@@ -8,9 +8,11 @@ import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.util.diffItemCallback
 
 class PlaylistListAdapter(
-    private var data: MutableList<Playlist>,
+    data: List<Playlist>,
     private val onItemClickListener: (i: Playlist) -> Unit = {}
 ) : ListAdapter<Playlist, PlaylistListViewHolder>(diffItemCallback()) {
+
+    private val data = data as MutableList<Playlist>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistListViewHolder =
         PlaylistListViewHolder(
@@ -28,7 +30,8 @@ class PlaylistListAdapter(
     }
 
     fun updateItems(data: List<Playlist>) {
-        this.data = data as MutableList<Playlist>
+        this.data.clear()
+        this.data.addAll(data)
         notifyDataSetChanged()
     }
 

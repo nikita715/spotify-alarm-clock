@@ -32,7 +32,7 @@ class PlaylistJsonAdapter : JsonAdapter<Playlists>() {
                         }
                         reader.endObject()
                         if (playlistId != null && playlistName != null) {
-                            playlists.add(Playlist(-1, playlistName, playlistId))
+                            playlists.add(Playlist(name = playlistName, externalId = playlistId))
                         }
                     }
                     reader.endArray()

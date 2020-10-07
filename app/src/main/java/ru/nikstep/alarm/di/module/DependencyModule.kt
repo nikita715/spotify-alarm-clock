@@ -21,6 +21,7 @@ import ru.nikstep.alarm.api.SpotifyApiClient
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AppDatabase
+import ru.nikstep.alarm.database.PlaylistDao
 import ru.nikstep.alarm.model.Playlists
 import ru.nikstep.alarm.model.SpotifyUser
 import ru.nikstep.alarm.service.LoginService
@@ -28,6 +29,7 @@ import ru.nikstep.alarm.service.SpotifyApiService
 import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
 import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
+import ru.nikstep.alarm.service.data.DatabasePlaylistDataService
 import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.service.log.ToastLogService
 import ru.nikstep.alarm.service.notification.AndroidNotificationService
@@ -46,6 +48,11 @@ object DependencyModule {
             .addMigrations(object : Migration(2, 3) {
                 override fun migrate(database: SupportSQLiteDatabase) {
                     database.execSQL("ALTER TABLE ALARM ADD COLUMN PREVIOUS_TRACK VARCHAR(50)")
+                }
+            })
+            .addMigrations(object : Migration(3, 4) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `external_id` TEXT NOT NULL)")
                 }
             })
             .allowMainThreadQueries().build()
@@ -110,6 +117,16 @@ object DependencyModule {
     @Reusable
     fun alarmService(alarmDao: AlarmDao) =
         DatabaseAlarmDataService(alarmDao)
+
+    @Provides
+    @Reusable
+    fun playlistDao(appDatabase: AppDatabase) =
+        appDatabase.playlistDao()
+
+    @Provides
+    @Reusable
+    fun playlistService(playlistDao: PlaylistDao) =
+        DatabasePlaylistDataService(playlistDao)
 
     @Provides
     @Reusable
