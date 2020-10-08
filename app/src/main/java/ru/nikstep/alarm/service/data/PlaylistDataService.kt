@@ -20,7 +20,7 @@ interface PlaylistDataService {
     /**
      * Create [playlists]
      */
-    fun saveAll(playlists: List<Playlist>): List<Long>
+    fun saveAll(playlists: List<Playlist>): List<Playlist>
 
     /**
      * Delete all playlists

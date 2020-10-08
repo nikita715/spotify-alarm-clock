@@ -3,7 +3,6 @@ package ru.nikstep.alarm.ui.playlists
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -39,6 +38,12 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
             startActivityWithIntent(this, NotificationsActivity::class.java)
             true
         }
+
+        val refreshPlaylistsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.refreshPlaylists)
+        refreshPlaylistsMenuItem.setOnMenuItemClickListener {
+            downloadPlaylists()
+            true
+        }
         showPlaylists()
     }
 
@@ -49,7 +54,7 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
         playlistListView.adapter = PlaylistListAdapter(viewModel.getPlaylists()) {}
     }
 
-    fun downloadPlaylists(view: View) {
+    private fun downloadPlaylists() {
         viewModel.downloadPlaylists()
             .observe(this, {
                 it?.let { resource ->
@@ -58,7 +63,10 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
                         }
                         Status.SUCCESS -> {
                             val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
-                            resource.data?.let { presentData -> playlistListAdapter.updateItems(presentData) }
+                            resource.data?.let { presentData ->
+                                val savedPlaylists = viewModel.savePlaylists(presentData)
+                                playlistListAdapter.updateItems(savedPlaylists)
+                            }
                         }
                         Status.ERROR -> {
                             Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()

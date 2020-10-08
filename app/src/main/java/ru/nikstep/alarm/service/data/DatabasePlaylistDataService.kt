@@ -11,7 +11,10 @@ class DatabasePlaylistDataService(
 
     override fun findAll(): List<Playlist> = playlistDao.getAll()
 
-    override fun saveAll(playlists: List<Playlist>): List<Long> = playlistDao.insertAll(playlists)
+    override fun saveAll(playlists: List<Playlist>): List<Playlist> {
+        playlistDao.insertAll(playlists)
+        return findAll()
+    }
 
     override fun deleteAll() = playlistDao.deleteAll()
 }

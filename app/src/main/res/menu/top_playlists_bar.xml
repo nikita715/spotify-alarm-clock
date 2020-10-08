@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/refreshPlaylists"
+        android:contentDescription="@string/notifications_top_button_description"
+        android:icon="@drawable/baseline_refresh_white_24dp"
+        android:title="@string/notifications_top_button"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/notificationsPage"
+        android:contentDescription="@string/notifications_top_button_description"
+        android:icon="@drawable/baseline_notifications_white_24dp"
+        android:title="@string/notifications_top_button"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/settingsPage"
+        android:contentDescription="@string/settings_top_button_description"
+        android:title="@string/settings_top_button"
+        app:showAsAction="never" />
+</menu>
