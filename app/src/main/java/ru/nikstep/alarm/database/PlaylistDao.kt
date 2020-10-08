@@ -18,5 +18,5 @@ interface PlaylistDao {
     fun deleteAll()
 
     @Insert
-    fun insertAll(playlists: List<Playlist>): List<Playlist>
+    fun insertAll(playlists: List<Playlist>): List<Long>
 }

@@ -30,6 +30,7 @@ import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
 import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
 import ru.nikstep.alarm.service.data.DatabasePlaylistDataService
+import ru.nikstep.alarm.service.data.PlaylistDataService
 import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.service.log.ToastLogService
 import ru.nikstep.alarm.service.notification.AndroidNotificationService
@@ -53,6 +54,15 @@ object DependencyModule {
             .addMigrations(object : Migration(3, 4) {
                 override fun migrate(database: SupportSQLiteDatabase) {
                     database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `external_id` TEXT NOT NULL)")
+                }
+            })
+            .addMigrations(object : Migration(4, 5) {
+                override fun migrate(database: SupportSQLiteDatabase) {}
+            })
+            .addMigrations(object : Migration(5, 6) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL("DROP TABLE `Playlist`")
+                    database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `externalId` TEXT NOT NULL)")
                 }
             })
             .allowMainThreadQueries().build()
@@ -125,7 +135,7 @@ object DependencyModule {
 
     @Provides
     @Reusable
-    fun playlistService(playlistDao: PlaylistDao) =
+    fun playlistService(playlistDao: PlaylistDao): PlaylistDataService =
         DatabasePlaylistDataService(playlistDao)
 
     @Provides

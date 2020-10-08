@@ -23,6 +23,13 @@ android {
         buildConfigField("String", "SPOTIFY_REDIRECT_URI", properties['SPOTIFY_REDIRECT_URI'])
         buildConfigField("String", "DEFAULT_PLAYLIST", properties['DEFAULT_PLAYLIST'])
         buildConfigField("String", "SPOTIFY_API_BASE", properties['SPOTIFY_API_BASE'])
+
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
