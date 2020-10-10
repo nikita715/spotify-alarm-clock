@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     tools:ignore="UnusedAttribute">
 
+    <ImageView
+        android:id="@+id/playlistCoverImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:padding="10dp" />
+
     <TextView
         android:id="@+id/alarmText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:height="50dp"
-        android:minHeight="50dp"
+        android:layout_centerInParent="true"
+        android:layout_toEndOf="@+id/playlistCoverImage"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:paddingHorizontal="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="20sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

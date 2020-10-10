@@ -12,8 +12,19 @@ class DatabasePlaylistDataService(
     override fun findAll(): List<Playlist> = playlistDao.getAll()
 
     override fun saveAll(playlists: List<Playlist>): List<Playlist> {
-        playlistDao.insertAll(playlists)
+        playlistDao.insert(playlists)
         return findAll()
+    }
+
+    override fun createOrUpdate(playlists: List<Playlist>): List<Playlist> {
+        val storedPlaylists = findAll().associateBy { it.externalId }
+        return saveAll(
+            playlists.map {
+                val playlist = storedPlaylists[it.externalId] ?: return@map it
+                it.copy(id = playlist.id)
+            }
+        )
+
     }
 
     override fun deleteAll() = playlistDao.deleteAll()

@@ -23,6 +23,7 @@ import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.database.PlaylistDao
 import ru.nikstep.alarm.model.Playlists
+import ru.nikstep.alarm.model.SpotifyPlaylistImage
 import ru.nikstep.alarm.model.SpotifyUser
 import ru.nikstep.alarm.service.LoginService
 import ru.nikstep.alarm.service.SpotifyApiService
@@ -31,11 +32,13 @@ import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
 import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
 import ru.nikstep.alarm.service.data.DatabasePlaylistDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
+import ru.nikstep.alarm.service.file.CoverStorage
 import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.service.log.ToastLogService
 import ru.nikstep.alarm.service.notification.AndroidNotificationService
 import ru.nikstep.alarm.service.notification.NotificationService
 import ru.nikstep.alarm.util.json.PlaylistJsonAdapter
+import ru.nikstep.alarm.util.json.SpotifyPlaylistImageJsonAdapter
 import ru.nikstep.alarm.util.json.SpotifyUserJsonAdapter
 
 
@@ -73,6 +76,7 @@ object DependencyModule {
         val moshi = Moshi.Builder()
             .add(Playlists::class.java, PlaylistJsonAdapter())
             .add(SpotifyUser::class.java, SpotifyUserJsonAdapter())
+            .add(SpotifyPlaylistImage::class.java, SpotifyPlaylistImageJsonAdapter())
             .build()
         return MoshiConverterFactory.create(moshi)
     }
@@ -89,7 +93,6 @@ object DependencyModule {
                 Log.i("api-call", chain.request().toString())
                 chain.proceed(chain.request())
             }).build()
-
 
     @Provides
     @Reusable
@@ -137,6 +140,11 @@ object DependencyModule {
     @Reusable
     fun playlistService(playlistDao: PlaylistDao): PlaylistDataService =
         DatabasePlaylistDataService(playlistDao)
+
+    @Provides
+    @Reusable
+    fun coverStorage(application: Application) =
+        CoverStorage(application)
 
     @Provides
     @Reusable

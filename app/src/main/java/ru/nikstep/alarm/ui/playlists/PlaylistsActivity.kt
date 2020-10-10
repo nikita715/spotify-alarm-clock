@@ -55,6 +55,8 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
     }
 
     private fun downloadPlaylists() {
+        val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
+        playlistListAdapter.updateItems(emptyList())
         viewModel.downloadPlaylists()
             .observe(this, {
                 it?.let { resource ->
@@ -62,7 +64,6 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
                         Status.LOADING -> {
                         }
                         Status.SUCCESS -> {
-                            val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
                             resource.data?.let { presentData ->
                                 val savedPlaylists = viewModel.savePlaylists(presentData)
                                 playlistListAdapter.updateItems(savedPlaylists)

@@ -12,7 +12,7 @@ class PlaylistListViewHolder(private val binding: PlaylistItemBinding) : Recycle
         binding.root.setOnClickListener {
             onItemClickListener(playlist)
         }
+        binding.playlistCoverImage.setImageBitmap(playlist.coverImage)
     }
-
 
 }

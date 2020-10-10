@@ -2,6 +2,7 @@ package ru.nikstep.alarm.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ru.nikstep.alarm.model.Playlist
 
@@ -17,6 +18,6 @@ interface PlaylistDao {
     @Query("DELETE FROM playlist")
     fun deleteAll()
 
-    @Insert
-    fun insertAll(playlists: List<Playlist>): List<Long>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(playlists: List<Playlist>): List<Long>
 }

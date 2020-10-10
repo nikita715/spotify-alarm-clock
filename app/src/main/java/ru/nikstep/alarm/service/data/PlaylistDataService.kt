@@ -26,4 +26,9 @@ interface PlaylistDataService {
      * Delete all playlists
      */
     fun deleteAll()
+
+    /**
+     * Create or update [playlists]
+     */
+    fun createOrUpdate(playlists: List<Playlist>): List<Playlist>
 }
