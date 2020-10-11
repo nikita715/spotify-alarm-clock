@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,6 +21,7 @@ import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.util.preferences.getAppPreference
+import ru.nikstep.alarm.util.preferences.setAppPreference
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -31,9 +31,17 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if (!viewModel.hasAccessToken()) {
-            val request = getAuthenticationRequest()
-            AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request)
+        if (viewModel.hasAccessToken().not()) {
+            val savedAccessToken = getAppPreference<String>(R.string.saved_spotify_access_token)
+            val savedAccessTokenTimeout = getAppPreference<Long>(R.string.saved_spotify_access_token_timeout)
+            if (savedAccessToken != null && savedAccessTokenTimeout != null && savedAccessTokenTimeout != -1L
+                && savedAccessTokenTimeout > System.currentTimeMillis()
+            ) {
+                viewModel.setAccessToken(savedAccessToken)
+            } else {
+                val request = getAuthenticationRequest()
+                AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request)
+            }
         }
 
         buildNewAlarmButtonListener()
@@ -74,7 +82,11 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             val response = AuthorizationClient.getResponse(resultCode, data)
             val token = response.accessToken
             viewModel.setAccessToken(token)
-            Toast.makeText(application, token, Toast.LENGTH_LONG).show()
+            setAppPreference(R.string.saved_spotify_access_token, response.accessToken)
+            setAppPreference(
+                R.string.saved_spotify_access_token_timeout,
+                System.currentTimeMillis() + 1000 * response.expiresIn * 0.5
+            )
         }
     }
 
