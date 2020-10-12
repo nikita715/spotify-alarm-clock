@@ -21,7 +21,7 @@ interface AlarmDao {
     fun update(alarm: Alarm): Int
 
     @Query("UPDATE ALARM SET HOUR = :hour AND MINUTE = :minute AND PLAYLIST = :playlist WHERE ID = :alarmId")
-    fun updateSettings(alarmId: Long, hour: Int, minute: Int, playlist: String): Int
+    fun updateSettings(alarmId: Long, hour: Int, minute: Int, playlist: Long): Int
 
     @Query("DELETE FROM ALARM WHERE ID = :id")
     fun deleteById(id: Long)

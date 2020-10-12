@@ -18,17 +18,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.nikstep.alarm.BuildConfig
 import ru.nikstep.alarm.api.SpotifyApiClient
+import ru.nikstep.alarm.api.model.Playlists
+import ru.nikstep.alarm.api.model.SpotifyPlaylistImage
+import ru.nikstep.alarm.api.model.SpotifyUser
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.database.PlaylistDao
-import ru.nikstep.alarm.model.Playlists
-import ru.nikstep.alarm.model.SpotifyPlaylistImage
-import ru.nikstep.alarm.model.SpotifyUser
 import ru.nikstep.alarm.service.LoginService
 import ru.nikstep.alarm.service.SpotifyApiService
 import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
+import ru.nikstep.alarm.service.data.AlarmDataService
 import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
 import ru.nikstep.alarm.service.data.DatabasePlaylistDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
@@ -48,7 +49,7 @@ object DependencyModule {
     @Provides
     @Reusable
     fun roomDatabase(application: Application): AppDatabase =
-        Room.databaseBuilder(application, AppDatabase::class.java, "AlarmApplication.db")
+        Room.databaseBuilder(application, AppDatabase::class.java, "test1.db")
             .addMigrations(object : Migration(2, 3) {
                 override fun migrate(database: SupportSQLiteDatabase) {
                     database.execSQL("ALTER TABLE ALARM ADD COLUMN PREVIOUS_TRACK VARCHAR(50)")
@@ -66,6 +67,18 @@ object DependencyModule {
                 override fun migrate(database: SupportSQLiteDatabase) {
                     database.execSQL("DROP TABLE `Playlist`")
                     database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `externalId` TEXT NOT NULL)")
+                }
+            })
+            .addMigrations(object : Migration(6, 7) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL("DROP TABLE `Alarm`")
+                    database.execSQL("CREATE TABLE `Alarm` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'hour' INTEGER NOT NULL, 'minute' INTEGER NOT NULL, 'playlist' INTEGER NOT NULL, `previousTrack` TEXT, FOREIGN KEY('playlist') REFERENCES 'Playlist'('id'))")
+                }
+            })
+            .addMigrations(object : Migration(7, 8) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL("DROP TABLE `Alarm`")
+                    database.execSQL("CREATE TABLE `Alarm` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'hour' INTEGER NOT NULL, 'minute' INTEGER NOT NULL, 'playlist' INTEGER NOT NULL REFERENCES 'Playlist'('id') ON DELETE CASCADE ON UPDATE, PREVIOUS_TRACK TEXT)")
                 }
             })
             .allowMainThreadQueries().build()
@@ -128,7 +141,7 @@ object DependencyModule {
 
     @Provides
     @Reusable
-    fun alarmService(alarmDao: AlarmDao) =
+    fun alarmDataService(alarmDao: AlarmDao): AlarmDataService =
         DatabaseAlarmDataService(alarmDao)
 
     @Provides
@@ -170,10 +183,18 @@ object DependencyModule {
     @Reusable
     fun alarmController(
         alarmManager: AndroidAlarmManager,
-        alarmDataService: DatabaseAlarmDataService,
+        alarmDataService: AlarmDataService,
+        playlistDataService: PlaylistDataService,
         spotifyClient: SpotifyClient,
         notificationService: NotificationService,
         logService: LogService
     ) =
-        AndroidAlarmController(alarmManager, alarmDataService, spotifyClient, notificationService, logService)
+        AndroidAlarmController(
+            alarmManager,
+            alarmDataService,
+            playlistDataService,
+            spotifyClient,
+            notificationService,
+            logService
+        )
 }

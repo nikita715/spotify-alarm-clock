@@ -21,6 +21,11 @@ data class Playlist(
         return result
     }
 
+    override fun toString(): String {
+        return name
+    }
+
     @Ignore
     var coverImage: Bitmap? = null
+
 }

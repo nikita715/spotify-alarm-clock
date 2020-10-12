@@ -6,9 +6,9 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Streaming
 import retrofit2.http.Url
-import ru.nikstep.alarm.model.Playlists
-import ru.nikstep.alarm.model.SpotifyPlaylistImage
-import ru.nikstep.alarm.model.SpotifyUser
+import ru.nikstep.alarm.api.model.Playlists
+import ru.nikstep.alarm.api.model.SpotifyPlaylistImage
+import ru.nikstep.alarm.api.model.SpotifyUser
 
 interface SpotifyApiClient {
 

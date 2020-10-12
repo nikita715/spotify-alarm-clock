@@ -3,8 +3,8 @@ package ru.nikstep.alarm.util.json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
+import ru.nikstep.alarm.api.model.Playlists
 import ru.nikstep.alarm.model.Playlist
-import ru.nikstep.alarm.model.Playlists
 
 
 class PlaylistJsonAdapter : JsonAdapter<Playlists>() {

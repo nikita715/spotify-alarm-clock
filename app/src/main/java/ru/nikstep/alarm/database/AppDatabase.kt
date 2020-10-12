@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.Playlist
 
-@Database(entities = [Alarm::class, Playlist::class], version = 6)
+@Database(entities = [Alarm::class, Playlist::class], version = 8)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun alarmDao(): AlarmDao
     abstract fun playlistDao(): PlaylistDao

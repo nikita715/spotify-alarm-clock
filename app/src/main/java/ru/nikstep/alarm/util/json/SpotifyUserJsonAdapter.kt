@@ -3,7 +3,7 @@ package ru.nikstep.alarm.util.json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
-import ru.nikstep.alarm.model.SpotifyUser
+import ru.nikstep.alarm.api.model.SpotifyUser
 
 class SpotifyUserJsonAdapter : JsonAdapter<SpotifyUser>() {
     private val propertyNames = JsonReader.Options.of("id")

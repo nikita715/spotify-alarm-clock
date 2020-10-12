@@ -30,14 +30,10 @@
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/playlist_name_input"
+                <Spinner
+                    android:id="@+id/playlist_dropdown_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="@string/default_playlist"
-                    android:hint="@string/enter_playlist_id"
-                    android:inputType="text"
-                    android:text="@string/default_playlist" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <RelativeLayout
@@ -48,22 +44,20 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/buttonSetAlarm"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/button2"
+                    android:layout_toStartOf="@+id/buttonRemoveAlarm"
                     android:background="@color/colorPositive"
-                    android:onClick="setAlarm"
                     android:text="@string/set_alarm" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/buttonRemoveAlarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="10dp"
                     android:background="@color/colorNegative"
-                    android:onClick="removeAlarm"
                     android:text="@string/remove_alarm"
                     android:textColor="@color/colorWhite" />
             </RelativeLayout>

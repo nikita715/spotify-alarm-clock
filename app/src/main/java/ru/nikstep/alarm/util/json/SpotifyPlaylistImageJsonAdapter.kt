@@ -3,7 +3,7 @@ package ru.nikstep.alarm.util.json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
-import ru.nikstep.alarm.model.SpotifyPlaylistImage
+import ru.nikstep.alarm.api.model.SpotifyPlaylistImage
 
 class SpotifyPlaylistImageJsonAdapter : JsonAdapter<SpotifyPlaylistImage>() {
     private val propertyNames = JsonReader.Options.of("url")
