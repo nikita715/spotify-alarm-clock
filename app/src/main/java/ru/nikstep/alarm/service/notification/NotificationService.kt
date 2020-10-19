@@ -1,10 +1,12 @@
 package ru.nikstep.alarm.service.notification
 
+import android.app.Notification
+
 /**
- * Sends UI notifications to user
+ * Creates UI notifications for a user
  */
 interface NotificationService {
 
-    fun notify(text: String)
+    fun buildAlarmNotification(): Notification
 
 }

@@ -10,6 +10,7 @@ import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.data.AlarmDataService
+import ru.nikstep.alarm.service.notification.NotificationService
 import ru.nikstep.alarm.util.data.Resource
 import ru.nikstep.alarm.util.data.Status
 import javax.inject.Inject
@@ -20,6 +21,14 @@ class RescheduleAlarmsService : LifecycleService() {
 
     @Inject
     lateinit var alarmDataService: AlarmDataService
+
+    @Inject
+    lateinit var notificationService: NotificationService
+
+    override fun onCreate() {
+        super.onCreate()
+        startForeground(1, notificationService.buildAlarmNotification())
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)

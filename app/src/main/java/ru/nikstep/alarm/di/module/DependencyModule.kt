@@ -187,7 +187,6 @@ object DependencyModule {
         alarmDataService: AlarmDataService,
         playlistDataService: PlaylistDataService,
         spotifyClient: SpotifyClient,
-        notificationService: NotificationService,
         logService: LogService
     ): AlarmController =
         AndroidAlarmController(
@@ -195,7 +194,6 @@ object DependencyModule {
             alarmDataService,
             playlistDataService,
             spotifyClient,
-            notificationService,
             logService
         )
 }

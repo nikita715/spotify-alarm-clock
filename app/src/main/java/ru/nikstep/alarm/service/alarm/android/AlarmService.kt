@@ -3,7 +3,6 @@ package ru.nikstep.alarm.service.alarm.android
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.widget.Toast
 import ru.nikstep.alarm.AlarmApp
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.notification.NotificationService
@@ -17,10 +16,13 @@ class AlarmService : Service() {
     @Inject
     lateinit var notificationService: NotificationService
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Toast.makeText(applicationContext, "Alarm started", Toast.LENGTH_LONG).show()
+    override fun onCreate() {
+        super.onCreate()
         (applicationContext as AlarmApp).androidInjector.inject(this)
-        notificationService.notify("")
+        startForeground(1, notificationService.buildAlarmNotification())
+    }
+
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         alarmController.startAlarm(intent.getLongExtra(ALARM_ID_EXTRA, -1L))
         return START_STICKY
     }
