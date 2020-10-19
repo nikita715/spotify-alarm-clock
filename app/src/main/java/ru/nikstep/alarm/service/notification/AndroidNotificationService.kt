@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.service.alarm.StopAlarmService
+import ru.nikstep.alarm.ui.main.MainActivity.Companion.CHANNEL_ID
 
 class AndroidNotificationService(private val context: Context) : NotificationService {
     override fun notify(text: String) {
@@ -25,8 +26,6 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
 
             notificationChannel.description = "Android Alarm App"
             notificationChannel.enableLights(true)
-            notificationChannel.vibrationPattern = longArrayOf(0, 1000, 500, 1000)
-            notificationChannel.enableVibration(true)
 
             notificationManager.createNotificationChannel(notificationChannel)
         }
@@ -39,7 +38,7 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
             intent, PendingIntent.FLAG_ONE_SHOT
         )
 
-        val notificationBuilder = NotificationCompat.Builder(context, notificationChannelId)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("Alarm")
             .setContentText("Click to stop music")

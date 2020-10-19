@@ -41,13 +41,16 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <receiver
-            android:name="ru.nikstep.alarm.service.alarm.AlarmReceiver"
+            android:name="ru.nikstep.alarm.service.alarm.android.AlarmReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".service.alarm.android.AlarmService" />
+        <service android:name=".service.alarm.android.RescheduleAlarmsService" />
         <service android:name=".service.alarm.StopAlarmService" />
     </application>
 

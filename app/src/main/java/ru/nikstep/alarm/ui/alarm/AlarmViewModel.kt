@@ -3,13 +3,13 @@ package ru.nikstep.alarm.ui.alarm
 import androidx.lifecycle.ViewModel
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.data.AlarmData
-import ru.nikstep.alarm.service.alarm.AndroidAlarmController
+import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.data.PlaylistDataService
 import ru.nikstep.alarm.service.log.LogService
 import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
-    private val alarmController: AndroidAlarmController,
+    private val alarmController: AlarmController,
     private val playlistDataService: PlaylistDataService,
     private val logService: LogService
 ) : ViewModel() {

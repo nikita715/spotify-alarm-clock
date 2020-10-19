@@ -9,7 +9,7 @@ import javax.inject.Inject
 class StopAlarmService : IntentService(StopAlarmService::class.java.simpleName) {
 
     @Inject
-    lateinit var alarmController: AndroidAlarmController
+    lateinit var alarmController: AlarmController
 
     override fun onHandleIntent(intent: Intent?) {
         (applicationContext as AlarmApp).androidInjector.inject(this)

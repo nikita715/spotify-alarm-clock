@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import ru.nikstep.alarm.model.Alarm
+import ru.nikstep.alarm.service.alarm.android.AlarmReceiver
+import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import java.util.Calendar
 import java.util.GregorianCalendar
 import javax.inject.Inject
@@ -12,8 +14,7 @@ import javax.inject.Inject
 class AndroidAlarmManager @Inject constructor(
     private val context: Context
 ) : ru.nikstep.alarm.service.alarm.AlarmManager {
-    private val androidAlarmManager =
-        context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private val androidAlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override fun setEveryDayAlarm(alarm: Alarm) {
         val calendar = buildCalendar(alarm.hour, alarm.minute)
@@ -47,8 +48,8 @@ class AndroidAlarmManager @Inject constructor(
     }
 
     private fun buildIntent(alarmId: Long) = PendingIntent.getBroadcast(
-        context, 0,
-        Intent(context, AlarmReceiver::class.java).putExtra("alarmId", alarmId),
+        context, alarmId.toInt(),
+        Intent(context, AlarmReceiver::class.java).putExtra(ALARM_ID_EXTRA, alarmId),
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 

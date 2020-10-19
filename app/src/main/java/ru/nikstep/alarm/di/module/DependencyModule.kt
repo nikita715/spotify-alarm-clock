@@ -27,6 +27,7 @@ import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.database.PlaylistDao
 import ru.nikstep.alarm.service.LoginService
 import ru.nikstep.alarm.service.SpotifyApiService
+import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
 import ru.nikstep.alarm.service.data.AlarmDataService
@@ -188,7 +189,7 @@ object DependencyModule {
         spotifyClient: SpotifyClient,
         notificationService: NotificationService,
         logService: LogService
-    ) =
+    ): AlarmController =
         AndroidAlarmController(
             alarmManager,
             alarmDataService,

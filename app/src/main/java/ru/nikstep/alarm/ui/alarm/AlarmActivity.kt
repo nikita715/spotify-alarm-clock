@@ -9,6 +9,7 @@ import ru.nikstep.alarm.databinding.ActivityAlarmBinding
 import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.main.MainActivity
+import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -33,7 +34,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 
         binding.playlistDropdownList.adapter = adapter
 
-        val alarm = intent.extras?.getLong("alarmId")
+        val alarm = intent.extras?.getLong(ALARM_ID_EXTRA)
             ?.let(viewModel::getAlarm)
             ?.also { alarm ->
                 binding.timePicker.hour = alarm.hour
@@ -52,7 +53,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
             } else {
                 viewModel.setAlarm(
                     AlarmData(
-                        id = intent.extras?.getLong("alarmId"),
+                        id = intent.extras?.getLong(ALARM_ID_EXTRA),
                         hour = binding.timePicker.hour,
                         minute = binding.timePicker.minute,
                         playlist = selectedPlaylist.id
@@ -63,7 +64,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         }
 
         binding.buttonRemoveAlarm.setOnClickListener {
-            intent.extras?.getLong("alarmId")?.let { viewModel.removeAlarm(it) }
+            intent.extras?.getLong(ALARM_ID_EXTRA)?.let { viewModel.removeAlarm(it) }
             returnToMainActivity()
             overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
         }
