@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="ru.nikstep.alarm.AlarmApp"
@@ -51,7 +52,7 @@
 
         <service android:name=".service.alarm.android.AlarmService" />
         <service android:name=".service.alarm.android.RescheduleAlarmsService" />
-        <service android:name=".service.alarm.StopAlarmService" />
+        <service android:name=".service.alarm.android.StopAlarmService" />
     </application>
 
 </manifest>

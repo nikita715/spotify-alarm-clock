@@ -74,13 +74,14 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val manager = getSystemService(NotificationManager::class.java)
+        if (manager.getNotificationChannel(CHANNEL_ID) == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Spotify Alarm Service Channel",
                 NotificationManager.IMPORTANCE_HIGH
             )
-            val manager = getSystemService(NotificationManager::class.java)
+            serviceChannel.enableLights(true)
             manager.createNotificationChannel(serviceChannel)
         }
     }

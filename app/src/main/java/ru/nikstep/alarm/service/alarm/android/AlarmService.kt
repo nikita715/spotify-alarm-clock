@@ -24,7 +24,7 @@ class AlarmService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         alarmController.startAlarm(intent.getLongExtra(ALARM_ID_EXTRA, -1L))
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {

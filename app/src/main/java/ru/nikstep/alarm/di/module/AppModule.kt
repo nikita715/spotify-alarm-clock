@@ -2,10 +2,10 @@ package ru.nikstep.alarm.di.module
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import ru.nikstep.alarm.service.alarm.StopAlarmService
 import ru.nikstep.alarm.service.alarm.android.AlarmReceiver
 import ru.nikstep.alarm.service.alarm.android.AlarmService
 import ru.nikstep.alarm.service.alarm.android.RescheduleAlarmsService
+import ru.nikstep.alarm.service.alarm.android.StopAlarmService
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity

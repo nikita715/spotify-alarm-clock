@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import ru.nikstep.alarm.R
-import ru.nikstep.alarm.service.alarm.StopAlarmService
+import ru.nikstep.alarm.service.alarm.android.StopAlarmService
+import ru.nikstep.alarm.service.alarm.android.StopAlarmService.Companion.CLOSE_ALARM_ACTION
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.CHANNEL_ID
 
 class AndroidNotificationService(private val context: Context) : NotificationService {
@@ -20,7 +21,7 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
                 PendingIntent.getService(
                     context, 0,
                     Intent(context, StopAlarmService::class.java)
-                        .setAction("Close"), PendingIntent.FLAG_ONE_SHOT
+                        .setAction(CLOSE_ALARM_ACTION), PendingIntent.FLAG_ONE_SHOT
                 )
             )
             .setWhen(System.currentTimeMillis())
