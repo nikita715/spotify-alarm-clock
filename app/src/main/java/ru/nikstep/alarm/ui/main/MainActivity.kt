@@ -18,6 +18,7 @@ import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
+import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
@@ -63,6 +64,12 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         }
         notificationsMenuItem.setOnMenuItemClickListener {
             startActivityWithIntent(this, NotificationsActivity::class.java)
+            true
+        }
+
+        val alarmLogsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.alarmLogPage)
+        alarmLogsMenuItem.setOnMenuItemClickListener {
+            startActivityWithIntent(this, AlarmLogActivity::class.java)
             true
         }
 

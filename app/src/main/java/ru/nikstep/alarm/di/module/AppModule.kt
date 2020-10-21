@@ -7,6 +7,7 @@ import ru.nikstep.alarm.service.alarm.android.AlarmService
 import ru.nikstep.alarm.service.alarm.android.RescheduleAlarmsService
 import ru.nikstep.alarm.service.alarm.android.StopAlarmService
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
+import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.ui.playlists.PlaylistsActivity
@@ -18,6 +19,9 @@ abstract class AppModule {
 
     @ContributesAndroidInjector(modules = [DependencyModule::class])
     abstract fun alarmActivity(): AlarmActivity
+
+    @ContributesAndroidInjector(modules = [DependencyModule::class])
+    abstract fun alarmLogActivity(): AlarmLogActivity
 
     @ContributesAndroidInjector(modules = [DependencyModule::class])
     abstract fun playlistsActivity(): PlaylistsActivity

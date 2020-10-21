@@ -8,7 +8,9 @@ import ru.nikstep.alarm.client.spotify.SpotifyMusicData
 import ru.nikstep.alarm.client.spotify.SpotifyPlayType
 import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
+import ru.nikstep.alarm.model.AlarmLog
 import ru.nikstep.alarm.service.data.AlarmDataService
+import ru.nikstep.alarm.service.data.AlarmLogDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
 import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.util.date.formatDate
@@ -18,6 +20,7 @@ class AndroidAlarmController @Inject constructor(
     private val alarmManager: AndroidAlarmManager,
     private val alarmDataService: AlarmDataService,
     private val playlistDataService: PlaylistDataService,
+    private val alarmLogDataService: AlarmLogDataService,
     private val spotifyClient: SpotifyClient,
     private val logService: LogService
 ) : AlarmController {
@@ -52,6 +55,7 @@ class AndroidAlarmController @Inject constructor(
                         alarmDataService.update(updatedAlarm)
                         Log.i("AlarmManager", "Saved alarm $updatedAlarm")
                     })
+                alarmLogDataService.save(AlarmLog(alarmId = alarmId, playlist = playlist.name))
             }
         }
         if (alarm == null) {

@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/alarmLogPage"
+        android:contentDescription="@string/alarm_log_top_button_description"
+        android:title="@string/alarm_log_top_button"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/settingsPage"
         android:contentDescription="@string/settings_top_button_description"
         android:title="@string/settings_top_button"

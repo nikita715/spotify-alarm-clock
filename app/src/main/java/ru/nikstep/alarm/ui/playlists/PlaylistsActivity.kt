@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityPlaylistsBinding
+import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
@@ -36,6 +37,12 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
         }
         notificationsMenuItem.setOnMenuItemClickListener {
             startActivityWithIntent(this, NotificationsActivity::class.java)
+            true
+        }
+
+        val alarmLogsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.alarmLogPage)
+        alarmLogsMenuItem.setOnMenuItemClickListener {
+            startActivityWithIntent(this, AlarmLogActivity::class.java)
             true
         }
 

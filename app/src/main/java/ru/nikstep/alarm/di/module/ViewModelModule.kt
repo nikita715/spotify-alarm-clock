@@ -5,6 +5,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import ru.nikstep.alarm.ui.alarm.AlarmViewModel
+import ru.nikstep.alarm.ui.alarmlog.AlarmLogViewModel
 import ru.nikstep.alarm.ui.main.MainViewModel
 import ru.nikstep.alarm.ui.notifications.NotificationsViewModel
 import ru.nikstep.alarm.ui.playlists.PlaylistsViewModel
@@ -30,4 +31,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NotificationsViewModel::class)
     abstract fun notificationsViewModel(viewModel: NotificationsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AlarmLogViewModel::class)
+    abstract fun alarmLogViewModel(viewModel: AlarmLogViewModel): ViewModel
 }

@@ -3,8 +3,6 @@ package ru.nikstep.alarm.di.module
 import android.app.Application
 import android.util.Log
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -23,6 +21,7 @@ import ru.nikstep.alarm.api.model.SpotifyPlaylistImage
 import ru.nikstep.alarm.api.model.SpotifyUser
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.database.AlarmDao
+import ru.nikstep.alarm.database.AlarmLogDao
 import ru.nikstep.alarm.database.AppDatabase
 import ru.nikstep.alarm.database.PlaylistDao
 import ru.nikstep.alarm.service.LoginService
@@ -31,7 +30,9 @@ import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmController
 import ru.nikstep.alarm.service.alarm.AndroidAlarmManager
 import ru.nikstep.alarm.service.data.AlarmDataService
+import ru.nikstep.alarm.service.data.AlarmLogDataService
 import ru.nikstep.alarm.service.data.DatabaseAlarmDataService
+import ru.nikstep.alarm.service.data.DatabaseAlarmLogDataService
 import ru.nikstep.alarm.service.data.DatabasePlaylistDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
 import ru.nikstep.alarm.service.file.CoverStorage
@@ -39,6 +40,8 @@ import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.service.log.ToastLogService
 import ru.nikstep.alarm.service.notification.AndroidNotificationService
 import ru.nikstep.alarm.service.notification.NotificationService
+import ru.nikstep.alarm.util.database.DATABASE_NAME
+import ru.nikstep.alarm.util.database.getMigrations
 import ru.nikstep.alarm.util.json.PlaylistJsonAdapter
 import ru.nikstep.alarm.util.json.SpotifyPlaylistImageJsonAdapter
 import ru.nikstep.alarm.util.json.SpotifyUserJsonAdapter
@@ -50,38 +53,8 @@ object DependencyModule {
     @Provides
     @Reusable
     fun roomDatabase(application: Application): AppDatabase =
-        Room.databaseBuilder(application, AppDatabase::class.java, "test1.db")
-            .addMigrations(object : Migration(2, 3) {
-                override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL("ALTER TABLE ALARM ADD COLUMN PREVIOUS_TRACK VARCHAR(50)")
-                }
-            })
-            .addMigrations(object : Migration(3, 4) {
-                override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `external_id` TEXT NOT NULL)")
-                }
-            })
-            .addMigrations(object : Migration(4, 5) {
-                override fun migrate(database: SupportSQLiteDatabase) {}
-            })
-            .addMigrations(object : Migration(5, 6) {
-                override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL("DROP TABLE `Playlist`")
-                    database.execSQL("CREATE TABLE `Playlist` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `externalId` TEXT NOT NULL)")
-                }
-            })
-            .addMigrations(object : Migration(6, 7) {
-                override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL("DROP TABLE `Alarm`")
-                    database.execSQL("CREATE TABLE `Alarm` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'hour' INTEGER NOT NULL, 'minute' INTEGER NOT NULL, 'playlist' INTEGER NOT NULL, `previousTrack` TEXT, FOREIGN KEY('playlist') REFERENCES 'Playlist'('id'))")
-                }
-            })
-            .addMigrations(object : Migration(7, 8) {
-                override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL("DROP TABLE `Alarm`")
-                    database.execSQL("CREATE TABLE `Alarm` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'hour' INTEGER NOT NULL, 'minute' INTEGER NOT NULL, 'playlist' INTEGER NOT NULL REFERENCES 'Playlist'('id') ON DELETE CASCADE ON UPDATE, PREVIOUS_TRACK TEXT)")
-                }
-            })
+        Room.databaseBuilder(application, AppDatabase::class.java, DATABASE_NAME)
+            .addMigrations(*getMigrations())
             .allowMainThreadQueries().build()
 
     @Provides
@@ -157,6 +130,16 @@ object DependencyModule {
 
     @Provides
     @Reusable
+    fun alarmLogDao(appDatabase: AppDatabase) =
+        appDatabase.alarmLogDao()
+
+    @Provides
+    @Reusable
+    fun alarmLogDataService(alarmLogDao: AlarmLogDao): AlarmLogDataService =
+        DatabaseAlarmLogDataService(alarmLogDao)
+
+    @Provides
+    @Reusable
     fun coverStorage(application: Application) =
         CoverStorage(application)
 
@@ -186,6 +169,7 @@ object DependencyModule {
         alarmManager: AndroidAlarmManager,
         alarmDataService: AlarmDataService,
         playlistDataService: PlaylistDataService,
+        alarmLogDataService: AlarmLogDataService,
         spotifyClient: SpotifyClient,
         logService: LogService
     ): AlarmController =
@@ -193,6 +177,7 @@ object DependencyModule {
             alarmManager,
             alarmDataService,
             playlistDataService,
+            alarmLogDataService,
             spotifyClient,
             logService
         )
