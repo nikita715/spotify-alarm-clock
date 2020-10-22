@@ -10,12 +10,12 @@ import ru.nikstep.alarm.util.diffItemCallback
 class AlarmLogListAdapter(
     data: List<AlarmLog>,
     private val onItemClickListener: (i: AlarmLog) -> Unit = {}
-) : ListAdapter<AlarmLog, AlarmLogListViewHolder>(diffItemCallback()) {
+) : ListAdapter<AlarmLog, AlarmLogViewHolder>(diffItemCallback()) {
 
     private val data = data as MutableList<AlarmLog>
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmLogListViewHolder =
-        AlarmLogListViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmLogViewHolder =
+        AlarmLogViewHolder(
             AlarmLogItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent, false
@@ -37,6 +37,6 @@ class AlarmLogListAdapter(
 
     override fun getItemId(position: Int): Long = data[position].id
 
-    override fun onBindViewHolder(holder: AlarmLogListViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: AlarmLogViewHolder, position: Int) =
         holder.bind(data[position], onItemClickListener)
 }

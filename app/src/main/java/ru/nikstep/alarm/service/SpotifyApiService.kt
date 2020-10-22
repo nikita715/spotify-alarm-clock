@@ -3,6 +3,7 @@ package ru.nikstep.alarm.service
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import ru.nikstep.alarm.api.SpotifyApiClient
+import ru.nikstep.alarm.api.model.Track
 import ru.nikstep.alarm.model.Playlist
 import javax.inject.Inject
 
@@ -27,5 +28,12 @@ class SpotifyApiService @Inject constructor(
         spotifyApiClient.getPlaylistCoverLink(playlistId, loginService.getAccessToken())?.link
             ?.let { link -> spotifyApiClient.getPlaylistCover(link) }
             ?.let { responseBody -> BitmapFactory.decodeStream(responseBody.byteStream()) }
+
+    suspend fun getPlaylistTracks(playlistId: String): List<Track> {
+        if (me == null) {
+            me = getMe().name
+        }
+        return spotifyApiClient.getPlaylistTracks(playlistId, loginService.getAccessToken()).trackList
+    }
 
 }

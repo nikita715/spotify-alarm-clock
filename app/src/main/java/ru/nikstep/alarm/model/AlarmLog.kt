@@ -28,4 +28,19 @@ class AlarmLog(
         second = calendarInstance.get(Calendar.SECOND),
         playlist = playlist
     )
+
+    val yearAsString: String
+        get() = year.toString()
+    val monthAsString: String
+        get() = month.toTwoDigitString()
+    val dayAsString: String
+        get() = day.toTwoDigitString()
+    val hourAsString: String
+        get() = hour.toTwoDigitString()
+    val minuteAsString: String
+        get() = minute.toTwoDigitString()
+    val secondAsString: String
+        get() = second.toTwoDigitString()
+
+    private fun Int.toTwoDigitString() = toString().padStart(2, '0')
 }

@@ -40,6 +40,10 @@
             android:name=".ui.alarmlog.AlarmLogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".ui.trackselect.TrackSelectActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
             android:name="com.spotify.sdk.android.auth.LoginActivity"

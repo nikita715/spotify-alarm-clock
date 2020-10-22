@@ -16,9 +16,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.nikstep.alarm.BuildConfig
 import ru.nikstep.alarm.api.SpotifyApiClient
-import ru.nikstep.alarm.api.model.Playlists
-import ru.nikstep.alarm.api.model.SpotifyPlaylistImage
-import ru.nikstep.alarm.api.model.SpotifyUser
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.database.AlarmDao
 import ru.nikstep.alarm.database.AlarmLogDao
@@ -42,9 +39,7 @@ import ru.nikstep.alarm.service.notification.AndroidNotificationService
 import ru.nikstep.alarm.service.notification.NotificationService
 import ru.nikstep.alarm.util.database.DATABASE_NAME
 import ru.nikstep.alarm.util.database.getMigrations
-import ru.nikstep.alarm.util.json.PlaylistJsonAdapter
-import ru.nikstep.alarm.util.json.SpotifyPlaylistImageJsonAdapter
-import ru.nikstep.alarm.util.json.SpotifyUserJsonAdapter
+import ru.nikstep.alarm.util.json.addJsonAdapters
 
 
 @Module
@@ -61,9 +56,7 @@ object DependencyModule {
     @Reusable
     fun converterFactory(): Converter.Factory {
         val moshi = Moshi.Builder()
-            .add(Playlists::class.java, PlaylistJsonAdapter())
-            .add(SpotifyUser::class.java, SpotifyUserJsonAdapter())
-            .add(SpotifyPlaylistImage::class.java, SpotifyPlaylistImageJsonAdapter())
+            .addJsonAdapters()
             .build()
         return MoshiConverterFactory.create(moshi)
     }

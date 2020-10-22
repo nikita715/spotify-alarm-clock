@@ -6,7 +6,6 @@ import com.squareup.moshi.JsonWriter
 import ru.nikstep.alarm.api.model.Playlists
 import ru.nikstep.alarm.model.Playlist
 
-
 class PlaylistJsonAdapter : JsonAdapter<Playlists>() {
 
     override fun fromJson(reader: JsonReader): Playlists? {
