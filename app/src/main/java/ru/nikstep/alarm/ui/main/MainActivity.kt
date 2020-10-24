@@ -115,10 +115,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             val response = AuthorizationClient.getResponse(resultCode, data)
             response.accessToken?.let { token ->
                 viewModel.setAccessToken(token)
-                setAppPreference(R.string.saved_spotify_access_token, response.accessToken)
-                setAppPreference(
+                setAppPreference<String>(R.string.saved_spotify_access_token, response.accessToken)
+                setAppPreference<Long>(
                     R.string.saved_spotify_access_token_timeout,
-                    System.currentTimeMillis() + 1000 * response.expiresIn * 0.5
+                    System.currentTimeMillis() + 500 * response.expiresIn
                 )
             } ?: Log.e("MainActivity", "Spotify access token is empty")
         }
