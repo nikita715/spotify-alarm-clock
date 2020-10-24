@@ -54,10 +54,15 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
         buildNewAlarmButtonListener()
 
-        viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
+        viewModel.getAlarms().observeResult(this, loadingBlock = {
+            binding.mainContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+        }, successBlock = { alarms ->
             val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick)
             buildAlarmList(listAdapter)
             buildSwipeAlarmListener(listAdapter)
+            binding.progressBar.visibility = View.GONE
+            binding.mainContainer.visibility = View.VISIBLE
         })
 
         val notificationsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.notificationsPage)
@@ -141,11 +146,13 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     private fun buildSwipeAlarmListener(listAdapter: AlarmListAdapter) {
-        val mainSwipeContainer = binding.mainSwipeContainer
-        mainSwipeContainer.setOnRefreshListener {
+        val mainContainer = binding.mainContainer
+        mainContainer.setOnRefreshListener {
             viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
                 listAdapter.updateItems(alarms)
-                mainSwipeContainer.isRefreshing = false
+                mainContainer.isRefreshing = false
+            }, errorBlock = {
+                mainContainer.isRefreshing = false
             })
         }
     }

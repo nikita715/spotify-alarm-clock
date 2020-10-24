@@ -8,7 +8,7 @@ import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.util.diffItemCallback
 
 class PlaylistListAdapter(
-    data: List<Playlist>,
+    data: List<Playlist> = mutableListOf(),
     private val onItemClickListener: (i: Playlist) -> Unit = {}
 ) : ListAdapter<Playlist, PlaylistListViewHolder>(diffItemCallback()) {
 

@@ -1,6 +1,7 @@
 package ru.nikstep.alarm.ui.trackselect
 
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.nikstep.alarm.databinding.ActivityTrackSelectBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
@@ -24,17 +25,22 @@ class TrackSelectActivity : BaseActivity<TrackSelectViewModel, ActivityTrackSele
     }
 
     private fun buildSwipeAlarmListener(playlistId: String, listAdapter: TrackSelectListAdapter) {
-        val mainSwipeContainer = binding.mainSwipeContainer
-        mainSwipeContainer.setOnRefreshListener {
+        val mainContainer = binding.mainContainer
+        mainContainer.setOnRefreshListener {
             listAdapter.removeAllItems()
             downloadPlaylistTracks(playlistId, listAdapter)
-            mainSwipeContainer.isRefreshing = false
+            mainContainer.isRefreshing = false
         }
     }
 
     private fun downloadPlaylistTracks(playlistId: String, listAdapter: TrackSelectListAdapter) {
-        viewModel.getPlaylistTracks(playlistId).observeResult(this, successBlock = { tracks ->
+        viewModel.getPlaylistTracks(playlistId).observeResult(this, loadingBlock = {
+            binding.mainContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+        }, successBlock = { tracks ->
             listAdapter.updateItems(tracks)
+            binding.progressBar.visibility = View.GONE
+            binding.mainContainer.visibility = View.VISIBLE
         })
     }
 

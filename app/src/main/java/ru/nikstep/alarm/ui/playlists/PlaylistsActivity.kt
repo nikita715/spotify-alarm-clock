@@ -3,6 +3,7 @@ package ru.nikstep.alarm.ui.playlists
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
@@ -45,31 +46,39 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
             true
         }
 
-        val refreshPlaylistsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.refreshPlaylists)
-        refreshPlaylistsMenuItem.setOnMenuItemClickListener {
-            downloadPlaylists()
-            true
-        }
-        showPlaylists()
+        val playlistListView = binding.playlistList
+        playlistListView.setHasFixedSize(true)
+        playlistListView.layoutManager = LinearLayoutManager(this)
+        val playlistListAdapter = PlaylistListAdapter()
+        playlistListView.adapter = playlistListAdapter
+        showPlaylists(playlistListAdapter)
+
+        buildSwipePlaylistsListener()
     }
 
-    private fun showPlaylists() {
-        viewModel.getPlaylists().observeResult(this, successBlock = { playlists ->
-            val playlistListView = binding.playlistList
-            playlistListView.setHasFixedSize(true)
-            playlistListView.layoutManager = LinearLayoutManager(this)
-            playlistListView.adapter = PlaylistListAdapter(playlists) {}
+    private fun showPlaylists(adapter: PlaylistListAdapter) {
+        viewModel.getPlaylists().observeResult(this, loadingBlock = {
+            binding.mainContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+        }, successBlock = { playlists ->
+            adapter.updateItems(playlists)
+            binding.progressBar.visibility = View.GONE
+            binding.mainContainer.visibility = View.VISIBLE
         })
     }
 
-    private fun downloadPlaylists() {
-        val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
-        playlistListAdapter.updateItems(emptyList())
-        viewModel.downloadPlaylists().observeResult(this, successBlock = { downloadedPlaylists ->
-            viewModel.savePlaylists(downloadedPlaylists).observeResult(this, successBlock = { savedPlaylists ->
-                playlistListAdapter.updateItems(savedPlaylists)
+    private fun buildSwipePlaylistsListener() {
+        binding.mainContainer.setOnRefreshListener {
+            val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
+            viewModel.downloadPlaylists().observeResult(this, successBlock = { downloadedPlaylists ->
+                viewModel.savePlaylists(downloadedPlaylists).observeResult(this, successBlock = { savedPlaylists ->
+                    playlistListAdapter.updateItems(savedPlaylists)
+                    binding.mainContainer.isRefreshing = false
+                })
+            }, errorBlock = {
+                binding.mainContainer.isRefreshing = false
             })
-        })
+        }
     }
 
     override fun initViewBinding(): ActivityPlaylistsBinding = ActivityPlaylistsBinding.inflate(layoutInflater)

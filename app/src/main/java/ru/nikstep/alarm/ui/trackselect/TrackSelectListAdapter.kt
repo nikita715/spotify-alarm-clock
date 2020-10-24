@@ -8,7 +8,7 @@ import ru.nikstep.alarm.databinding.TrackItemBinding
 import ru.nikstep.alarm.util.diffItemCallback
 
 class TrackSelectListAdapter(
-    data: List<Track> = emptyList(),
+    data: List<Track> = mutableListOf(),
     private val onItemClickListener: (i: Track) -> Unit = {}
 ) : ListAdapter<Track, TrackSelectViewHolder>(diffItemCallback()) {
 

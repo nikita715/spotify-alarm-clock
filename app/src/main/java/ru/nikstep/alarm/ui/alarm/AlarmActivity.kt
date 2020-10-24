@@ -27,7 +27,11 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.getPlaylists().observeResult(this, successBlock = { playlists ->
+        val alarmId = intent.extras?.getLong(ALARM_ID_EXTRA)
+        viewModel.getPlaylists().observeResult(this, loadingBlock = {
+            binding.mainContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+        }, successBlock = { playlists ->
             val adapter: ArrayAdapter<Playlist> = ArrayAdapter<Playlist>(
                 applicationContext,
                 R.layout.playlist_dropdown_menu_item,
@@ -35,7 +39,8 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
             )
 
             binding.playlistDropdownList.adapter = adapter
-            intent.extras?.getLong(ALARM_ID_EXTRA)?.let { alarmId ->
+
+            if (alarmId != null) {
                 viewModel.getAlarm(alarmId).observeResult(this, successBlock = { alarm ->
                     if (alarm != null) {
                         binding.timePicker.hour = alarm.hour
@@ -44,9 +49,13 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
                     } else {
                         binding.buttonRemoveAlarm.visibility = View.GONE
                     }
+                    binding.progressBar.visibility = View.GONE
+                    binding.mainContainer.visibility = View.VISIBLE
                 })
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.mainContainer.visibility = View.VISIBLE
             }
-
         })
 
         binding.timePicker.setIs24HourView(true)
@@ -58,7 +67,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
             } else {
                 viewModel.setAlarm(
                     AlarmData(
-                        id = intent.extras?.getLong(ALARM_ID_EXTRA),
+                        id = alarmId,
                         hour = binding.timePicker.hour,
                         minute = binding.timePicker.minute,
                         playlist = selectedPlaylist.id
@@ -73,7 +82,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         }
 
         binding.buttonRemoveAlarm.setOnClickListener {
-            intent.extras?.getLong(ALARM_ID_EXTRA)?.let { viewModel.removeAlarm(it) }
+            alarmId?.let { viewModel.removeAlarm(it) }
             returnToMainActivity()
             overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
         }

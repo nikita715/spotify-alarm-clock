@@ -7,9 +7,10 @@
     tools:context=".ui.main.MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/mainSwipeContainer"
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.core.widget.NestedScrollView
@@ -53,13 +54,14 @@
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!--    <ProgressBar-->
-    <!--            android:id="@+id/progressBar1"-->
-    <!--            style="?android:attr/progressBarStyleLarge"-->
-    <!--            android:layout_gravity="center"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_centerHorizontal="true"/>-->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBarLayout"
