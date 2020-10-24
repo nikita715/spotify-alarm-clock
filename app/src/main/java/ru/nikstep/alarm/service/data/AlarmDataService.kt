@@ -10,30 +10,30 @@ interface AlarmDataService {
     /**
      * Find alarm by id
      */
-    fun findById(alarmId: Long): Alarm?
+    suspend fun findById(alarmId: Long): Alarm?
 
     /**
      * Find all alarms
      */
-    fun findAll(): List<Alarm>
+    suspend fun findAll(): List<Alarm>
 
     /**
      * Create or update the alarm
      */
-    fun save(alarmData: AlarmData): Alarm
+    suspend fun save(alarmData: AlarmData): Alarm
 
     /**
      * Delete the alarm
      */
-    fun delete(alarmId: Long)
+    suspend fun delete(alarmId: Long)
 
     /**
      * Temporary public debug method
      */
-    fun create(alarm: Alarm): Alarm
+    suspend fun create(alarm: Alarm): Alarm
 
     /**
      * Temporary public debug method
      */
-    fun update(alarm: Alarm): Int
+    suspend fun update(alarm: Alarm): Int
 }

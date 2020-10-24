@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,6 +25,7 @@ import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
+import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.preferences.getAppPreference
 import ru.nikstep.alarm.util.preferences.setAppPreference
 import ru.nikstep.alarm.util.startActivityWithIntent
@@ -52,10 +54,11 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
         buildNewAlarmButtonListener()
 
-        val listAdapter = AlarmListAdapter(viewModel.getAlarms() as MutableList<Alarm>, onAlarmLineClick)
-
-        buildAlarmList(listAdapter)
-        buildSwipeAlarmListener(listAdapter)
+        viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
+            val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick)
+            buildAlarmList(listAdapter)
+            buildSwipeAlarmListener(listAdapter)
+        })
 
         val notificationsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.notificationsPage)
         when (getAppPreference<Boolean>(R.string.saved_notifications_key)) {
@@ -105,13 +108,14 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         super.onActivityResult(requestCode, resultCode, data)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
             val response = AuthorizationClient.getResponse(resultCode, data)
-            val token = response.accessToken
-            viewModel.setAccessToken(token)
-            setAppPreference(R.string.saved_spotify_access_token, response.accessToken)
-            setAppPreference(
-                R.string.saved_spotify_access_token_timeout,
-                System.currentTimeMillis() + 1000 * response.expiresIn * 0.5
-            )
+            response.accessToken?.let { token ->
+                viewModel.setAccessToken(token)
+                setAppPreference(R.string.saved_spotify_access_token, response.accessToken)
+                setAppPreference(
+                    R.string.saved_spotify_access_token_timeout,
+                    System.currentTimeMillis() + 1000 * response.expiresIn * 0.5
+                )
+            } ?: Log.e("MainActivity", "Spotify access token is empty")
         }
     }
 
@@ -139,8 +143,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     private fun buildSwipeAlarmListener(listAdapter: AlarmListAdapter) {
         val mainSwipeContainer = binding.mainSwipeContainer
         mainSwipeContainer.setOnRefreshListener {
-            listAdapter.updateItems(viewModel.getAlarms())
-            mainSwipeContainer.isRefreshing = false
+            viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
+                listAdapter.updateItems(alarms)
+                mainSwipeContainer.isRefreshing = false
+            })
         }
     }
 

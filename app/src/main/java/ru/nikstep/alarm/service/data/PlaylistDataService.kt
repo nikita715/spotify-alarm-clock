@@ -10,25 +10,25 @@ interface PlaylistDataService {
     /**
      * Find a playlist by [playlistId]
      */
-    fun findById(playlistId: Long): Playlist?
+    suspend fun findById(playlistId: Long): Playlist?
 
     /**
      * Find all playlists
      */
-    fun findAll(): List<Playlist>
+    suspend fun findAll(): List<Playlist>
 
     /**
      * Create [playlists]
      */
-    fun saveAll(playlists: List<Playlist>): List<Playlist>
+    suspend fun saveAll(playlists: List<Playlist>): List<Playlist>
 
     /**
      * Delete all playlists
      */
-    fun deleteAll()
+    suspend fun deleteAll()
 
     /**
      * Create or update [playlists]
      */
-    fun createOrUpdate(playlists: List<Playlist>): List<Playlist>
+    suspend fun createOrUpdate(playlists: List<Playlist>): List<Playlist>
 }

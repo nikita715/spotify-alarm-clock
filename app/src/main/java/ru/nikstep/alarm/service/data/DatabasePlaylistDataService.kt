@@ -7,16 +7,16 @@ class DatabasePlaylistDataService(
     private val playlistDao: PlaylistDao
 ) : PlaylistDataService {
 
-    override fun findById(playlistId: Long): Playlist? = playlistDao.findById(playlistId)
+    override suspend fun findById(playlistId: Long): Playlist? = playlistDao.findById(playlistId)
 
-    override fun findAll(): List<Playlist> = playlistDao.getAll()
+    override suspend fun findAll(): List<Playlist> = playlistDao.getAll()
 
-    override fun saveAll(playlists: List<Playlist>): List<Playlist> {
+    override suspend fun saveAll(playlists: List<Playlist>): List<Playlist> {
         playlistDao.insert(playlists)
         return findAll()
     }
 
-    override fun createOrUpdate(playlists: List<Playlist>): List<Playlist> {
+    override suspend fun createOrUpdate(playlists: List<Playlist>): List<Playlist> {
         val storedPlaylists = findAll().associateBy { it.externalId }
         return saveAll(
             playlists.map {
@@ -27,5 +27,5 @@ class DatabasePlaylistDataService(
 
     }
 
-    override fun deleteAll() = playlistDao.deleteAll()
+    override suspend fun deleteAll() = playlistDao.deleteAll()
 }

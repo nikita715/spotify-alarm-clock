@@ -14,6 +14,7 @@ import com.spotify.protocol.types.ListItem
 import com.spotify.protocol.types.UriWithOptionExtras
 import ru.nikstep.alarm.BuildConfig
 import ru.nikstep.alarm.client.MusicClient
+import ru.nikstep.alarm.util.data.emitLiveData
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -36,8 +37,8 @@ class SpotifyClient @Inject constructor(
         if (spotify?.isConnected == true) {
             spotify?.let(call)
         } else {
-            callSpotify(call)
             spotify = null
+            callSpotify(call)
         }
     }
 
@@ -52,7 +53,7 @@ class SpotifyClient @Inject constructor(
             }
         })
 
-    override fun play(data: SpotifyMusicData) {
+    override fun play(data: SpotifyMusicData) =
         executeToSpotify { appRemote ->
             spotify = appRemote
             appRemote.playerApi.subscribeToPlayerContext().setEventCallback {
@@ -60,7 +61,9 @@ class SpotifyClient @Inject constructor(
             }
             appRemote.playerApi.subscribeToPlayerState().setEventCallback {
                 Log.i("SpotifyClient", it.toString())
-                data.callback?.invoke(it)
+                emitLiveData {
+                    data.callback?.invoke(it)
+                }
             }
             appRemote.connectApi.connectSwitchToLocalDevice()
             when (data.type) {
@@ -69,7 +72,6 @@ class SpotifyClient @Inject constructor(
                     playSetOfTracks(data, appRemote)
             }
         }
-    }
 
     override fun stop() = executeToSpotify { appRemote ->
         spotify = appRemote

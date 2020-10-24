@@ -9,11 +9,11 @@ import ru.nikstep.alarm.model.AlarmLog
 @Dao
 interface AlarmLogDao {
     @Query("SELECT * FROM AlarmLog")
-    fun getAll(): List<AlarmLog>
+    suspend fun getAll(): List<AlarmLog>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(alarmLog: AlarmLog): Long
+    suspend fun insert(alarmLog: AlarmLog): Long
 
     @Query("DELETE FROM AlarmLog")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

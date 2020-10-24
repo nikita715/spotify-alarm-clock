@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.nikstep.alarm.databinding.ActivityAlarmLogBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
+import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
 class AlarmLogActivity : BaseActivity<AlarmLogViewModel, ActivityAlarmLogBinding>() {
@@ -18,16 +19,20 @@ class AlarmLogActivity : BaseActivity<AlarmLogViewModel, ActivityAlarmLogBinding
         val playlistListView = binding.alarmLogList
         playlistListView.setHasFixedSize(true)
         playlistListView.layoutManager = LinearLayoutManager(this)
-        val alarmLogListAdapter = AlarmLogListAdapter(viewModel.getAlarmLogs()) {}
-        playlistListView.adapter = alarmLogListAdapter
-        buildSwipeAlarmListener(alarmLogListAdapter)
+        viewModel.getAlarmLogs().observeResult(this, successBlock = { alarmLogs ->
+            val alarmLogListAdapter = AlarmLogListAdapter(alarmLogs) {}
+            playlistListView.adapter = alarmLogListAdapter
+            buildSwipeAlarmListener(alarmLogListAdapter)
+        })
     }
 
     private fun buildSwipeAlarmListener(listAdapter: AlarmLogListAdapter) {
         val mainSwipeContainer = binding.mainSwipeContainer
         mainSwipeContainer.setOnRefreshListener {
-            listAdapter.updateItems(viewModel.getAlarmLogs())
-            mainSwipeContainer.isRefreshing = false
+            viewModel.getAlarmLogs().observeResult(this, successBlock = { alarmLogs ->
+                listAdapter.updateItems(alarmLogs)
+                mainSwipeContainer.isRefreshing = false
+            })
         }
     }
 

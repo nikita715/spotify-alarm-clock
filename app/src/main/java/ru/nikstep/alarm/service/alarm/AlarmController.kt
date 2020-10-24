@@ -1,5 +1,6 @@
 package ru.nikstep.alarm.service.alarm
 
+import ru.nikstep.alarm.client.spotify.SpotifyMusicData
 import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 
@@ -10,32 +11,37 @@ interface AlarmController {
     /**
      * Save the alarm and set android alarm
      */
-    fun setAlarm(alarmData: AlarmData)
+    suspend fun setAlarm(alarmData: AlarmData): Alarm
 
     /**
      * Remove the alarm and remove android alarm
      */
-    fun removeAlarm(alarmId: Long)
+    suspend fun removeAlarm(alarmId: Long)
 
     /**
-     * Find and start the alarm
+     * Get all stored alarms
      */
-    fun startAlarm(alarmId: Long)
+    suspend fun getAllAlarms(): List<Alarm>
+
+    /**
+     * Get the alarm
+     */
+    suspend fun getAlarm(alarmId: Long): Alarm?
+
+    /**
+     * Create [SpotifyMusicData] for spotify
+     */
+    suspend fun buildSpotifyMusicData(alarmId: Long): SpotifyMusicData?
+
+    /**
+     * Start the alarm
+     */
+    fun startAlarm(spotifyMusicData: SpotifyMusicData)
 
     /**
      * Find and start the alarm
      */
     fun stopAlarm()
-
-    /**
-     * Get all stored alarms
-     */
-    fun getAllAlarms(): List<Alarm>
-
-    /**
-     * Get the alarm
-     */
-    fun getAlarm(alarmId: Long): Alarm?
 
     /**
      * Temporary debug method

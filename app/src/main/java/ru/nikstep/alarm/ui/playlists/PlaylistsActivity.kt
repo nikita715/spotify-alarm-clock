@@ -3,7 +3,6 @@ package ru.nikstep.alarm.ui.playlists
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.nikstep.alarm.R
@@ -12,7 +11,7 @@ import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
-import ru.nikstep.alarm.util.data.Status
+import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -55,33 +54,22 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
     }
 
     private fun showPlaylists() {
-        val playlistListView = binding.playlistList
-        playlistListView.setHasFixedSize(true)
-        playlistListView.layoutManager = LinearLayoutManager(this)
-        playlistListView.adapter = PlaylistListAdapter(viewModel.getPlaylists()) {}
+        viewModel.getPlaylists().observeResult(this, successBlock = { playlists ->
+            val playlistListView = binding.playlistList
+            playlistListView.setHasFixedSize(true)
+            playlistListView.layoutManager = LinearLayoutManager(this)
+            playlistListView.adapter = PlaylistListAdapter(playlists) {}
+        })
     }
 
     private fun downloadPlaylists() {
         val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
         playlistListAdapter.updateItems(emptyList())
-        viewModel.downloadPlaylists()
-            .observe(this, {
-                it?.let { resource ->
-                    when (resource.status) {
-                        Status.LOADING -> {
-                        }
-                        Status.SUCCESS -> {
-                            resource.data?.let { presentData ->
-                                val savedPlaylists = viewModel.savePlaylists(presentData)
-                                playlistListAdapter.updateItems(savedPlaylists)
-                            }
-                        }
-                        Status.ERROR -> {
-                            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
+        viewModel.downloadPlaylists().observeResult(this, successBlock = { downloadedPlaylists ->
+            viewModel.savePlaylists(downloadedPlaylists).observeResult(this, successBlock = { savedPlaylists ->
+                playlistListAdapter.updateItems(savedPlaylists)
             })
+        })
     }
 
     override fun initViewBinding(): ActivityPlaylistsBinding = ActivityPlaylistsBinding.inflate(layoutInflater)

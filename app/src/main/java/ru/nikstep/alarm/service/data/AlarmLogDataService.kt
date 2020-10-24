@@ -10,15 +10,15 @@ interface AlarmLogDataService {
     /**
      * Find all alarm logs
      */
-    fun findAll(): List<AlarmLog>
+    suspend fun findAll(): List<AlarmLog>
 
     /**
      * Create or update the alarm log
      */
-    fun save(alarmLog: AlarmLog): Long
+    suspend fun save(alarmLog: AlarmLog): Long
 
     /**
      * Delete all alarm logs
      */
-    fun deleteAll()
+    suspend fun deleteAll()
 }

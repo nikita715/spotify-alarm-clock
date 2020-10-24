@@ -25,42 +25,39 @@ class AndroidAlarmController @Inject constructor(
     private val logService: LogService
 ) : AlarmController {
 
-    override fun setAlarm(alarmData: AlarmData) {
+    override suspend fun setAlarm(alarmData: AlarmData): Alarm {
         val alarm = alarmDataService.save(alarmData)
         alarmManager.setEveryDayAlarm(alarm)
         logService.showMessage(R.string.message_alarm_activated, formatDate(alarm.hour, alarm.minute))
         Log.i("AlarmManager", "Created $alarm")
+        return alarm
     }
 
-    override fun removeAlarm(alarmId: Long) {
+    override suspend fun removeAlarm(alarmId: Long) {
         alarmManager.removeAlarm(alarmId)
         alarmDataService.delete(alarmId)
         logService.showMessage(R.string.message_alarm_removed)
         Log.i("AlarmManager", "Removed alarm by id $alarmId")
     }
 
-    override fun startAlarm(alarmId: Long) {
-        val alarm = alarmDataService.findById(alarmId)?.also { alarm ->
-            val playlist = playlistDataService.findById(alarm.playlist)
-            if (playlist == null) {
-                Log.e("AlarmManager", "Playlist of alarm is null $alarm")
-            } else {
-                spotifyClient.play(
-                    SpotifyMusicData(
-                        playlist.externalId,
-                        SpotifyItemType.PLAYLIST,
-                        SpotifyPlayType.RANDOM
-                    ) {
-                        val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
-                        alarmDataService.update(updatedAlarm)
-                        Log.i("AlarmManager", "Saved alarm $updatedAlarm")
-                    })
+    override suspend fun buildSpotifyMusicData(alarmId: Long): SpotifyMusicData? =
+        alarmDataService.findById(alarmId)?.let { alarm ->
+            playlistDataService.findById(alarm.playlist)?.let { playlist ->
                 alarmLogDataService.save(AlarmLog(alarmId = alarmId, playlist = playlist.name))
+                SpotifyMusicData(
+                    playlist.externalId,
+                    SpotifyItemType.PLAYLIST,
+                    SpotifyPlayType.RANDOM
+                ) {
+                    val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
+                    alarmDataService.update(updatedAlarm)
+                    Log.i("AlarmManager", "Saved alarm $updatedAlarm")
+                }
             }
         }
-        if (alarm == null) {
-            Log.e("AlarmManager", "Alarm $alarmId not found")
-        }
+
+    override fun startAlarm(spotifyMusicData: SpotifyMusicData) {
+        spotifyClient.play(spotifyMusicData)
     }
 
     override fun stopAlarm() {
@@ -68,13 +65,11 @@ class AndroidAlarmController @Inject constructor(
     }
 
     override fun hackPlay(playlist: String) {
-        val alarm = alarmDataService.findById(1L)
-            ?: Alarm(1, 0, 0, 1, null).also { alarmDataService.create(it) }
-        startAlarm(alarm.id)
+        startAlarm(SpotifyMusicData(playlist, SpotifyItemType.PLAYLIST, SpotifyPlayType.RANDOM))
     }
 
-    override fun getAllAlarms() = alarmDataService.findAll()
+    override suspend fun getAllAlarms() = alarmDataService.findAll()
 
-    override fun getAlarm(alarmId: Long) = alarmDataService.findById(alarmId)
+    override suspend fun getAlarm(alarmId: Long) = alarmDataService.findById(alarmId)
 
 }

@@ -50,7 +50,7 @@ object DependencyModule {
     fun roomDatabase(application: Application): AppDatabase =
         Room.databaseBuilder(application, AppDatabase::class.java, DATABASE_NAME)
             .addMigrations(*getMigrations())
-            .allowMainThreadQueries().build()
+            .build()
 
     @Provides
     @Reusable

@@ -1,11 +1,10 @@
 package ru.nikstep.alarm.ui.trackselect
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.nikstep.alarm.databinding.ActivityTrackSelectBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
-import ru.nikstep.alarm.util.data.Status
+import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
 class TrackSelectActivity : BaseActivity<TrackSelectViewModel, ActivityTrackSelectBinding>() {
@@ -34,23 +33,9 @@ class TrackSelectActivity : BaseActivity<TrackSelectViewModel, ActivityTrackSele
     }
 
     private fun downloadPlaylistTracks(playlistId: String, listAdapter: TrackSelectListAdapter) {
-        viewModel.getPlaylistTracks(playlistId)
-            .observe(this, {
-                it?.let { resource ->
-                    when (resource.status) {
-                        Status.LOADING -> {
-                        }
-                        Status.SUCCESS -> {
-                            resource.data?.let { tracks ->
-                                listAdapter.updateItems(tracks)
-                            }
-                        }
-                        Status.ERROR -> {
-                            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            })
+        viewModel.getPlaylistTracks(playlistId).observeResult(this, successBlock = { tracks ->
+            listAdapter.updateItems(tracks)
+        })
     }
 
     override fun initViewBinding(): ActivityTrackSelectBinding = ActivityTrackSelectBinding.inflate(layoutInflater)

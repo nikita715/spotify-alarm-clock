@@ -8,9 +8,11 @@ import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.util.diffItemCallback
 
 class AlarmListAdapter(
-    private var data: MutableList<Alarm>,
+    data: List<Alarm>,
     private val onItemClickListener: (i: Alarm) -> Unit = {}
 ) : ListAdapter<Alarm, AlarmListViewHolder>(diffItemCallback()) {
+
+    private var data: MutableList<Alarm> = data as MutableList<Alarm>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmListViewHolder =
         AlarmListViewHolder(

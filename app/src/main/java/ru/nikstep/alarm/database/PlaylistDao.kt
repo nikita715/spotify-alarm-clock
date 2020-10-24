@@ -10,14 +10,14 @@ import ru.nikstep.alarm.model.Playlist
 interface PlaylistDao {
 
     @Query("SELECT * FROM playlist WHERE id = :playlistId")
-    fun findById(playlistId: Long): Playlist?
+    suspend fun findById(playlistId: Long): Playlist?
 
     @Query("SELECT * FROM playlist")
-    fun getAll(): List<Playlist>
+    suspend fun getAll(): List<Playlist>
 
     @Query("DELETE FROM playlist")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(playlists: List<Playlist>): List<Long>
+    suspend fun insert(playlists: List<Playlist>): List<Long>
 }

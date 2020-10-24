@@ -6,9 +6,9 @@ import ru.nikstep.alarm.model.AlarmLog
 class DatabaseAlarmLogDataService(
     private val alarmLogDao: AlarmLogDao
 ) : AlarmLogDataService {
-    override fun findAll(): List<AlarmLog> = alarmLogDao.getAll()
+    override suspend fun findAll(): List<AlarmLog> = alarmLogDao.getAll()
 
-    override fun save(alarmLog: AlarmLog): Long = alarmLogDao.insert(alarmLog)
+    override suspend fun save(alarmLog: AlarmLog): Long = alarmLogDao.insert(alarmLog)
 
-    override fun deleteAll(): Unit = alarmLogDao.deleteAll()
+    override suspend fun deleteAll(): Unit = alarmLogDao.deleteAll()
 }
