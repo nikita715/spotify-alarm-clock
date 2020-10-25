@@ -103,7 +103,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private fun showSnackbar(
         message: String,
-        duration: Int = Snackbar.LENGTH_INDEFINITE,
+        duration: Int = Snackbar.LENGTH_LONG,
         actionName: String = "OK",
         action: () -> Unit = {}
     ) {
@@ -166,9 +166,12 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         alarmList.adapter = listAdapter
 
         ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
-            listAdapter.removeItem(viewHolder.adapterPosition)
-            viewModel.removeAlarm(viewHolder.itemView.tag as Long)
-            showSnackbar("Alarms is removed")
+            viewModel.removeAlarm(viewHolder.itemView.tag as Long).observeResult(this, successBlock = {
+                listAdapter.removeItem(viewHolder.adapterPosition)
+                showSnackbar("Alarms is removed")
+            }, errorBlock = {
+                showSnackbar("Error during the removal of the alarm")
+            })
         }).attachToRecyclerView(alarmList)
     }
 
@@ -180,7 +183,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 mainContainer.isRefreshing = false
             }, errorBlock = {
                 mainContainer.isRefreshing = false
-                showSnackbar("Error during the update of alarms", Snackbar.LENGTH_LONG)
+                showSnackbar("Error during the update of alarms")
             })
         }
     }

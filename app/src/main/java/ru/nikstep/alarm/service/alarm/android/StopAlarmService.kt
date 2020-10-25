@@ -1,27 +1,31 @@
 package ru.nikstep.alarm.service.alarm.android
 
-import android.app.IntentService
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.LifecycleService
 import ru.nikstep.alarm.AlarmApp
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.util.data.emitLiveData
+import ru.nikstep.alarm.util.data.observeResult
 import javax.inject.Inject
 
-class StopAlarmService : IntentService(StopAlarmService::class.java.simpleName) {
+class StopAlarmService : LifecycleService() {
 
     @Inject
     lateinit var alarmController: AlarmController
 
-    override fun onHandleIntent(intent: Intent?) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         (applicationContext as AlarmApp).androidInjector.inject(this)
         if (intent?.action == CLOSE_ALARM_ACTION) {
             emitLiveData {
                 alarmController.stopAlarm()
-            }
-            Log.i("StopMusicService", "Stopped music")
+            }.observeResult(this, successBlock = {
+                Log.i("StopMusicService", "Stopped the music")
+            })
         }
         stopService(Intent(applicationContext, AlarmService::class.java))
+        return START_NOT_STICKY
     }
 
     companion object {
