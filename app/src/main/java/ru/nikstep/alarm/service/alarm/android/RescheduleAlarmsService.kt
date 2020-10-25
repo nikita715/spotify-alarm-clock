@@ -33,21 +33,16 @@ class RescheduleAlarmsService : LifecycleService() {
 
         emitLiveData {
             alarmDataService.findAll().map { alarm ->
-                alarmController.setAlarm(
-                    AlarmData(
-                        alarm.id,
-                        alarm.hour,
-                        alarm.minute,
-                        alarm.playlist
-                    )
-                )
+                alarmController.setAlarm(alarm)
             }
         }.observeResult(this, successBlock = { alarms ->
             alarms.forEach { alarm ->
-                Log.i(
-                    "ReschAlarmsService", "Alarm with id ${alarm.id}" +
-                            " scheduled at ${alarm.hour}^${alarm.minute}"
-                )
+                alarm?.also {
+                    Log.i(
+                        "ReschAlarmsService", "Alarm with id ${alarm.id}" +
+                                " scheduled at ${alarm.hour}^${alarm.minute}"
+                    )
+                } ?: Log.e("ReschAlarmsService", "Alarm wasn't saved")
             }
         })
         return START_STICKY

@@ -2,25 +2,21 @@ package ru.nikstep.alarm.ui.alarm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import ru.nikstep.alarm.R
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.Playlist
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.data.PlaylistDataService
-import ru.nikstep.alarm.service.log.LogService
 import ru.nikstep.alarm.util.data.Result
 import ru.nikstep.alarm.util.data.emitLiveData
 import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
     private val alarmController: AlarmController,
-    private val playlistDataService: PlaylistDataService,
-    private val logService: LogService
+    private val playlistDataService: PlaylistDataService
 ) : ViewModel() {
 
-    fun setAlarm(alarmData: AlarmData): LiveData<Result<Alarm>> = emitLiveData {
-        alarmController.setAlarm(alarmData)
+    fun setAlarm(alarm: Alarm): LiveData<Result<Alarm?>> = emitLiveData {
+        alarmController.setAlarm(alarm)
     }
 
     fun removeAlarm(alarmId: Long) = emitLiveData {
@@ -38,6 +34,4 @@ class AlarmViewModel @Inject constructor(
     fun getAlarm(alarmId: Long) = emitLiveData {
         alarmController.getAlarm(alarmId)
     }
-
-    fun warnNoPlaylistSelected() = logService.showMessage(R.string.noPlaylistSelected)
 }

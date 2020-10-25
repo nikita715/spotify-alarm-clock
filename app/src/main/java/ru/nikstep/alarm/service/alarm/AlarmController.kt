@@ -11,7 +11,7 @@ interface AlarmController {
     /**
      * Save the alarm and set android alarm
      */
-    suspend fun setAlarm(alarmData: AlarmData): Alarm
+    suspend fun setAlarm(alarm: Alarm): Alarm?
 
     /**
      * Remove the alarm and remove android alarm

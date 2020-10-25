@@ -11,7 +11,6 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -19,6 +18,7 @@ import ru.nikstep.alarm.BuildConfig
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
+import ru.nikstep.alarm.model.type.AlarmChangeType
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
@@ -29,6 +29,7 @@ import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.preferences.getAppPreference
 import ru.nikstep.alarm.util.preferences.setAppPreference
+import ru.nikstep.alarm.util.showSnackbar
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -92,26 +93,16 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     private fun checkExtras() {
-        if (intent.getBooleanExtra("CREATED_ALARM", false)) {
-            intent.getStringExtra("CREATED_ALARM_TIME")?.let { alarmTime ->
-                showSnackbar("Alarm scheduled at $alarmTime")
+        val alarmChangeType = intent.getSerializableExtra(AlarmChangeType.EXTRA_NAME) as AlarmChangeType?
+        if (alarmChangeType != null) {
+            val alarmTime = intent.getStringExtra(AlarmChangeType.TIME_EXTRA_NAME)
+            val message = when (alarmChangeType) {
+                AlarmChangeType.CREATE -> "Alarm scheduled at $alarmTime"
+                AlarmChangeType.UPDATE -> "Alarm rescheduled at $alarmTime"
+                AlarmChangeType.DELETE -> "Alarm is removed"
             }
-        } else if (intent.getBooleanExtra("REMOVED_ALARM", false)) {
-            showSnackbar("Alarm is removed")
+            showSnackbar(binding.mainCoordinatorLayout, message)
         }
-    }
-
-    private fun showSnackbar(
-        message: String,
-        duration: Int = Snackbar.LENGTH_LONG,
-        actionName: String = "OK",
-        action: () -> Unit = {}
-    ) {
-        Snackbar.make(binding.mainCoordinatorLayout, message, duration)
-            .setAction(actionName) {
-                action.invoke()
-            }
-            .show()
     }
 
     private fun createNotificationChannel() {
@@ -168,9 +159,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
             viewModel.removeAlarm(viewHolder.itemView.tag as Long).observeResult(this, successBlock = {
                 listAdapter.removeItem(viewHolder.adapterPosition)
-                showSnackbar("Alarms is removed")
+                showSnackbar(binding.mainCoordinatorLayout, "Alarms is removed")
             }, errorBlock = {
-                showSnackbar("Error during the removal of the alarm")
+                showSnackbar(binding.mainCoordinatorLayout, "Error during the removal of the alarm")
             })
         }).attachToRecyclerView(alarmList)
     }
@@ -183,7 +174,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 mainContainer.isRefreshing = false
             }, errorBlock = {
                 mainContainer.isRefreshing = false
-                showSnackbar("Error during the update of alarms")
+                showSnackbar(binding.mainCoordinatorLayout, "Error during the update of alarms")
             })
         }
     }

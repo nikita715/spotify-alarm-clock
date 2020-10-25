@@ -2,6 +2,7 @@ package ru.nikstep.alarm.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import ru.nikstep.alarm.model.Alarm
@@ -17,11 +18,8 @@ interface AlarmDao {
     @Insert
     suspend fun insert(alarm: Alarm): Long
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(alarm: Alarm): Int
-
-    @Query("UPDATE ALARM SET HOUR = :hour AND MINUTE = :minute AND PLAYLIST = :playlist WHERE ID = :alarmId")
-    suspend fun updateSettings(alarmId: Long, hour: Int, minute: Int, playlist: Long): Int
 
     @Query("DELETE FROM ALARM WHERE ID = :id")
     suspend fun deleteById(id: Long)

@@ -20,20 +20,10 @@ interface AlarmDataService {
     /**
      * Create or update the alarm
      */
-    suspend fun save(alarmData: AlarmData): Alarm
+    suspend fun save(alarm: Alarm): Alarm?
 
     /**
      * Delete the alarm
      */
     suspend fun delete(alarmId: Long)
-
-    /**
-     * Temporary public debug method
-     */
-    suspend fun create(alarm: Alarm): Alarm
-
-    /**
-     * Temporary public debug method
-     */
-    suspend fun update(alarm: Alarm): Int
 }

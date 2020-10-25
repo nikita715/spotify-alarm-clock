@@ -33,6 +33,7 @@ class AlarmService : LifecycleService() {
         }.observeResult(this, { musicData ->
             if (musicData != null) {
                 alarmController.startAlarm(musicData)
+                stopForeground(false)
             } else {
                 Log.i("AlarmService", "Alarm not found")
             }

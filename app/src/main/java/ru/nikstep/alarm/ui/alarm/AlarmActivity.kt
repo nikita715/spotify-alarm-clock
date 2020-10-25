@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import ru.nikstep.alarm.R
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.databinding.ActivityAlarmBinding
+import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.Playlist
+import ru.nikstep.alarm.model.type.AlarmChangeType
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import ru.nikstep.alarm.util.data.observeResult
+import ru.nikstep.alarm.util.showSnackbar
 import ru.nikstep.alarm.util.startActivityWithIntent
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -62,22 +64,25 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         binding.buttonSetAlarm.setOnClickListener {
             val selectedPlaylist = binding.playlistDropdownList.selectedItem as Playlist?
             if (selectedPlaylist == null) {
-                viewModel.warnNoPlaylistSelected()
+                showSnackbar(binding.root, "You have to select a playlist")
             } else {
                 viewModel.setAlarm(
-                    AlarmData(
-                        id = alarmId,
+                    Alarm(
+                        id = alarmId ?: 0,
                         hour = binding.timePicker.hour,
                         minute = binding.timePicker.minute,
                         playlist = selectedPlaylist.id
                     )
                 ).observeResult(this, successBlock = { alarm ->
-                    startActivityWithIntent(
-                        applicationContext, MainActivity::class.java,
-                        "CREATED_ALARM" to true,
-                        "CREATED_ALARM_TIME" to "${alarm.hour}:${alarm.minute}"
-                    )
-                    overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
+                    alarm?.also {
+                        startActivityWithIntent(
+                            applicationContext, MainActivity::class.java,
+                            AlarmChangeType.EXTRA_NAME to
+                                    (if (alarmId == null) AlarmChangeType.CREATE else AlarmChangeType.UPDATE),
+                            AlarmChangeType.TIME_EXTRA_NAME to alarm.getTimeAsString()
+                        )
+                        overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
+                    } ?: showSnackbar(binding.root, "Alarm wasn't created")
                 })
             }
         }
@@ -85,7 +90,11 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
         binding.buttonRemoveAlarm.setOnClickListener {
             alarmId?.let {
                 viewModel.removeAlarm(it).observeResult(this, successBlock = {
-                    startActivityWithIntent(applicationContext, MainActivity::class.java, "REMOVED_ALARM" to true)
+                    startActivityWithIntent(
+                        applicationContext,
+                        MainActivity::class.java,
+                        AlarmChangeType.EXTRA_NAME to AlarmChangeType.DELETE
+                    )
                     overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
                 })
             }

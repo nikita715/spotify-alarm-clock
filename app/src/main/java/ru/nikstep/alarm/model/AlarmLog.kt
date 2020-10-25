@@ -3,6 +3,7 @@ package ru.nikstep.alarm.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.nikstep.alarm.util.toTwoDigitString
 import java.util.Calendar
 
 @Entity
@@ -41,6 +42,4 @@ class AlarmLog(
         get() = minute.toTwoDigitString()
     val secondAsString: String
         get() = second.toTwoDigitString()
-
-    private fun Int.toTwoDigitString() = toString().padStart(2, '0')
 }

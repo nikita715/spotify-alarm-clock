@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ru.nikstep.alarm.util.toTwoDigitString
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -14,9 +15,13 @@ import androidx.room.PrimaryKey
     )]
 )
 data class Alarm(
-    @PrimaryKey(autoGenerate = true) override val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
     @ColumnInfo val hour: Int,
     @ColumnInfo val minute: Int,
     @ColumnInfo val playlist: Long,
     @ColumnInfo(name = "PREVIOUS_TRACK") val previousTrack: String? = null
-) : Identifiable
+) : Identifiable {
+
+    fun getTimeAsString(): String = "${hour.toTwoDigitString()}:${minute.toTwoDigitString()}"
+
+}

@@ -1,19 +1,15 @@
 package ru.nikstep.alarm.service.alarm
 
 import android.util.Log
-import ru.nikstep.alarm.R
 import ru.nikstep.alarm.client.spotify.SpotifyClient
 import ru.nikstep.alarm.client.spotify.SpotifyItemType
 import ru.nikstep.alarm.client.spotify.SpotifyMusicData
 import ru.nikstep.alarm.client.spotify.SpotifyPlayType
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.AlarmLog
 import ru.nikstep.alarm.service.data.AlarmDataService
 import ru.nikstep.alarm.service.data.AlarmLogDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
-import ru.nikstep.alarm.service.log.LogService
-import ru.nikstep.alarm.util.date.formatDate
 import javax.inject.Inject
 
 class AndroidAlarmController @Inject constructor(
@@ -21,22 +17,18 @@ class AndroidAlarmController @Inject constructor(
     private val alarmDataService: AlarmDataService,
     private val playlistDataService: PlaylistDataService,
     private val alarmLogDataService: AlarmLogDataService,
-    private val spotifyClient: SpotifyClient,
-    private val logService: LogService
+    private val spotifyClient: SpotifyClient
 ) : AlarmController {
 
-    override suspend fun setAlarm(alarmData: AlarmData): Alarm {
-        val alarm = alarmDataService.save(alarmData)
-        alarmManager.setEveryDayAlarm(alarm)
-        logService.showMessage(R.string.message_alarm_activated, formatDate(alarm.hour, alarm.minute))
-        Log.i("AlarmManager", "Created $alarm")
-        return alarm
-    }
+    override suspend fun setAlarm(alarm: Alarm): Alarm? =
+        alarmDataService.save(alarm)?.also { savedAlarm ->
+            alarmManager.setEveryDayAlarm(savedAlarm)
+            Log.i("AlarmManager", "Created $savedAlarm")
+        }
 
     override suspend fun removeAlarm(alarmId: Long) {
         alarmManager.removeAlarm(alarmId)
         alarmDataService.delete(alarmId)
-        logService.showMessage(R.string.message_alarm_removed)
         Log.i("AlarmManager", "Removed alarm by id $alarmId")
     }
 
@@ -50,7 +42,7 @@ class AndroidAlarmController @Inject constructor(
                     SpotifyPlayType.RANDOM
                 ) {
                     val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
-                    alarmDataService.update(updatedAlarm)
+                    alarmDataService.save(updatedAlarm)
                     Log.i("AlarmManager", "Saved alarm $updatedAlarm")
                 }
             }
