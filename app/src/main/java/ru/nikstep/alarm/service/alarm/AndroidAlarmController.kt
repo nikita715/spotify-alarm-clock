@@ -26,6 +26,12 @@ class AndroidAlarmController @Inject constructor(
             Log.i("AlarmManager", "Created $savedAlarm")
         }
 
+    override suspend fun enableAlarm(alarm: Alarm): Alarm? = alarmDataService.save(alarm.copy(active = true))
+        ?.also { savedAlarm -> alarmManager.setEveryDayAlarm(savedAlarm) }
+
+    override suspend fun disableAlarm(alarm: Alarm): Alarm? = alarmDataService.save(alarm.copy(active = false))
+        ?.also { savedAlarm -> alarmManager.removeAlarm(savedAlarm.id) }
+
     override suspend fun removeAlarm(alarmId: Long) {
         alarmManager.removeAlarm(alarmId)
         alarmDataService.delete(alarmId)

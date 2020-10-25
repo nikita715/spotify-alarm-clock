@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.service.alarm.android.AlarmReceiver
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
@@ -24,10 +25,12 @@ class AndroidAlarmManager @Inject constructor(
             AlarmManager.INTERVAL_DAY,
             buildIntent(alarm.id)
         )
+        Log.i("AlarmManager", "Alarm scheduled by android at ${alarm.getTimeAsString()}")
     }
 
     override fun removeAlarm(alarmId: Long) {
         androidAlarmManager.cancel(buildIntent(alarmId))
+        Log.i("AlarmManager", "Alarm $alarmId removed by android")
     }
 
     private fun buildCalendar(hour: Int, minute: Int): GregorianCalendar {

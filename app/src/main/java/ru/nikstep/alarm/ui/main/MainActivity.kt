@@ -11,6 +11,7 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -60,7 +61,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             binding.mainContainer.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
         }, successBlock = { alarms ->
-            val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick)
+            val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick, onSwitchAlarmClick)
             buildAlarmList(listAdapter)
             buildSwipeAlarmListener(listAdapter)
             binding.progressBar.visibility = View.GONE
@@ -181,6 +182,28 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private val onAlarmLineClick: (i: Alarm) -> Unit = { alarm ->
         startActivityWithIntent(applicationContext, AlarmActivity::class.java, ALARM_ID_EXTRA to alarm.id)
+    }
+
+    private val onSwitchAlarmClick: (alarm: Alarm, switch: SwitchMaterial) -> Unit = { alarm, switch ->
+        switch.isEnabled = false
+        if (switch.isChecked) {
+            viewModel.enableAlarm(alarm)
+        } else {
+            viewModel.disableAlarm(alarm)
+        }.observeResult(this, successBlock = { receivedAlarm ->
+            if (receivedAlarm == null || receivedAlarm.active != switch.isChecked) {
+                showSnackbar(binding.mainCoordinatorLayout, "Unable to change the status")
+            } else {
+                showSnackbar(
+                    binding.mainCoordinatorLayout, "Alarm at ${receivedAlarm.getTimeAsString()}" +
+                            " is ${if (receivedAlarm.active) "activated" else "deactivated"}"
+                )
+            }
+            switch.isEnabled = true
+        }, errorBlock = {
+            switch.isChecked = switch.isChecked.not()
+            switch.isEnabled = true
+        })
     }
 
     /**

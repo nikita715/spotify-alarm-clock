@@ -1,7 +1,6 @@
 package ru.nikstep.alarm.service.alarm
 
 import ru.nikstep.alarm.client.spotify.SpotifyMusicData
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 
 /**
@@ -12,6 +11,16 @@ interface AlarmController {
      * Save the alarm and set android alarm
      */
     suspend fun setAlarm(alarm: Alarm): Alarm?
+
+    /**
+     * Enable the alarm
+     */
+    suspend fun enableAlarm(alarm: Alarm): Alarm?
+
+    /**
+     * Disable the alarm
+     */
+    suspend fun disableAlarm(alarm: Alarm): Alarm?
 
     /**
      * Remove the alarm and remove android alarm

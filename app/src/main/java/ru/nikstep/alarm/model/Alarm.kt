@@ -19,6 +19,7 @@ data class Alarm(
     @ColumnInfo val hour: Int,
     @ColumnInfo val minute: Int,
     @ColumnInfo val playlist: Long,
+    @ColumnInfo val active: Boolean = true,
     @ColumnInfo(name = "PREVIOUS_TRACK") val previousTrack: String? = null
 ) : Identifiable {
 

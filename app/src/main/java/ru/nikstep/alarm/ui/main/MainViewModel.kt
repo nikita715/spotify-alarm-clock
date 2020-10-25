@@ -1,6 +1,7 @@
 package ru.nikstep.alarm.ui.main
 
 import androidx.lifecycle.ViewModel
+import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.service.LoginService
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.util.data.emitLiveData
@@ -17,6 +18,14 @@ class MainViewModel @Inject constructor(
 
     fun removeAlarm(alarmId: Long) = emitLiveData {
         alarmController.removeAlarm(alarmId)
+    }
+
+    fun enableAlarm(alarm: Alarm) = emitLiveData {
+        alarmController.enableAlarm(alarm)
+    }
+
+    fun disableAlarm(alarm: Alarm) = emitLiveData {
+        alarmController.disableAlarm(alarm)
     }
 
     /**

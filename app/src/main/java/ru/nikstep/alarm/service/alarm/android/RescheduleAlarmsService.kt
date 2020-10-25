@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
 import ru.nikstep.alarm.AlarmApp
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.service.alarm.AlarmController
 import ru.nikstep.alarm.service.data.AlarmDataService
 import ru.nikstep.alarm.service.notification.NotificationService

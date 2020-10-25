@@ -1,6 +1,5 @@
 package ru.nikstep.alarm.service.data
 
-import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.model.Alarm
 
 /**
