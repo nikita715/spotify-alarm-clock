@@ -11,6 +11,7 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -85,7 +86,32 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
         bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
 
+        checkExtras()
+
         invalidateOptionsMenu()
+    }
+
+    private fun checkExtras() {
+        if (intent.getBooleanExtra("CREATED_ALARM", false)) {
+            intent.getStringExtra("CREATED_ALARM_TIME")?.let { alarmTime ->
+                showSnackbar("Alarm scheduled at $alarmTime")
+            }
+        } else if (intent.getBooleanExtra("REMOVED_ALARM", false)) {
+            showSnackbar("Alarm is removed")
+        }
+    }
+
+    private fun showSnackbar(
+        message: String,
+        duration: Int = Snackbar.LENGTH_INDEFINITE,
+        actionName: String = "OK",
+        action: () -> Unit = {}
+    ) {
+        Snackbar.make(binding.mainCoordinatorLayout, message, duration)
+            .setAction(actionName) {
+                action.invoke()
+            }
+            .show()
     }
 
     private fun createNotificationChannel() {
@@ -142,6 +168,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
             listAdapter.removeItem(viewHolder.adapterPosition)
             viewModel.removeAlarm(viewHolder.itemView.tag as Long)
+            showSnackbar("Alarms is removed")
         }).attachToRecyclerView(alarmList)
     }
 
@@ -153,6 +180,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 mainContainer.isRefreshing = false
             }, errorBlock = {
                 mainContainer.isRefreshing = false
+                showSnackbar("Error during the update of alarms", Snackbar.LENGTH_LONG)
             })
         }
     }

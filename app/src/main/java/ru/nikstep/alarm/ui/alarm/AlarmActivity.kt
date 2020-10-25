@@ -3,7 +3,6 @@ package ru.nikstep.alarm.ui.alarm
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.data.AlarmData
 import ru.nikstep.alarm.databinding.ActivityAlarmBinding
@@ -72,19 +71,24 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
                         minute = binding.timePicker.minute,
                         playlist = selectedPlaylist.id
                     )
-                ).observeResult(this, successBlock = {
-                    runOnUiThread {
-                        Toast.makeText(this, "Set alarm at ${it.hour}:${it.minute}", Toast.LENGTH_LONG).show()
-                    }
+                ).observeResult(this, successBlock = { alarm ->
+                    startActivityWithIntent(
+                        applicationContext, MainActivity::class.java,
+                        "CREATED_ALARM" to true,
+                        "CREATED_ALARM_TIME" to "${alarm.hour}:${alarm.minute}"
+                    )
+                    overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
                 })
-                returnToMainActivity()
             }
         }
 
         binding.buttonRemoveAlarm.setOnClickListener {
-            alarmId?.let { viewModel.removeAlarm(it) }
-            returnToMainActivity()
-            overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
+            alarmId?.let {
+                viewModel.removeAlarm(it).observeResult(this, successBlock = {
+                    startActivityWithIntent(applicationContext, MainActivity::class.java, "REMOVED_ALARM" to true)
+                    overridePendingTransition(R.anim.open_main_activity, R.anim.close_alarm_activity)
+                })
+            }
         }
     }
 
