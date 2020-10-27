@@ -59,6 +59,7 @@ android {
                 'src/main/res/layouts/notifications',
                 'src/main/res/layouts/playlists',
                 'src/main/res/layouts/tracklist',
+                'src/main/res/layouts/settings',
         ]
     }
 }

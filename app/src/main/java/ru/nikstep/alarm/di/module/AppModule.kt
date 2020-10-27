@@ -11,6 +11,7 @@ import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.main.MainActivity
 import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.ui.playlists.PlaylistsActivity
+import ru.nikstep.alarm.ui.settings.SettingsActivity
 import ru.nikstep.alarm.ui.trackselect.TrackSelectActivity
 
 @Module
@@ -32,6 +33,9 @@ abstract class AppModule {
 
     @ContributesAndroidInjector(modules = [DependencyModule::class])
     abstract fun trackSelectActivity(): TrackSelectActivity
+
+    @ContributesAndroidInjector(modules = [DependencyModule::class])
+    abstract fun settingsActivity(): SettingsActivity
 
     @ContributesAndroidInjector
     abstract fun alarmBroadcastReceiver(): AlarmReceiver

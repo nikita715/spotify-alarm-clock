@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +20,11 @@ import ru.nikstep.alarm.databinding.ActivityMainBinding
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.type.AlarmChangeType
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
-import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
+import ru.nikstep.alarm.ui.base.buildTopAppBar
 import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
-import ru.nikstep.alarm.ui.notifications.NotificationsActivity
 import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.preferences.getAppPreference
 import ru.nikstep.alarm.util.preferences.setAppPreference
@@ -68,27 +66,13 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             binding.mainContainer.visibility = View.VISIBLE
         })
 
-        val notificationsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.notificationsPage)
-        when (getAppPreference<Boolean>(R.string.saved_notifications_key)) {
-            true -> Unit
-            false -> notificationsMenuItem.setIcon(R.drawable.baseline_notifications_none_white_24dp)
-        }
-        notificationsMenuItem.setOnMenuItemClickListener {
-            startActivityWithIntent(this, NotificationsActivity::class.java)
-            true
-        }
-
-        val alarmLogsMenuItem: MenuItem = binding.topAppBar.menu.findItem(R.id.alarmLogPage)
-        alarmLogsMenuItem.setOnMenuItemClickListener {
-            startActivityWithIntent(this, AlarmLogActivity::class.java)
-            true
-        }
-
         val bottomNavigation: BottomNavigationView = binding.bottomNavigation
         bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
         bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
 
         checkExtras()
+
+        buildTopAppBar(binding.topAppBar)
 
         invalidateOptionsMenu()
     }

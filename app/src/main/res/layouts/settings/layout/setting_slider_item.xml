@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    tools:ignore="UnusedAttribute">
+
+    <TextView
+        android:id="@+id/settingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:textSize="14sp" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/settingText"
+        android:layout_centerInParent="true"
+        android:paddingHorizontal="20dp"
+        android:stepSize="1"
+        android:valueFrom="0"
+        android:valueTo="100" />
+
+</RelativeLayout>

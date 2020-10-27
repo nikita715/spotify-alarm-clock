@@ -9,6 +9,7 @@ import ru.nikstep.alarm.ui.alarmlog.AlarmLogViewModel
 import ru.nikstep.alarm.ui.main.MainViewModel
 import ru.nikstep.alarm.ui.notifications.NotificationsViewModel
 import ru.nikstep.alarm.ui.playlists.PlaylistsViewModel
+import ru.nikstep.alarm.ui.settings.SettingsViewModel
 import ru.nikstep.alarm.ui.trackselect.TrackSelectViewModel
 
 @Module
@@ -42,4 +43,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TrackSelectViewModel::class)
     abstract fun trackSelectViewModel(viewModel: TrackSelectViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    abstract fun settingsViewModel(viewModel: SettingsViewModel): ViewModel
 }
