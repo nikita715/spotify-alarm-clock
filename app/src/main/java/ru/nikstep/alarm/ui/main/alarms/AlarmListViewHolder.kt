@@ -17,6 +17,7 @@ class AlarmListViewHolder(private val binding: AlarmItemBinding) : RecyclerView.
         binding.root.setOnClickListener {
             onItemClickListener(alarm)
         }
+        binding.alarmSwitch.isChecked = alarm.active
         binding.alarmSwitch.apply {
             setOnClickListener {
                 onSwitchClickListener(alarm, binding.alarmSwitch)

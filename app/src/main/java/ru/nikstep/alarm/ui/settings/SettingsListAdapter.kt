@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import ru.nikstep.alarm.databinding.SettingItemBinding
 import ru.nikstep.alarm.databinding.SettingSliderItemBinding
-import ru.nikstep.alarm.ui.settings.holder.BondedViewHolder
+import ru.nikstep.alarm.ui.common.BondedViewHolder
 import ru.nikstep.alarm.ui.settings.holder.Setting
 import ru.nikstep.alarm.ui.settings.holder.SettingSliderViewHolder
 import ru.nikstep.alarm.ui.settings.holder.SettingType

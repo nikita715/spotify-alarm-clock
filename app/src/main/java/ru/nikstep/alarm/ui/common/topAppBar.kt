@@ -1,4 +1,4 @@
-package ru.nikstep.alarm.ui.base
+package ru.nikstep.alarm.ui.common
 
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
@@ -16,16 +16,16 @@ fun AppCompatActivity.buildTopAppBar(toolbar: MaterialToolbar): Unit = toolbar.m
             false -> notificationsMenuItem.setIcon(R.drawable.baseline_notifications_none_white_24dp)
         }
         notificationsMenuItem.setOnMenuItemClickListener {
-            startActivityWithIntent(this, NotificationsActivity::class.java)
+            startActivityWithIntent(NotificationsActivity::class.java)
             true
         }
     }
     menu.findItem(R.id.alarmLogPage).setOnMenuItemClickListener {
-        startActivityWithIntent(this, AlarmLogActivity::class.java)
+        startActivityWithIntent(AlarmLogActivity::class.java)
         true
     }
     menu.findItem(R.id.settingsPage).setOnMenuItemClickListener {
-        startActivityWithIntent(this, SettingsActivity::class.java)
+        startActivityWithIntent(SettingsActivity::class.java)
         true
     }
 }

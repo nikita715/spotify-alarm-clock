@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
@@ -21,8 +20,8 @@ import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.model.type.AlarmChangeType
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.base.BaseActivity
-import ru.nikstep.alarm.ui.base.buildTopAppBar
-import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
+import ru.nikstep.alarm.ui.common.buildBottomNavigationBar
+import ru.nikstep.alarm.ui.common.buildTopAppBar
 import ru.nikstep.alarm.ui.main.alarms.AlarmItemTouchHelperCallback
 import ru.nikstep.alarm.ui.main.alarms.AlarmListAdapter
 import ru.nikstep.alarm.util.data.observeResult
@@ -38,8 +37,60 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        getSpotifyAccessToken()
+        showAlarmList()
         createNotificationChannel()
+        buildNewAlarmButtonListener()
+        showSnackbarIfNecessary()
 
+        buildTopAppBar(binding.topAppBar)
+        buildBottomNavigationBar(binding.bottomNavigation, R.id.alarmPage)
+
+        invalidateOptionsMenu()
+    }
+
+    private fun showAlarmList() = viewModel.getAlarms().observeResult(this,
+        loadingBlock = this::showRefresh,
+        successBlock = { alarms ->
+            buildAlarmList(alarms)
+            showContent()
+        })
+
+    private fun buildAlarmList(alarms: List<Alarm>) {
+        val alarmList = binding.alarmList
+        alarmList.setHasFixedSize(true)
+        alarmList.layoutManager = LinearLayoutManager(this)
+        val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick, onSwitchAlarmClick)
+        alarmList.adapter = listAdapter
+        buildRefreshAlarmsListener(listAdapter)
+        buildSwipeAlarmListener(listAdapter)
+    }
+
+    private fun buildRefreshAlarmsListener(listAdapter: AlarmListAdapter) {
+        val mainContainer = binding.mainContainer
+        mainContainer.setOnRefreshListener {
+            viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
+                listAdapter.updateItems(alarms)
+                mainContainer.isRefreshing = false
+            }, errorBlock = {
+                mainContainer.isRefreshing = false
+                showSnackbar(binding.mainCoordinatorLayout, "Error during the update of alarms")
+            })
+        }
+    }
+
+    private fun buildSwipeAlarmListener(listAdapter: AlarmListAdapter) {
+        ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
+            viewModel.removeAlarm(viewHolder.itemView.tag as Long).observeResult(this, successBlock = {
+                listAdapter.removeItem(viewHolder.adapterPosition)
+                showSnackbar(binding.mainCoordinatorLayout, "Alarms is removed")
+            }, errorBlock = {
+                showSnackbar(binding.mainCoordinatorLayout, "Error during the removal of the alarm")
+            })
+        }).attachToRecyclerView(binding.alarmList)
+    }
+
+    private fun getSpotifyAccessToken() {
         if (viewModel.hasAccessToken().not()) {
             val savedAccessToken = getAppPreference<String>(R.string.saved_spotify_access_token)
             val savedAccessTokenTimeout = getAppPreference<Long>(R.string.saved_spotify_access_token_timeout)
@@ -52,32 +103,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request)
             }
         }
-
-        buildNewAlarmButtonListener()
-
-        viewModel.getAlarms().observeResult(this, loadingBlock = {
-            binding.mainContainer.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
-        }, successBlock = { alarms ->
-            val listAdapter = AlarmListAdapter(alarms, onAlarmLineClick, onSwitchAlarmClick)
-            buildAlarmList(listAdapter)
-            buildSwipeAlarmListener(listAdapter)
-            binding.progressBar.visibility = View.GONE
-            binding.mainContainer.visibility = View.VISIBLE
-        })
-
-        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
-        bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
-        bottomNavigation.menu.findItem(R.id.alarmPage).isChecked = true
-
-        checkExtras()
-
-        buildTopAppBar(binding.topAppBar)
-
-        invalidateOptionsMenu()
     }
 
-    private fun checkExtras() {
+    private fun showSnackbarIfNecessary() {
         val alarmChangeType = intent.getSerializableExtra(AlarmChangeType.EXTRA_NAME) as AlarmChangeType?
         if (alarmChangeType != null) {
             val alarmTime = intent.getStringExtra(AlarmChangeType.TIME_EXTRA_NAME)
@@ -92,7 +120,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private fun createNotificationChannel() {
         val manager = getSystemService(NotificationManager::class.java)
-        if (manager.getNotificationChannel(CHANNEL_ID) == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && manager.getNotificationChannel(CHANNEL_ID) == null
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+        ) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Spotify Alarm Service Channel",
@@ -135,37 +165,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
-    private fun buildAlarmList(listAdapter: AlarmListAdapter) {
-        val alarmList = binding.alarmList
-        alarmList.setHasFixedSize(true)
-        alarmList.layoutManager = LinearLayoutManager(this)
-        alarmList.adapter = listAdapter
-
-        ItemTouchHelper(AlarmItemTouchHelperCallback { viewHolder ->
-            viewModel.removeAlarm(viewHolder.itemView.tag as Long).observeResult(this, successBlock = {
-                listAdapter.removeItem(viewHolder.adapterPosition)
-                showSnackbar(binding.mainCoordinatorLayout, "Alarms is removed")
-            }, errorBlock = {
-                showSnackbar(binding.mainCoordinatorLayout, "Error during the removal of the alarm")
-            })
-        }).attachToRecyclerView(alarmList)
-    }
-
-    private fun buildSwipeAlarmListener(listAdapter: AlarmListAdapter) {
-        val mainContainer = binding.mainContainer
-        mainContainer.setOnRefreshListener {
-            viewModel.getAlarms().observeResult(this, successBlock = { alarms ->
-                listAdapter.updateItems(alarms)
-                mainContainer.isRefreshing = false
-            }, errorBlock = {
-                mainContainer.isRefreshing = false
-                showSnackbar(binding.mainCoordinatorLayout, "Error during the update of alarms")
-            })
-        }
-    }
-
     private val onAlarmLineClick: (i: Alarm) -> Unit = { alarm ->
-        startActivityWithIntent(applicationContext, AlarmActivity::class.java, ALARM_ID_EXTRA to alarm.id)
+        startActivityWithIntent(AlarmActivity::class.java, ALARM_ID_EXTRA to alarm.id)
     }
 
     private val onSwitchAlarmClick: (alarm: Alarm, switch: SwitchMaterial) -> Unit = { alarm, switch ->
@@ -188,6 +189,16 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
             switch.isChecked = switch.isChecked.not()
             switch.isEnabled = true
         })
+    }
+
+    private fun showRefresh() {
+        binding.mainContainer.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showContent() {
+        binding.mainContainer.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     /**

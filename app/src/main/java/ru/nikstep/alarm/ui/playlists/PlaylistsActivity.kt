@@ -3,12 +3,13 @@ package ru.nikstep.alarm.ui.playlists
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivityPlaylistsBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
-import ru.nikstep.alarm.ui.base.buildTopAppBar
-import ru.nikstep.alarm.ui.common.onNavItemSelectedListener
+import ru.nikstep.alarm.ui.common.buildBottomNavigationBar
+import ru.nikstep.alarm.ui.common.buildTopAppBar
 import ru.nikstep.alarm.util.data.observeResult
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 
@@ -18,45 +19,47 @@ class PlaylistsActivity : BaseActivity<PlaylistsViewModel, ActivityPlaylistsBind
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val bottomNavigation: BottomNavigationView = binding.bottomNavigation
-        bottomNavigation.setOnNavigationItemSelectedListener(onNavItemSelectedListener(this))
-        bottomNavigation.menu.findItem(R.id.playlistsPage).isChecked = true
+        showPlaylists(binding.mainContainer, binding.playlistList)
 
         buildTopAppBar(binding.topAppBar)
-
-        val playlistListView = binding.playlistList
-        playlistListView.setHasFixedSize(true)
-        playlistListView.layoutManager = LinearLayoutManager(this)
-        val playlistListAdapter = PlaylistListAdapter()
-        playlistListView.adapter = playlistListAdapter
-        showPlaylists(playlistListAdapter)
-
-        buildSwipePlaylistsListener()
+        buildBottomNavigationBar(binding.bottomNavigation, R.id.playlistsPage)
     }
 
-    private fun showPlaylists(adapter: PlaylistListAdapter) {
+    private fun showPlaylists(container: SwipeRefreshLayout, playlistsView: RecyclerView) {
         viewModel.getPlaylists().observeResult(this, loadingBlock = {
-            binding.mainContainer.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
+            showRefresh()
         }, successBlock = { playlists ->
-            adapter.updateItems(playlists)
-            binding.progressBar.visibility = View.GONE
-            binding.mainContainer.visibility = View.VISIBLE
+            playlistsView.setHasFixedSize(true)
+            playlistsView.layoutManager = LinearLayoutManager(this)
+            val playlistListAdapter = PlaylistListAdapter(playlists)
+            playlistsView.adapter = playlistListAdapter
+            buildSwipePlaylistsListener(container, playlistsView)
+            showContent()
         })
     }
 
-    private fun buildSwipePlaylistsListener() {
-        binding.mainContainer.setOnRefreshListener {
-            val playlistListAdapter = binding.playlistList.adapter as PlaylistListAdapter
+    private fun buildSwipePlaylistsListener(container: SwipeRefreshLayout, playlistsView: RecyclerView) {
+        container.setOnRefreshListener {
+            val listAdapter = playlistsView.adapter as PlaylistListAdapter
             viewModel.downloadPlaylists().observeResult(this, successBlock = { downloadedPlaylists ->
                 viewModel.savePlaylists(downloadedPlaylists).observeResult(this, successBlock = { savedPlaylists ->
-                    playlistListAdapter.updateItems(savedPlaylists)
-                    binding.mainContainer.isRefreshing = false
+                    listAdapter.updateItems(savedPlaylists)
+                    container.isRefreshing = false
                 })
             }, errorBlock = {
-                binding.mainContainer.isRefreshing = false
+                container.isRefreshing = false
             })
         }
+    }
+
+    private fun showRefresh() {
+        binding.mainContainer.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showContent() {
+        binding.progressBar.visibility = View.GONE
+        binding.mainContainer.visibility = View.VISIBLE
     }
 
     override fun initViewBinding(): ActivityPlaylistsBinding = ActivityPlaylistsBinding.inflate(layoutInflater)
