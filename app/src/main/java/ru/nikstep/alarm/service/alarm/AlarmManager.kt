@@ -9,10 +9,13 @@ interface AlarmManager {
     /**
      * Set an everyday android alarm
      */
-    fun setEveryDayAlarm(alarm: Alarm)
+    fun enableAlarm(alarm: Alarm)
 
     /**
      * Remove the everyday android alarm
      */
-    fun removeAlarm(alarmId: Long)
+    fun disableAlarm(alarmId: Long)
+    /**
+     * Set an everyday android alarm
+     */
 }

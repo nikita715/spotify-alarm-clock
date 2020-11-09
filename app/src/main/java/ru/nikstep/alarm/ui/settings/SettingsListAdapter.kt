@@ -3,10 +3,12 @@ package ru.nikstep.alarm.ui.settings
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import ru.nikstep.alarm.databinding.SettingDiscreteSliderItemBinding
 import ru.nikstep.alarm.databinding.SettingItemBinding
 import ru.nikstep.alarm.databinding.SettingSliderItemBinding
 import ru.nikstep.alarm.ui.common.BondedViewHolder
 import ru.nikstep.alarm.ui.settings.holder.Setting
+import ru.nikstep.alarm.ui.settings.holder.SettingDiscreteSliderViewHolder
 import ru.nikstep.alarm.ui.settings.holder.SettingSliderViewHolder
 import ru.nikstep.alarm.ui.settings.holder.SettingType
 import ru.nikstep.alarm.ui.settings.holder.SettingsViewHolder
@@ -21,7 +23,13 @@ class SettingsListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BondedViewHolder<Setting> =
         when (viewType) {
             SettingType.SLIDER.number ->
-                SettingSliderViewHolder(SettingSliderItemBinding.inflate(LayoutInflater.from(parent.context)))
+                SettingSliderViewHolder(
+                    SettingSliderItemBinding.inflate(LayoutInflater.from(parent.context))
+                )
+            SettingType.DISCRETE_SLIDER.number ->
+                SettingDiscreteSliderViewHolder(
+                    SettingDiscreteSliderItemBinding.inflate(LayoutInflater.from(parent.context))
+                )
             else -> SettingsViewHolder(SettingItemBinding.inflate(LayoutInflater.from(parent.context)))
         }
 

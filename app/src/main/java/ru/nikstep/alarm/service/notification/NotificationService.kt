@@ -9,4 +9,8 @@ interface NotificationService {
 
     fun buildAlarmNotification(): Notification
 
+    fun buildAlarmReminderNotification(): Notification
+
+    fun buildAlarmReminderNotification(alarmId: Long, alarmTime: String): Notification
+
 }

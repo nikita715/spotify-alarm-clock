@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import ru.nikstep.alarm.AlarmApp
 import ru.nikstep.alarm.service.alarm.AlarmController
+import ru.nikstep.alarm.service.alarm.android.reminder.AlarmReminderService
 import ru.nikstep.alarm.service.notification.NotificationService
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import ru.nikstep.alarm.util.data.emitLiveData
@@ -22,6 +23,7 @@ class AlarmService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         (applicationContext as AlarmApp).androidInjector.inject(this)
+        stopService(Intent(applicationContext, AlarmReminderService::class.java))
         startForeground(1, notificationService.buildAlarmNotification())
     }
 
@@ -32,7 +34,16 @@ class AlarmService : LifecycleService() {
             alarmController.buildSpotifyMusicData(alarmId)
         }.observeResult(this, { musicData ->
             if (musicData != null) {
-                alarmController.startAlarm(musicData)
+                if (musicData.enabled) {
+                    alarmController.startAlarm(musicData)
+                    Log.i("AlarmService", "Alarm$alarmId is started")
+                } else {
+                    emitLiveData {
+                        alarmController.enableNextActivationOfAlarm(alarmId)
+                    }.observeResult(this, {
+                        Log.i("AlarmService", "Alarm$alarmId is reactivated")
+                    })
+                }
                 stopForeground(false)
             } else {
                 Log.i("AlarmService", "Alarm not found")

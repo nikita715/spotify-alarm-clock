@@ -16,7 +16,7 @@ class AlarmViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun setAlarm(alarm: Alarm): LiveData<Result<Alarm?>> = emitLiveData {
-        alarmController.setAlarm(alarm)
+        alarmController.enableAlarm(alarm)
     }
 
     fun removeAlarm(alarmId: Long) = emitLiveData {

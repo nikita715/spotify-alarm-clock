@@ -4,5 +4,6 @@ enum class SettingType(
     val number: Int
 ) {
     ONE_LINE(1),
-    SLIDER(2);
+    SLIDER(2),
+    DISCRETE_SLIDER(3);
 }

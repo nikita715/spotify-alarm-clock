@@ -25,4 +25,14 @@ interface AlarmDataService {
      * Delete the alarm
      */
     suspend fun delete(alarmId: Long)
+
+    /**
+     * Set [Alarm.nextActive] to false
+     */
+    suspend fun disableNextAlarm(alarmId: Long)
+
+    /**
+     * Set [Alarm.nextActive] to true
+     */
+    suspend fun enableNextAlarm(alarmId: Long)
 }

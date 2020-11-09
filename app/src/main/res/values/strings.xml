@@ -22,5 +22,6 @@
     <string name="saved_notifications_key">saved_notifications_key</string>
     <string name="saved_spotify_access_token">saved_spotify_access_token</string>
     <string name="saved_spotify_access_token_timeout">saved_spotify_access_token_timeout</string>
+    <string name="preference__alarm_reminder_minutes">preference__alarm_reminder_minutes</string>
     <string name="noPlaylistSelected">You have to select a playlist</string>
 </resources>

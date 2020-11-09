@@ -8,12 +8,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
+import ru.nikstep.alarm.R
 import ru.nikstep.alarm.databinding.ActivitySettingsBinding
+import ru.nikstep.alarm.databinding.SettingDiscreteSliderItemBinding
 import ru.nikstep.alarm.databinding.SettingItemBinding
 import ru.nikstep.alarm.databinding.SettingSliderItemBinding
 import ru.nikstep.alarm.ui.base.BaseActivity
 import ru.nikstep.alarm.ui.settings.holder.Setting
 import ru.nikstep.alarm.ui.settings.holder.SettingType
+import ru.nikstep.alarm.util.preferences.getAppPreference
+import ru.nikstep.alarm.util.preferences.setAppPreference
 import ru.nikstep.alarm.util.viewmodel.viewModelOf
 import kotlin.math.roundToInt
 
@@ -74,10 +78,43 @@ class SettingsActivity : BaseActivity<SettingsViewModel, ActivitySettingsBinding
                     })
                 }
             }
+        },
+        Setting(2, type = SettingType.DISCRETE_SLIDER, title = "Alarm reminder time") { setting, itemBinding ->
+            (itemBinding as SettingDiscreteSliderItemBinding).let { settingBinding ->
+                settingBinding.root.tag = setting.id
+                settingBinding.settingText.text = setting.title
+                settingBinding.slider.let { slider ->
+                    slider.valueFrom = 0f
+                    slider.valueTo = 60f
+                    slider.stepSize = 5f
+                    slider.value = getAppPreference<Int>(R.string.preference__alarm_reminder_minutes)?.toFloat()
+                        ?: DEFAULT_ALARM_REMINDER_MINUTES.toFloat()
+                    slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                        override fun onStartTrackingTouch(slider: Slider) {}
+                        override fun onStopTrackingTouch(slider: Slider) {
+                            slider.isEnabled = false
+                            slider.value.roundToInt().let { reminderMinutes ->
+                                setAppPreference(R.string.preference__alarm_reminder_minutes, reminderMinutes)
+                                Snackbar.make(
+                                    binding.root,
+                                    "Reminder set at $reminderMinutes minutes",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+//                            viewModel.updateAlarmReminders()
+                            slider.isEnabled = true
+                        }
+                    })
+                }
+            }
         }
     )
 
     override fun initViewBinding(): ActivitySettingsBinding = ActivitySettingsBinding.inflate(layoutInflater)
 
     override fun initViewModel(): SettingsViewModel = viewModelOf(viewModelProvider)
+
+    companion object {
+        const val DEFAULT_ALARM_REMINDER_MINUTES = 30
+    }
 }

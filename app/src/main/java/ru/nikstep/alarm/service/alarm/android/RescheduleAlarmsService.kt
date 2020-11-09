@@ -32,7 +32,7 @@ class RescheduleAlarmsService : LifecycleService() {
 
         emitLiveData {
             alarmDataService.findAll().map { alarm ->
-                alarmController.setAlarm(alarm)
+                alarmController.enableAlarm(alarm)
             }
         }.observeResult(this, successBlock = { alarms ->
             alarms.forEach { alarm ->

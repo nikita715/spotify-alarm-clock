@@ -7,23 +7,19 @@ import ru.nikstep.alarm.model.Alarm
  * Manages alarm creation, deletion and play
  */
 interface AlarmController {
-    /**
-     * Save the alarm and set android alarm
-     */
-    suspend fun setAlarm(alarm: Alarm): Alarm?
 
     /**
-     * Enable the alarm
+     * Save the alarm, set the android alarm and set the android reminder alarm if necessary
      */
     suspend fun enableAlarm(alarm: Alarm): Alarm?
 
     /**
-     * Disable the alarm
+     * Save the alarm, disable the android alarm and disable the android reminder alarm
      */
     suspend fun disableAlarm(alarm: Alarm): Alarm?
 
     /**
-     * Remove the alarm and remove android alarm
+     * Disable the android alarm, disable the android reminder alarm and remove the alarm
      */
     suspend fun removeAlarm(alarmId: Long)
 
@@ -51,6 +47,16 @@ interface AlarmController {
      * Find and start the alarm
      */
     fun stopAlarm()
+
+    /**
+     * Disables next activation of alarm
+     */
+    suspend fun disableNextActivationOfAlarm(alarmId: Long)
+
+    /**
+     * Disables next activation of alarm
+     */
+    suspend fun enableNextActivationOfAlarm(alarmId: Long)
 
     /**
      * Temporary debug method

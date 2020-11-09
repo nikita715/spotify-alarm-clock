@@ -3,6 +3,7 @@ package ru.nikstep.alarm.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.nikstep.alarm.util.date.CurrentDateInfo
 import ru.nikstep.alarm.util.toTwoDigitString
 import java.util.Calendar
 
@@ -19,14 +20,18 @@ class AlarmLog(
     @ColumnInfo val playlist: String
 ) : Identifiable {
 
-    constructor(alarmId: Long, playlist: String, calendarInstance: Calendar = Calendar.getInstance()) : this(
+    constructor(
+        alarmId: Long,
+        playlist: String,
+        currentDate: CurrentDateInfo = CurrentDateInfo.getCurrentDate() + 1 of Calendar.MINUTE
+    ) : this(
         alarmId = alarmId,
-        year = calendarInstance.get(Calendar.YEAR),
-        month = calendarInstance.get(Calendar.MONTH) + 1,
-        day = calendarInstance.get(Calendar.DAY_OF_MONTH),
-        hour = calendarInstance.get(Calendar.HOUR_OF_DAY),
-        minute = calendarInstance.get(Calendar.MINUTE),
-        second = calendarInstance.get(Calendar.SECOND),
+        year = currentDate.year,
+        month = currentDate.month,
+        day = currentDate.day,
+        hour = currentDate.hour,
+        minute = currentDate.minute,
+        second = currentDate.second,
         playlist = playlist
     )
 

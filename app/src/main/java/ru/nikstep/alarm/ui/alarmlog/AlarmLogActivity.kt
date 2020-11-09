@@ -47,8 +47,8 @@ class AlarmLogActivity : BaseActivity<AlarmLogViewModel, ActivityAlarmLogBinding
     }
 
     private fun showContent() {
-        binding.mainContainer.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+        binding.mainContainer.visibility = View.VISIBLE
     }
 
     override fun initViewBinding(): ActivityAlarmLogBinding = ActivityAlarmLogBinding.inflate(layoutInflater)

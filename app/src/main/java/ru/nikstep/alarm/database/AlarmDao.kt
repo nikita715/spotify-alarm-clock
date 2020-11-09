@@ -26,4 +26,10 @@ interface AlarmDao {
 
     @Query("DELETE FROM ALARM")
     suspend fun deleteAll()
+
+    @Query("UPDATE ALARM SET nextActive = 0 where id = :alarmId")
+    suspend fun disableNextAlarm(alarmId: Long)
+
+    @Query("UPDATE ALARM SET nextActive = 1 where id = :alarmId")
+    suspend fun enableNextAlarm(alarmId: Long)
 }

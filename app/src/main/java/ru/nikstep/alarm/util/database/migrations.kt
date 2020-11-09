@@ -4,7 +4,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 const val DATABASE_NAME = "test1.db"
-const val DATABASE_VERSION = 12
+const val DATABASE_VERSION = 13
 
 private val migrations = listOf(
     SimpleMigration(
@@ -67,6 +67,12 @@ private val migrations = listOf(
         11, 12,
         arrayOf(
             "ALTER TABLE `Alarm` ADD COLUMN 'active' INTEGER NOT NULL DEFAULT 1"
+        )
+    ),
+    SimpleMigration(
+        12, 13,
+        arrayOf(
+            "ALTER TABLE `Alarm` ADD COLUMN 'nextActive' INTEGER NOT NULL DEFAULT 1"
         )
     )
 )

@@ -16,6 +16,10 @@ class DatabaseAlarmDataService(
 
     override suspend fun delete(alarmId: Long) = alarmDao.deleteById(alarmId)
 
+    override suspend fun disableNextAlarm(alarmId: Long) = alarmDao.disableNextAlarm(alarmId)
+
+    override suspend fun enableNextAlarm(alarmId: Long) = alarmDao.enableNextAlarm(alarmId)
+
     private suspend fun create(alarm: Alarm): Alarm? {
         val alarmId = alarmDao.insert(alarm)
         return alarmDao.findById(alarmId)
