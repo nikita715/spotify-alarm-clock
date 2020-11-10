@@ -7,7 +7,6 @@ import ru.nikstep.alarm.service.alarm.android.AlarmService
 import ru.nikstep.alarm.service.alarm.android.RescheduleAlarmsService
 import ru.nikstep.alarm.service.alarm.android.StopAlarmService
 import ru.nikstep.alarm.service.alarm.android.reminder.AlarmReminderReceiver
-import ru.nikstep.alarm.service.alarm.android.reminder.AlarmReminderService
 import ru.nikstep.alarm.ui.alarm.AlarmActivity
 import ru.nikstep.alarm.ui.alarmlog.AlarmLogActivity
 import ru.nikstep.alarm.ui.main.MainActivity
@@ -47,9 +46,6 @@ abstract class AppModule {
 
     @ContributesAndroidInjector
     abstract fun alarmService(): AlarmService
-
-    @ContributesAndroidInjector
-    abstract fun alarmReminderService(): AlarmReminderService
 
     @ContributesAndroidInjector
     abstract fun rescheduleAlarmsService(): RescheduleAlarmsService

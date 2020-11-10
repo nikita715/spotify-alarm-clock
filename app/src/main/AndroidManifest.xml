@@ -63,10 +63,9 @@
 
         <receiver
             android:name=".service.alarm.android.reminder.AlarmReminderReceiver"
-            android:enabled="true"></receiver>
+            android:enabled="true" />
 
         <service android:name=".service.alarm.android.AlarmService" />
-        <service android:name=".service.alarm.android.reminder.AlarmReminderService" />
         <service android:name=".service.alarm.android.RescheduleAlarmsService" />
         <service android:name=".service.alarm.android.StopAlarmService" />
     </application>

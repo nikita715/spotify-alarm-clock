@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import ru.nikstep.alarm.AlarmApp
 import ru.nikstep.alarm.service.alarm.AlarmController
-import ru.nikstep.alarm.service.alarm.android.reminder.AlarmReminderService
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import ru.nikstep.alarm.util.data.emitLiveData
 import ru.nikstep.alarm.util.data.observeResult
@@ -34,7 +33,6 @@ class StopAlarmService : LifecycleService() {
                 }.observeResult(this, successBlock = {
                     Log.i("StopMusicService", "Disabled next alarm")
                 })
-                stopService(Intent(applicationContext, AlarmReminderService::class.java))
             }
         }
         return START_NOT_STICKY
