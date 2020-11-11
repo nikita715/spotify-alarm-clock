@@ -10,6 +10,7 @@ import ru.nikstep.alarm.model.AlarmLog
 import ru.nikstep.alarm.service.data.AlarmDataService
 import ru.nikstep.alarm.service.data.AlarmLogDataService
 import ru.nikstep.alarm.service.data.PlaylistDataService
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class AndroidAlarmController @Inject constructor(
@@ -20,22 +21,24 @@ class AndroidAlarmController @Inject constructor(
     private val spotifyClient: SpotifyClient
 ) : AlarmController {
 
+    private val isAlarmPlayingNow = AtomicBoolean(false)
+
     override suspend fun enableAlarm(alarm: Alarm): Alarm? =
         alarmDataService.save(alarm)?.also { savedAlarm ->
             alarmManager.enableAlarm(savedAlarm)
-            Log.i("AlarmManager", "Saved and enabled $savedAlarm")
+            Log.i("AlarmController", "Saved and enabled $savedAlarm")
         }
 
-    override suspend fun disableAlarm(alarm: Alarm): Alarm? =
-        alarmDataService.save(alarm)?.also { savedAlarm ->
-            alarmManager.disableAlarm(savedAlarm.id)
-            Log.i("AlarmManager", "Saved and disabled $savedAlarm")
-        }
+    override suspend fun disableAlarm(alarmId: Long): Alarm? {
+        enableNextActivationOfAlarm(alarmId)
+        alarmManager.disableAlarm(alarmId)
+        return alarmDataService.findById(alarmId)
+    }
 
     override suspend fun removeAlarm(alarmId: Long) {
         alarmManager.disableAlarm(alarmId)
         alarmDataService.delete(alarmId)
-        Log.i("AlarmManager", "Removed alarm by id $alarmId")
+        Log.i("AlarmController", "Removed alarm by id $alarmId")
     }
 
     override suspend fun buildSpotifyMusicData(alarmId: Long): SpotifyMusicData? =
@@ -48,9 +51,16 @@ class AndroidAlarmController @Inject constructor(
                     playType = SpotifyPlayType.RANDOM,
                     enabled = alarm.nextActive
                 ) {
-                    val updatedAlarm = alarm.copy(previousTrack = it.track.uri)
-                    alarmDataService.save(updatedAlarm)
-                    Log.i("AlarmManager", "Saved alarm $updatedAlarm")
+                    synchronized(isAlarmPlayingNow) {
+                        if (it.isPaused.not() && it.playbackSpeed > 0.0f && !isAlarmPlayingNow.get()) {
+                            isAlarmPlayingNow.set(true)
+                            Log.i("AlarmController", "Alarm is active")
+                        } else if (it.isPaused && isAlarmPlayingNow.get()) {
+                            alarmManager.stopAlarmService()
+                            isAlarmPlayingNow.set(false)
+                            Log.i("AlarmController", "Alarm is inactive")
+                        }
+                    }
                 }
             }
         }

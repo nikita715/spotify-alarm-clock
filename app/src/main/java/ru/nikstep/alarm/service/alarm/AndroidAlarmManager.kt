@@ -9,11 +9,14 @@ import android.util.Log
 import ru.nikstep.alarm.R
 import ru.nikstep.alarm.model.Alarm
 import ru.nikstep.alarm.service.alarm.android.AlarmReceiver
+import ru.nikstep.alarm.service.alarm.android.AlarmService
 import ru.nikstep.alarm.service.alarm.android.reminder.AlarmReminderReceiver
 import ru.nikstep.alarm.ui.main.MainActivity.Companion.ALARM_ID_EXTRA
 import ru.nikstep.alarm.ui.settings.SettingsActivity.Companion.DEFAULT_ALARM_REMINDER_MINUTES
 import ru.nikstep.alarm.util.date.buildNextAlarmCalendar
 import ru.nikstep.alarm.util.date.buildNextAlarmReminderCalendar
+import ru.nikstep.alarm.util.date.isBeforeNow
+import ru.nikstep.alarm.util.date.plus
 import ru.nikstep.alarm.util.preferences.getAppPreference
 import java.util.Calendar
 import java.util.Date
@@ -39,18 +42,21 @@ class AndroidAlarmManager @Inject constructor(
         val minutesBeforeAlarm = context.getAppPreference<Int>(R.string.preference__alarm_reminder_minutes)?.let {
             if (it == -1) DEFAULT_ALARM_REMINDER_MINUTES else it
         } ?: DEFAULT_ALARM_REMINDER_MINUTES
-        val reminderCalendar = buildNextAlarmReminderCalendar(
+        buildNextAlarmReminderCalendar(
             alarm.hour,
             alarm.minute,
             minutesBeforeAlarm
-        )
-        enableEveryDayAlarm(
-            alarm.id,
-            reminderCalendar.timeInMillis,
-            AlarmReminderReceiver::class.java
-        )
-        if (reminderCalendar.before(Calendar.getInstance())) {
-            context.sendBroadcast(Intent(context, AlarmReminderReceiver::class.java).putExtra(ALARM_ID_EXTRA, alarm.id))
+        ).let { reminderTime ->
+            if (reminderTime.isBeforeNow()) {
+                context.sendBroadcast(buildIntent(alarm.id, AlarmReminderReceiver::class.java))
+                reminderTime + 1 of Calendar.DAY_OF_MONTH
+            } else reminderTime
+        }.let { androidAlarmTime ->
+            enableEveryDayAlarm(
+                alarm.id,
+                androidAlarmTime.timeInMillis,
+                AlarmReminderReceiver::class.java
+            )
         }
     }
 
@@ -59,7 +65,7 @@ class AndroidAlarmManager @Inject constructor(
             AlarmManager.RTC_WAKEUP,
             triggerAtMillis,
             AlarmManager.INTERVAL_DAY,
-            buildIntent(id, receiverClass)
+            buildPendingIntent(id, receiverClass)
         )
         Log.i("AlarmManager", "Alarm scheduled by android at ${Date(triggerAtMillis)}")
     }
@@ -69,6 +75,10 @@ class AndroidAlarmManager @Inject constructor(
         disableReminderAlarm(alarmId)
     }
 
+    override fun stopAlarmService() {
+        context.stopService(Intent(context, AlarmService::class.java))
+    }
+
     private fun disableMainAlarm(alarmId: Long) =
         disableAlarm(alarmId, AlarmReceiver::class.java)
 
@@ -76,14 +86,18 @@ class AndroidAlarmManager @Inject constructor(
         disableAlarm(alarmId, AlarmReminderReceiver::class.java)
 
     private fun disableAlarm(alarmId: Long, receiverClass: Class<out BroadcastReceiver>) {
-        androidAlarmManager.cancel(buildIntent(alarmId, receiverClass))
+        androidAlarmManager.cancel(buildPendingIntent(alarmId, receiverClass))
         Log.i("AlarmManager", "Alarm $alarmId removed by android")
     }
 
-    private fun buildIntent(alarmId: Long, receiverClass: Class<out BroadcastReceiver>) = PendingIntent.getBroadcast(
-        context, alarmId.toInt(),
-        Intent(context, receiverClass).putExtra(ALARM_ID_EXTRA, alarmId),
-        PendingIntent.FLAG_UPDATE_CURRENT
-    )
+    private fun buildPendingIntent(alarmId: Long, receiverClass: Class<out BroadcastReceiver>) =
+        PendingIntent.getBroadcast(
+            context, alarmId.toInt(),
+            Intent(context, receiverClass).putExtra(ALARM_ID_EXTRA, alarmId),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+    private fun buildIntent(alarmId: Long, receiverClass: Class<out BroadcastReceiver>) =
+        Intent(context, receiverClass).putExtra(ALARM_ID_EXTRA, alarmId)
 
 }

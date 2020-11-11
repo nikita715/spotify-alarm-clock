@@ -15,7 +15,7 @@ import ru.nikstep.alarm.ui.main.MainActivity.Companion.CHANNEL_ID
 class AndroidNotificationService(private val context: Context) : NotificationService {
     override fun buildAlarmNotification(): Notification =
         NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_stat_access_alarm)
             .setContentTitle("Alarm")
             .setContentText("Click to stop the music")
             .setAutoCancel(true)
@@ -31,7 +31,7 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
 
     override fun buildAlarmReminderNotification(): Notification =
         NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_stat_access_alarm)
             .setContentTitle("Alarm")
             .setContentText("Alarm will start soon")
             .setAutoCancel(true)
@@ -40,7 +40,7 @@ class AndroidNotificationService(private val context: Context) : NotificationSer
 
     override fun buildAlarmReminderNotification(alarmId: Long, alarmTime: String): Notification =
         NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_stat_access_alarm)
             .addAction(
                 R.mipmap.ic_launcher, "Disable",
                 PendingIntent.getService(

@@ -24,8 +24,8 @@ class MainViewModel @Inject constructor(
         alarmController.enableAlarm(alarm)
     }
 
-    fun disableAlarm(alarm: Alarm) = emitLiveData {
-        alarmController.disableAlarm(alarm)
+    fun disableAlarm(alarmId: Long) = emitLiveData {
+        alarmController.disableAlarm(alarmId)
     }
 
     /**

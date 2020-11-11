@@ -55,6 +55,7 @@ class AlarmReminderReceiver : BroadcastReceiver() {
                 Status.LOADING -> {
                 }
                 Status.SUCCESS -> {
+                    liveData.removeObserver(this)
                     t.data?.let { alarm ->
                         notificationManager.notify(
                             1,
@@ -62,14 +63,12 @@ class AlarmReminderReceiver : BroadcastReceiver() {
                         )
                     }
                     Log.i("AlarmRemRec", "Notification is sent")
-                    liveData.removeObserver(this)
                 }
                 Status.ERROR -> {
-                    Log.e("AlarmRemRec", t.exception?.message, t.exception)
                     liveData.removeObserver(this)
+                    Log.e("AlarmRemRec", t.exception?.message, t.exception)
                 }
             }
         }
-
     }
 }

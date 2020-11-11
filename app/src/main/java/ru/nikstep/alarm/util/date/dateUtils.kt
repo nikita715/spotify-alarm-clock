@@ -59,6 +59,17 @@ class CurrentDateInfo private constructor(
 infix fun Int.of(type: Int): CurrentDateInfo.CurrentDateInfoChangeData =
     CurrentDateInfo.CurrentDateInfoChangeData(this, type)
 
+operator fun Calendar.plus(plusValue: Int): CalendarPlus = CalendarPlus(this, plusValue)
+
+fun Calendar.isBeforeNow() = before(Calendar.getInstance())
+
+class CalendarPlus(
+    private val calendar: Calendar,
+    private val plusValue: Int
+) {
+    infix fun of(type: Int): Calendar = calendar.also { it.add(type, plusValue) }
+}
+
 fun buildNextAlarmCalendar(hour: Int, minute: Int): Calendar {
     val year: Int
     val month: Int

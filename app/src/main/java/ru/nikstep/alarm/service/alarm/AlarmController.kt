@@ -14,9 +14,9 @@ interface AlarmController {
     suspend fun enableAlarm(alarm: Alarm): Alarm?
 
     /**
-     * Save the alarm, disable the android alarm and disable the android reminder alarm
+     * Disable the android alarm and disable the android reminder alarm
      */
-    suspend fun disableAlarm(alarm: Alarm): Alarm?
+    suspend fun disableAlarm(alarmId: Long): Alarm?
 
     /**
      * Disable the android alarm, disable the android reminder alarm and remove the alarm

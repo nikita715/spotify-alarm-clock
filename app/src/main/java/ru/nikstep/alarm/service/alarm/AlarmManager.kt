@@ -15,7 +15,9 @@ interface AlarmManager {
      * Remove the everyday android alarm
      */
     fun disableAlarm(alarmId: Long)
+
     /**
      * Set an everyday android alarm
      */
+    fun stopAlarmService()
 }

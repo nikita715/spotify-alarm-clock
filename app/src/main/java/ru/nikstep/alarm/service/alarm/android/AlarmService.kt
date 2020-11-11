@@ -41,8 +41,8 @@ class AlarmService : LifecycleService() {
                     }.observeResult(this, {
                         Log.i("AlarmService", "Alarm$alarmId is reactivated")
                     })
+                    stopForeground(false)
                 }
-                stopForeground(false)
             } else {
                 Log.i("AlarmService", "Alarm not found")
             }

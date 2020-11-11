@@ -174,7 +174,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         if (switch.isChecked) {
             viewModel.enableAlarm(alarm)
         } else {
-            viewModel.disableAlarm(alarm)
+            viewModel.disableAlarm(alarm.id)
         }.observeResult(this, successBlock = { receivedAlarm ->
             if (receivedAlarm == null || receivedAlarm.active != switch.isChecked) {
                 showSnackbar(binding.mainCoordinatorLayout, "Unable to change the status")

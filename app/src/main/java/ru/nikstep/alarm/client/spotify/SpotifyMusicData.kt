@@ -8,7 +8,7 @@ class SpotifyMusicData(
     val playType: SpotifyPlayType,
     val previousTrack: String? = null,
     val enabled: Boolean = true,
-    val callback: (suspend (PlayerState) -> Unit)? = null
+    val callback: ((PlayerState) -> Unit)? = null
 ) {
     val uri = "spotify:${type.typeName}:$id"
 }
